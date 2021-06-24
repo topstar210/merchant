@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateMerchantRequest;
 use App\Http\Utils\Rules;
+use App\Mail\AgentInvitedMail;
 use App\Mail\MerchantCreatedMail;
 use App\Models\Country;
 use App\Models\Currency;
@@ -32,7 +33,7 @@ class RegisterController extends Controller
             $validated = $request->validated();
 
             $country = Country::query()->find((int)$validated['country_id']);
-            $currency = Currency::query()->where('name', 'like', "%$country->short_name%")->first();
+            $currency = $this->getCurrency($country->short_name);
 
             $default_currency_id = DB::table('settings')->where('name', 'default_currency')->first()->value ?? 24;
             $temp_password = Str::random(8);
@@ -78,7 +79,6 @@ class RegisterController extends Controller
 
             $user->userDetail()->create([
                 'country_id' => (int)$validated['country_id'],
-                'email_verification' => true,
                 'city' => $validated['city'],
                 'address_1' => $validated['merchant_address'],
                 'default_currency' => $currency->id,
@@ -115,7 +115,7 @@ class RegisterController extends Controller
             $hash = Hash::make((string)($user->id . ":" . $user->email));
 
             $signature = base64_encode("$hash:$user->id:$user->email");
-            $url = url("/merchant/complete/$signature");
+            $url = url("/setup/complete/$signature");
 
             Mail::to($user)->send(new MerchantCreatedMail($user, $merchant, $url));
 
@@ -135,18 +135,98 @@ class RegisterController extends Controller
         }
     }
 
-    public function completeMerchantView(Request $request, $signature)
+
+    public function createAgent($validated)
     {
-        $valid = $this->validateSignature($signature);
+        try {
+            $country = Country::query()->where('short_name', $validated['country'])->first();
+            $currency = $this->getCurrency($country->short_name);
+            $default_currency_id = DB::table('settings')->where('name', 'default_currency')->first()->value ?? 24;
+            $temp_password = Str::random(8);
 
-        if ($valid instanceof Redirector || $valid instanceof RedirectResponse) {
-            return $valid;
+
+            if (!$currency instanceof Currency) {
+                $currency = (object)[
+                    "code" => "USD",
+                    "id" => $default_currency_id
+                ];
+            }
+
+            $user = User::query()->create([
+                'type' => 'agent',
+                'merchant_id' => user()->merchant_id,
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'phone' => $validated['phone'],
+                'formattedPhone' => "+" . $country->phone_code . $validated['phone'],
+                'defaultCountry' => strtolower($country->short_name),
+                'carrierCode' => $country->phone_code,
+                'email' => $validated['email'],
+                'password' => Hash::make($temp_password),
+                'status' => 'Inactive',
+                'reg_com' => false,
+                'account_number' => 'irt' . rand(10000000000, 99999999999),
+                'address_verified' => true,
+                'identity_verified' => true,
+            ]);
+
+
+            $user->userDetail()->create([
+                'country_id' => $country->id,
+                'city' => $validated['city'],
+                'state' => $validated['state'],
+                'address_1' => $validated['address'],
+                'default_currency' => $currency->id,
+                'timezone' => DB::table('settings')->where('name', 'default_timezone')->first()->value ?? 'Africa/Accra',
+                'gender' => $validated['gender']
+            ]);
+
+            $wallets = [
+                [
+                    "currency_id" => $default_currency_id,
+                    "balance" => 0.00,
+                    "limit_amount" => 0.00,
+                    "is_default" => 'No'
+                ],
+            ];
+
+            if ($currency instanceof Currency) {
+                $wallets[] = [
+                    "currency_id" => $currency->id,
+                    "balance" => 0.00,
+                    "limit_amount" => 0.00,
+                    "is_default" => 'Yes'
+                ];
+            }
+
+            $user->wallets()->createMany($wallets);
+
+//        $user->assignRole('agent');
+//        $user->givePermissionTo(Permission::agentDefaultPermissions());
+
+            $hash = Hash::make((string)($user->id . ":" . $user->email));
+
+            $signature = base64_encode("$hash:$user->id:$user->email");
+            $url = url("/setup/complete/$signature");
+
+            Mail::to($user)->send(new AgentInvitedMail($user, user()->merchant, $url));
+
+            return [
+                'error' => false,
+                'error_message' => 'Agent added successfully, kindly inform agent to click the link sent to his email to accept invitation'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('Exception Error for Create Merchant', format_exception($e));
+
+            return [
+                'error' => true,
+                'error_message' => $e->getMessage() . '. Kindly try again'
+            ];
         }
-
-        return view('auth.complete_merchant', ["user" => $valid]);
     }
 
-    public function completeMerchant(Request $request, $signature)
+    public function completeSetupView(Request $request, $signature)
     {
         $valid = $this->validateSignature($signature);
 
@@ -154,13 +234,26 @@ class RegisterController extends Controller
             return $valid;
         }
 
-        $validated = $this->validate($request, Rules::createMerchantRules());
+        return view('auth.complete_setup', ["user" => $valid]);
+    }
+
+    public function completeSetup(Request $request, $signature)
+    {
+        $valid = $this->validateSignature($signature);
+
+        if ($valid instanceof Redirector || $valid instanceof RedirectResponse) {
+            return $valid;
+        }
+
+        $validated = $this->validate($request, Rules::completeSetupRules());
 
         $valid->password = Hash::make($validated['password']);
         $valid->pin = $validated['pin'];
         $valid->reg_com = true;
         $valid->status = 'Active';
         $valid->save();
+
+        $valid->userDetail()->update(['email_verification' => true]);
 
         Auth::login($valid);
 
@@ -172,6 +265,12 @@ class RegisterController extends Controller
         return redirect('/app');
     }
 
+
+    private function getCurrency($country)
+    {
+        return Currency::query()->where('name', 'like', "%$country%")->first();
+
+    }
 
     private function validateSignature($signature)
     {

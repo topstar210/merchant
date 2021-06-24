@@ -3,6 +3,8 @@
         Dashboard
     </x-slot>
     <div class="page-content">
+        <x-utils.actionbar :title="'Dashboard'"/>
+
         <div class="container-fluid">
 
 

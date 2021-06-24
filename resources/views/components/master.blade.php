@@ -16,7 +16,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css"/>
-
+    <link href="{{asset('plugins/select2/select2.min.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{asset('plugins/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css">
     @stack('styles')
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css"/>
@@ -33,10 +33,13 @@
 <script src="{{ asset('js/feather.min.js') }}"></script>
 <script src="{{asset('plugins/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{ asset('js/simplebar.min.js') }}"></script>
-<script defer src="{{asset('plugins/alpine/alpine.min.js')}}"></script>
-@stack('scripts')
+<script defer src="{{asset('plugins/alpine/alpine.2.8.min.js')}}"></script>
+
+<script src="{{asset('plugins/select2/select2.min.js')}}"></script>
+
 
 @livewireScripts
+@stack('scripts')
 <script src="{{ asset('js/custom.js') }}"></script>
 
 

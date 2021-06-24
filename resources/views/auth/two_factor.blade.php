@@ -7,7 +7,7 @@
         <div class="row vh-100 d-flex justify-content-center">
             <div class="col-12 align-self-center">
                 <div class="row">
-                    <div class="col-lg-4 mx-auto">
+                    <div class="col-lg-4 mx-auto auth-main">
                         <div class="card">
                             <div class="card-body p-0 auth-header-box">
                                 <div class="text-center p-3">
@@ -21,13 +21,13 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class=" p-4">
-                                    @if($errors->any() || session()->has('message'))
+                                    @if($errors->any())
                                         <div
-                                            class="alert icon-custom-alert  {{session()->has('message') ? 'alert-success' : 'alert-danger'}} b-round-sm fade show"
+                                            class="alert icon-custom-alert  alert-danger b-round-sm fade show"
                                             role="alert">
-                                            <i class="{{session()->has('message') ? 'ti-check-box' : 'ti-info-alt'}} alert-icon"></i>
+                                            <i class="ti-info-alt alert-icon"></i>
                                             <div class="alert-text">
-                                                {{$errors->first() || session('message')}}
+                                                {{$errors->first() }}
                                             </div>
                                             <button type="button" class="btn-close" data-bs-dismiss="alert"
                                                     aria-label="Close"></button>

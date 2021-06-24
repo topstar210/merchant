@@ -12,7 +12,7 @@ class TokenResendButton extends Component
     public function resendToken()
     {
         $token = AuthorizationService::handle();
-        session(['twoFA.token'=> $token]);
+        session(['twoFA.token' => $token]);
 
         session()->flash('message', 'Authorization token resent successfully');
     }

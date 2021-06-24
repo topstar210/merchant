@@ -12,7 +12,7 @@ function format_exception(\Exception $e)
 
 function user()
 {
-    return auth()->user()->load(['merchant', 'wallets', 'userDetail']);
+    return auth()->user();
 }
 
 

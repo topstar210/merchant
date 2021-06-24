@@ -2,17 +2,17 @@ $(document).ready(function () {
     // expandTextArea();
 });
 
-$('form').submit(function (e) {
-    $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span>');
+$('#noLivewire').submit(function (e) {
+    $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span> ');
 });
 
 setTimeout(function () {
     $('.alert').alert('close').slideUp(500);
-}, 7000);
+}, 5500);
 
 $(".select2").select2();
 
-$(".phone_country").select2({
+$(".phone_code").select2({
     templateResult: phoneState,
     templateSelection: phoneSelectState
 });

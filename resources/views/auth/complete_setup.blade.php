@@ -1,13 +1,13 @@
 <x-auth>
     <x-slot name="title">
-        Complete Merchant Setup
+        Account Setup
     </x-slot>
 
     <div class="container">
         <div class="row vh-100 d-flex justify-content-center">
             <div class="col-12 align-self-center">
                 <div class="row">
-                    <div class="col-lg-4 mx-auto">
+                    <div class="col-lg-4 mx-auto auth-main">
                         <div class="card">
                             <div class="card-body p-0 auth-header-box">
                                 <div class="text-center p-3">
@@ -16,7 +16,7 @@
                                              class="auth-logo">
                                     </a>
                                     <h4 class="mt-3 mb-1 fw-semibold text-white font-18">IMO Rapid Transfer</h4>
-                                    <p class="text-muted  mb-0">Account Security</p>
+                                    <p class="text-muted  mb-0">Account Setup</p>
                                 </div>
                             </div>
                             <div class="card-body p-0">
@@ -34,12 +34,12 @@
                                     @enderror
 
                                     <h3>Hello, {{$user->first_name." ". $user->last_name}}</h3>
-                                    <p><i class="ti-info-alt text-danger"></i> Setup security for your merchant account </p>
+                                    <p><i class="ti-info-alt text-danger"></i> Complete security setup for your account </p>
                                     <hr>
-                                    <form class="form-horizontal auth-form" method="POST">
+                                    <form class="form-horizontal auth-form" id="noLivewire" method="POST">
                                         @csrf
 
-                                        <livewire:complete-merchant-form/>
+                                        <livewire:complete-setup-form/>
                                     </form>
 
                                 </div>

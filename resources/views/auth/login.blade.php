@@ -6,7 +6,7 @@
         <div class="row vh-100 d-flex justify-content-center">
             <div class="col-12 align-self-center">
                 <div class="row">
-                    <div class="col-lg-4 mx-auto">
+                    <div class="col-lg-4 mx-auto auth-main">
                         <div class="card">
                             <div class="card-body p-0 auth-header-box">
                                 <div class="text-center p-3">
@@ -31,10 +31,11 @@
                                                 aria-label="Close"></button>
                                     </div>
                                     @enderror
-                                    <form class="form-horizontal auth-form" method="POST">
+                                    <form class="form-horizontal auth-form" id="noLivewire" method="POST">
                                         @csrf
 
-                                        <x-utils.form.input :key="'email'" :label="'Email Address'" :type="'email'"/>
+                                        <x-utils.form.input :key="'email'" :label="'Email Address'" :type="'email'"
+                                                            :value="old('email')"/>
                                         <x-utils.form.input :key="'password'" :label="'Password'" :type="'password'"/>
 
                                         <div class="form-group row my-4">
@@ -91,7 +92,7 @@
             </div><!--end col-->
         </div><!--end row-->
     </div>
-    @if (session('error'))
+    @if (session()->has('error'))
         @push('scripts')
 
             <script>

@@ -10,11 +10,11 @@ class Role extends \Spatie\Permission\Models\Role
     protected $table = "roles_rev";
 
     /**
-     * List of system roles
+     * List of system defaults roles
      *
      * @return string[]
      */
-    public static function roleList()
+    public static function defaultRoles()
     {
         return [
             'merchant',

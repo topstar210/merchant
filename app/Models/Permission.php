@@ -18,8 +18,10 @@ class Permission extends \Spatie\Permission\Models\Permission
     public static function systemDefaultPermissions()
     {
         return [
-            'view dashboard',
-            '',
+            'dashboard',
+            'agents',
+            'add_agent',
+            'delete_agent',
         ];
     }
 
@@ -27,7 +29,7 @@ class Permission extends \Spatie\Permission\Models\Permission
     public static function agentDefaultPermissions()
     {
         return [
-
+            'dashboard'
         ];
     }
 }

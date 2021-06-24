@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,9 +21,11 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false, 'verify' => false]);
 
-Route::prefix('merchant/complete')->middleware('guest')->group(function () {
-    Route::get('/{signature}', [\App\Http\Controllers\Auth\RegisterController::class, 'completeMerchantView']);
-    Route::post('/{signature}', [\App\Http\Controllers\Auth\RegisterController::class, 'completeMerchant']);
+Route::middleware('guest')->group(function () {
+    Route::prefix('setup/complete')->group(function () {
+        Route::get('/{signature}', [\App\Http\Controllers\Auth\RegisterController::class, 'completeSetupView']);
+        Route::post('/{signature}', [\App\Http\Controllers\Auth\RegisterController::class, 'completeSetup']);
+    });
 });
 
 Route::middleware('auth')->group(function () {
@@ -36,5 +39,8 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
     Route::prefix('agents')->group(function () {
         Route::get('/', \App\Http\Livewire\App\Agents\All::class);
         Route::get('/add', \App\Http\Livewire\App\Agents\Add::class);
+        Route::get('/{user}', \App\Http\Livewire\App\Agents\View::class)->missing(function (Request $request) {
+            return Redirect::back()->with(['error_message' => 'No agent found']);
+        });
     });
 });
