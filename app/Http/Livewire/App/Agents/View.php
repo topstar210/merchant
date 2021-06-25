@@ -14,6 +14,14 @@ class View extends Component
         $this->agent = $user;
     }
 
+    public function deleteAgent()
+    {
+        sleep(5);
+
+
+
+    }
+
     public function render()
     {
         return view('livewire.app.agents.view');

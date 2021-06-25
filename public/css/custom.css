@@ -140,6 +140,42 @@ body, a {
     animation: spinning 1s infinite linear;
 }
 
+.btn-spinner-soft-danger {
+    border-top: 0.2em solid #f5325c !important;
+    border-right: 0.2em solid #f5325c !important;
+    border-bottom: 0.2em solid #f5325c !important;
+}
+
+.btn-spinner-soft-success {
+    border-top: 0.2em solid #03d87f !important;
+    border-right: 0.2em solid #03d87f !important;
+    border-bottom: 0.2em solid #03d87f !important;
+}
+
+.btn-spinner-soft-primary {
+    border-top: 0.2em solid #1761fd !important;
+    border-right: 0.2em solid #1761fd !important;
+    border-bottom: 0.2em solid #1761fd !important;
+}
+
+.btn-spinner-soft-info {
+    border-top: 0.2em solid #12a4ed !important;
+    border-right: 0.2em solid #12a4ed !important;
+    border-bottom: 0.2em solid #12a4ed !important;
+}
+
+.btn-spinner-soft-warning {
+    border-top: 0.2em solid #ffb822 !important;
+    border-right: 0.2em solid #ffb822 !important;
+    border-bottom: 0.2em solid #ffb822 !important;
+}
+
+.btn-spinner-soft-secondary {
+    border-top: 0.2em solid #9ba7ca !important;
+    border-right: 0.2em solid #9ba7ca !important;
+    border-bottom: 0.2em solid #9ba7ca !important;
+}
+
 @keyframes spinning {
     0% {
         transform: rotate(0deg);
@@ -184,6 +220,15 @@ body, a {
     font-size: 0.9em;
 }
 
+
+.swal2-popup .swal2-styled.swal2-cancel {
+    border: 0;
+    border-radius: .25em;
+    background: initial;
+    background-color: #f5325c;
+    color: #fff;
+    font-size: 0.9em;
+}
 
 
 .swal2-content {
@@ -331,7 +376,6 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
     background-color: #fff;
     box-shadow: 0 3px 12px #d6e4f1;
 }
-
 
 
 [x-cloak] {
