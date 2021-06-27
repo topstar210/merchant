@@ -14,8 +14,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "livewire/livewire": "^2.4",
-        "propaganistas/laravel-phone": "^4.3",
-        "spatie/laravel-permission": "^4.2"
+        "propaganistas/laravel-phone": "^4.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

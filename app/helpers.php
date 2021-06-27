@@ -17,10 +17,13 @@ function user()
 
 function readJson($path)
 {
-    if (file_exists($path)){
+    if (file_exists($path)) {
         $jsonContent = file_get_contents($path);
         return json_decode($jsonContent, true);
-    }else{
-        return  [];
+    } else {
+        return [];
     }
 }
+
+const DEPOSITS = 1;
+const WITHDRAWALS = 2;

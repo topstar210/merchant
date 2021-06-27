@@ -20,11 +20,11 @@ class Wallet extends Model
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }
-//
-//    public function currency_exchanges()
-//    {
-//        return $this->hasMany(CurrencyExchange::class);
-//    }
+
+    public function transactions()
+    {
+        return $this->hasMany(MerchantPayment::class);
+    }
 
     public function user()
     {

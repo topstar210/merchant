@@ -3,7 +3,7 @@
 </x-slot>
 
 <div class="page-content">
-    <x-utils.actionbar :title="'Add Agent'" :showBack="'true'"  wire:ignore/>
+    <x-utils.actionbar :title="'Add Agent'" :showBack="'true'" wire:ignore/>
     <div class="container-fluid app-main">
         <div class="row d-flex justify-content-center">
             <div class="col-lg-7 mx-auto">
@@ -70,8 +70,9 @@
 
                                 {{--                            <div class="col-lg-12">--}}
                                 <div class="d-grid gap-2 col-sm-12 col-md-6 mx-auto">
-                                    <button class="btn btn-success" type="submit" wire:target="addAgent" wire:loading.attr="disabled"><span
-                                            wire:loading class="btn-spinner"></span> Submit
+                                    <button class="btn btn-success" type="submit" wire:target="addAgent"
+                                            wire:loading.attr="disabled"><span
+                                            wire:target="addAgent" wire:loading class="btn-spinner"></span> Submit
                                     </button>
                                 </div>
 

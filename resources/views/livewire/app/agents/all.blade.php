@@ -3,23 +3,19 @@
 </x-slot>
 
 <div class="page-content">
-    <x-utils.actionbar :title="'Agents'"  wire:ignore>
+    <x-utils.actionbar :title="'Agents'" wire:ignore>
         @if(count($agents) || !empty($query))
             <x-slot name="action">
-                <a class=" btn btn-md btn-soft-primary" href="{{url('/app/agents/add')}}" role="button"><i
-                        class="fas fa-plus me-2"></i>Add Agent</a>
+                @can('isMerchant', \App\Models\Permission::class)
+                    <a class=" btn btn-md btn-soft-primary" href="{{url('/app/agents/add')}}" role="button"><i
+                            class="fas fa-plus me-2"></i>Add Agent</a>
+                @endcan
                 <x-utils.ui.filter-button/>
             </x-slot>
             <hr class="my-2">
             <div class="row my-3 mx-2">
-                <div class="col-10 col-lg-3 col-md-4">
+                <div class="col-12 col-lg-3 col-md-4">
                     <x-utils.form.search-input :key="'query'" :label="'Enter Query'" :js="''"/>
-                </div>
-                <div class="col text-end">
-                    <a href="javascript:void(0)" x-on:click="toggle()"
-                       class="float-end close-btn text-danger">
-                        <i class="mdi mdi-close-circle font-18"></i>
-                    </a>
                 </div>
             </div>
         @endif
@@ -32,8 +28,10 @@
                     @if(!count($agents) && empty($query))
                         <x-utils.empty>
                             <h5><i class="ti-info-alt text-danger"></i> No Agent Added Yet</h5>
-                            <a class=" btn btn-md btn-primary" href="{{url('/app/agents/add')}}"
-                               role="button"><i class="fas fa-plus me-2"></i>Add Agent</a>
+                            @can('isMerchant', \App\Models\Permission::class)
+                                <a class=" btn btn-md btn-primary" href="{{url('/app/agents/add')}}"
+                                   role="button"><i class="fas fa-plus me-2"></i>Add Agent</a>
+                            @endcan
                         </x-utils.empty>
                     @else
                         <div class="table-responsive">

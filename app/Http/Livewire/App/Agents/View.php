@@ -11,9 +11,9 @@ class View extends Component
 {
     public User $agent;
 
-    public function mount(User $user)
+    public function mount(User $agent)
     {
-        $this->agent = $user;
+        $this->agent = $agent;
     }
 
 

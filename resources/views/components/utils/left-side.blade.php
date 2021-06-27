@@ -14,27 +14,28 @@
 
             <hr class="hr-dashed hr-menu">
             <li class="menu-label my-2">Menu</li>
-            <li>
-                <a href="{{url('/app')}}">
-                    <i data-feather="home"
-                       class="align-self-center menu-icon"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
-
-            {{--            @role('merchant')--}}
-            <li>
-                <a href="{{url('/app/agents')}}">
-                    <i data-feather="users"
-                       class="align-self-center menu-icon"></i>
-                    <span>Agents</span>
-                    {{--                    @if((user()->merchant->loadCount('users')->users_count - 1) > 0)--}}
-                    <span
-                        class="badge bg-danger b-round-sm menu-arrow">{{user()->merchant->loadCount('users')->users_count - 1}}</span>
-                    {{--                    @endif--}}
-                </a>
-            </li>
-            {{--            @endrole--}}
+            @can('viewDashboard', \App\Models\Permission::class)
+                <li>
+                    <a href="{{url('/app')}}">
+                        <i data-feather="home"
+                           class="align-self-center menu-icon"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+            @endcan
+            @can('isMerchant', \App\Models\Permission::class)
+                <li>
+                    <a href="{{url('/app/agents')}}">
+                        <i data-feather="users"
+                           class="align-self-center menu-icon"></i>
+                        <span>Agents</span>
+                        {{--                    @if((user()->merchant->loadCount('users')->users_count - 1) > 0)--}}
+                        <span
+                            class="badge bg-danger b-round-sm menu-arrow">{{user()->merchant->loadCount('users')->users_count - 1}}</span>
+                        {{--                    @endif--}}
+                    </a>
+                </li>
+            @endcan
 
 
             {{--            <li>--}}
@@ -74,15 +75,17 @@
                 <div class="mt-2 d-flex flex-row">
                     <div class="col">
                         @if(!$wallet->lock)
-                            <button class="btn btn-outline-success btn-sm font-10"  onclick="window.location.href='{{url('app/wallet/'.$wallet->id)}}'">View Wallet</button>
+                            <button class="btn btn-outline-success btn-sm font-10"
+                                    onclick="window.location.href='{{url('app/wallet/'.$wallet->id)}}'">View Wallet
+                            </button>
                         @endif
-                            @if($wallet->lock)
-                                <span class="badge bg-danger"><i class="ti-lock"></i> Locked</span>
-                            @endif
+                        @if($wallet->lock)
+                            <span class="badge bg-danger"><i class="ti-lock"></i> Locked</span>
+                        @endif
                     </div>
-{{--                    <div class="col-auto text-end">--}}
-{{--                        --}}
-{{--                    </div>--}}
+                    {{--                    <div class="col-auto text-end">--}}
+                    {{--                        --}}
+                    {{--                    </div>--}}
                 </div>
             </div>
         @empty

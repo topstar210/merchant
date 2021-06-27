@@ -17,8 +17,9 @@ class MerchantPayments extends Migration
 
         Schema::create('merchant_payments_rev', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Merchant::class,'merchant_id');
-            $table->foreignIdFor(\App\Models\User::class,'user_id');
+            $table->foreignIdFor(\App\Models\Merchant::class,'merchant_id')->nullable();
+            $table->foreignIdFor(\App\Models\User::class,'user_id')->nullable();
+            $table->string('transaction_type');
             $table->double('amount');
             $table->double('charges')->default(0);
             $table->double('commission')->default(0);
@@ -33,7 +34,9 @@ class MerchantPayments extends Migration
             $table->string('product')->nullable();
             $table->string('response', 2000)->nullable();
             $table->enum('status', ['Pending','Success','Refund','Blocked','Failed'])->default('Pending');
-            $table->foreignIdFor(\App\Models\Transaction::class,'transaction_id');
+            $table->foreignIdFor(\App\Models\Transaction::class,'transaction_id')->nullable();
+            $table->foreignIdFor(\App\Models\Wallet::class,'wallet_id')->nullable();
+            $table->foreignIdFor(\App\Models\PaymentMethod::class,'payment_method_id')->nullable();
             $table->timestamps();
         });
     }

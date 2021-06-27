@@ -36,18 +36,25 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
-    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('app.dashboard');
-    Route::prefix('agents')->group(function () {
-        Route::get('/', \App\Http\Livewire\App\Agents\All::class)->name('app.agents');
-        Route::get('/add', \App\Http\Livewire\App\Agents\Add::class);
-        Route::get('/{user}', \App\Http\Livewire\App\Agents\View::class)
+    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])
+        ->name('app.dashboard')
+        ->middleware('can:viewDashboard,App\Models\Permission');
+
+    Route::prefix('agents')->middleware('can:isMerchant,App\Models\Permission')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AgentsController::class, 'all'])
+            ->name('app.agents');
+        Route::get('/add', [\App\Http\Controllers\AgentsController::class, 'add']);
+        Route::get('/{user}', [\App\Http\Controllers\AgentsController::class, 'view'])
+            ->middleware('can:viewAgent,user')
             ->missing(function (Request $request) {
                 return Redirect::route('app.agents')->with(['error' => true, 'error_message' => 'No Agent found']);
             });
+
     });
 
     Route::prefix('wallet')->group(function () {
-        Route::get('/{wallet}', \App\Http\Livewire\App\Wallet\View::class)
+        Route::get('/{wallet}', [\App\Http\Controllers\WalletController::class, 'view'])
+            ->middleware('can:viewWallet,wallet')
             ->missing(function (Request $request) {
                 return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Wallet Found']);
             });

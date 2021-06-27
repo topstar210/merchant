@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Str;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -27,6 +29,15 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof AuthorizationException) {
+            return redirect()->to('app')->with(['error' => true, 'error_message' => $e->getMessage()]);
+        }
+
+        return parent::render($request, $e);
+    }
+
     /**
      * Register the exception handling callbacks for the application.
      *
@@ -37,5 +48,6 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
     }
 }

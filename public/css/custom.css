@@ -401,6 +401,12 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
     box-shadow: 0 3px 14px -3px rgb(0 0 0 / 10%);
 }
 
+.filter-no-hover:hover, .filter-no-hover:focus{
+    background-color: rgba(29,44,72,0.1) !important;
+    box-shadow: none;
+    color: #1d2c48 !important;
+}
+
 .page-wrapper .page-content {
     margin-top: 53px;
     padding: 0 0 52px 0;

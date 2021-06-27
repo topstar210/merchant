@@ -7,11 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -68,9 +67,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
-        self::deleting(function($user) { // before delete() method call this
+        self::deleting(function ($user) { // before delete() method call this
             $user->wallets()->delete();
             $user->userDetail()->delete();
         });
@@ -79,6 +79,16 @@ class User extends Authenticatable
     public function getFullNameAttribute()
     {
         return Str::title($this->first_name . " " . $this->last_name);
+    }
+
+    public function isMerchant()
+    {
+        return $this->type === 'merchant';
+    }
+
+    public function isAgent()
+    {
+        return $this->type === 'agent';
     }
 
     public function resolveRouteBinding($value, $field = null)
@@ -131,9 +141,9 @@ class User extends Authenticatable
                 $query->where('status', 'Active');
             } elseif ($status === 'inactive') {
                 $query->where('status', 'Inactive');
-            }elseif ($status === 'invited') {
+            } elseif ($status === 'invited') {
                 $query->where('reg_com', false);
-            }else{
+            } else {
                 $query->whereIn('status', ['Inactive', 'Active']);
             }
         });
