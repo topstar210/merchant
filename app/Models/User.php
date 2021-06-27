@@ -68,6 +68,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public static function boot() {
+        parent::boot();
+        self::deleting(function($user) { // before delete() method call this
+            $user->wallets()->delete();
+            $user->userDetail()->delete();
+        });
+    }
+
     public function getFullNameAttribute()
     {
         return Str::title($this->first_name . " " . $this->last_name);
@@ -96,6 +104,11 @@ class User extends Authenticatable
     public function country()
     {
         return $this->belongsTo(Country::class, 'defaultCountry', 'short_name');
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(ActivityLog::class)->latest()->limit(20);
     }
 
     public function scopeAgents($query)

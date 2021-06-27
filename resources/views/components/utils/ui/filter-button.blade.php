@@ -1,2 +1,2 @@
-<a class=" btn btn-md btn-soft-default" @click="toggle()" role="button"><i
-        class="fas fa-filter me-2"></i>Filter</a>
+<a class=" btn btn-md btn-soft-default" x-on:click="open = !open" role="button"><i
+        class="fas fa-filter"></i><span class="hidden-sm"> Filter</span></a>

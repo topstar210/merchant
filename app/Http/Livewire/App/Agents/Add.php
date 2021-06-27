@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\App\Agents;
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Utils\Resource;
 use App\Http\Utils\Rules;
 use App\Models\Country;
 use App\Models\Currency;
@@ -23,11 +24,15 @@ class Add extends Component
     public $state;
     public $gender;
 
+    public $states = [];
+
     public function mount()
     {
         $this->country = strtoupper(user()->defaultCountry);
         $this->phone_code = (int)user()->carrierCode;
         $this->phone_country = $this->country;
+
+        $this->getStates($this->country, true);
     }
 
     public function getCountriesProperty()
@@ -45,6 +50,18 @@ class Add extends Component
         $this->country = $country[0];
         $this->phone_code = (int)$country[1];
         $this->phone_country = $country[0];
+
+        $this->getStates($this->country);
+    }
+
+    public function getStates($country, $set_state = false)
+    {
+        $list = Resource::getCountryState($country);
+        if ($set_state) {
+            $this->states = $list;
+        } else {
+            $this->emit('updatedStates', $list);
+        }
     }
 
     public function rules()

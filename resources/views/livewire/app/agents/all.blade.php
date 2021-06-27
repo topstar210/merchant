@@ -12,10 +12,10 @@
             </x-slot>
             <hr class="my-2">
             <div class="row my-3 mx-2">
-                <div class="col-sm-12 col-lg-3 col-md-4">
+                <div class="col-10 col-lg-3 col-md-4">
                     <x-utils.form.search-input :key="'query'" :label="'Enter Query'" :js="''"/>
                 </div>
-                <div class="col">
+                <div class="col text-end">
                     <a href="javascript:void(0)" x-on:click="toggle()"
                        class="float-end close-btn text-danger">
                         <i class="mdi mdi-close-circle font-18"></i>
@@ -50,7 +50,8 @@
                                 <tbody>
                                 @foreach($agents as $agent)
                                     <tr style="cursor: pointer"
-                                        onclick="window.location.href='{{url('app/agents/'.$agent->id)}}'" wire:key="list{{$loop->index}}"
+                                        onclick="window.location.href='{{url('app/agents/'.$agent->id)}}'"
+                                        wire:key="list{{$loop->index}}"
                                     >
                                         <td>{{$agent->full_name}}
                                             <span class="float-end d-block d-md-none">
@@ -98,21 +99,7 @@
         </div>
     </div>
     <x-utils.ui.pagination :list="$agents" :listName="'Agents'"/>
+
 </div>
-@if (session()->has('error'))
-    @push('scripts')
 
-        <script>
-
-            var error = parseInt('{{session('error')}}');
-            Swal.fire(
-                {
-                    icon: error ? "error" : "success",
-                    title: error ? "Error" : "Success",
-                    text: "{{session('error_message')}}",
-                }
-            );
-        </script>
-    @endpush
-@endif
 

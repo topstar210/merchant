@@ -21,7 +21,5 @@ class Currency extends Model
         'exchange_from'
     ];
 
-    protected $appends  = ['org_symbol'];
-
     public $timestamps  = false;
 }

@@ -92,20 +92,7 @@
             </div><!--end col-->
         </div><!--end row-->
     </div>
-    @if (session()->has('error'))
-        @push('scripts')
 
-            <script>
-                Swal.fire(
-                    {
-                        icon: "warning",
-                        title: "Error",
-                        text: "{{session('error_message')}}",
-                    }
-                );
-            </script>
-        @endpush
-    @endif
 </x-auth>
 
 

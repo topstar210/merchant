@@ -1,6 +1,25 @@
 $(document).ready(function () {
-    // expandTextArea();
+    initializeToast();
 });
+
+function initializeToast() {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    var option = {
+        animation: true,
+        autohide: false,
+        delay: 0
+    };
+    var toastList = toastElList.map(function (toastEl) {
+        return new bootstrap.Toast(toastEl, option)
+    })
+
+    toastList.forEach(toast => toast.show());
+
+    setTimeout(function () {
+        toastList.forEach(toast => toast.dispose());
+        $(".toast").remove();
+    }, 7000);
+}
 
 $('#noLivewire').submit(function (e) {
     $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span> ');

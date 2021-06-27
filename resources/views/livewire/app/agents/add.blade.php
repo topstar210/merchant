@@ -3,7 +3,7 @@
 </x-slot>
 
 <div class="page-content">
-    <x-utils.actionbar :title="'Add Agent'" :showBack="'true'"/>
+    <x-utils.actionbar :title="'Add Agent'" :showBack="'true'"  wire:ignore/>
     <div class="container-fluid app-main">
         <div class="row d-flex justify-content-center">
             <div class="col-lg-7 mx-auto">
@@ -51,7 +51,13 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <x-utils.form.input :key="'state'" :js="'defer'"/>
+                                    <x-utils.form.select :key="'state'" :js="''">
+                                        @foreach($this->states as $st)
+                                            <option
+                                                value="{{$st['name']}}" {{strtolower($st['name']) == strtolower($state) ? 'selected' : '' }}>{{$st['name']}}</option>
+                                        @endforeach
+                                    </x-utils.form.select>
+                                    {{--                                    <x-utils.form.input :key="'state'" :js="'defer'"/>--}}
                                 </div>
 
                                 <div class="col-lg-6">
@@ -64,7 +70,7 @@
 
                                 {{--                            <div class="col-lg-12">--}}
                                 <div class="d-grid gap-2 col-sm-12 col-md-6 mx-auto">
-                                    <button class="btn btn-success" type="submit" wire:loading.attr="disabled"><span
+                                    <button class="btn btn-success" type="submit" wire:target="addAgent" wire:loading.attr="disabled"><span
                                             wire:loading class="btn-spinner"></span> Submit
                                     </button>
                                 </div>
@@ -89,9 +95,29 @@
             @this.call('setCountry', [e.target.value, phoneCode]);
 
                 $('#phone_code').val(phoneCode).trigger('change')
+            });
 
+            $('#state').on('change', function (e) {
+            @this.set('state', e.target.value);
             });
         });
+
+        Livewire.on('updatedStates', (states) => {
+            var options = [{
+                text: "Select",
+                id: ""
+            }];
+            $.each(states, function (key, value) {
+                options.push({
+                    text: value.name,
+                    id: value.name
+                });
+            })
+            $("#state").empty().select2({
+                data: options
+            });
+
+        })
 
     </script>
 

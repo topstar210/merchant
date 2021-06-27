@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Wallet extends Model
 {
-    protected $table    = 'wallets';
+    protected $table = 'wallets';
     protected $fillable = [
         'user_id',
         'currency_id',
@@ -20,11 +20,6 @@ class Wallet extends Model
     {
         return $this->belongsTo(Currency::class, 'currency_id');
     }
-
-//    public function active_currency()
-//    {
-//        return $this->belongsTo(Currency::class, 'currency_id')->where('status', 'Active');
-//    }
 //
 //    public function currency_exchanges()
 //    {
@@ -34,5 +29,10 @@ class Wallet extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function scopeNoLock($query)
+    {
+        return $query->where('lock', 0);
     }
 }

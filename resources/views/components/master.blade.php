@@ -17,7 +17,6 @@
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{asset('plugins/select2/select2.min.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{asset('plugins/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css">
     @stack('styles')
     <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css"/>
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" type="text/css"/>
@@ -31,7 +30,6 @@
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('js/waves.js') }}"></script>
 <script src="{{ asset('js/feather.min.js') }}"></script>
-<script src="{{asset('plugins/sweetalert2/sweetalert2.min.js')}}"></script>
 <script src="{{ asset('js/simplebar.min.js') }}"></script>
 <script defer src="{{asset('plugins/alpine/alpine.2.8.min.js')}}"></script>
 
