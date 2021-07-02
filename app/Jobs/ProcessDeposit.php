@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Mail\DepositReceipt;
 use App\Models\MerchantPayment;
 use App\Services\FlutterwaveService;
+use App\Services\PayswitchService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -40,15 +41,17 @@ class ProcessDeposit implements ShouldQueue
         //
         if ($this->transaction->payment_method->name == 'Flutterwave') {
             FlutterwaveService::handlePayment($this->transaction);
+            $this->sendEmail();
         }
 
         if ($this->transaction->payment_method->name == 'Payswitch') {
-
+            PayswitchService::handlePayment($this->transaction);
+            $this->sendEmail();
         }
+    }
 
-        if ($this->transaction->payment_method->name == 'Orchard') {
-
-        }
+    private function sendEmail()
+    {
         try {
             Mail::to($this->transaction->user->email)->send(new DepositReceipt($this->transaction));
         } catch (\Exception $e) {

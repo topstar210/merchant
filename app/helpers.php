@@ -46,7 +46,7 @@ function switchRouteName($route)
 {
     switch ($route) {
         case 'Orchard':
-            return ['Mobile Money', 'momo.png'];
+            return ['Mobile Money | Card', 'cardmomo.png'];
             break;
         case 'Payswitch':
             return ['Visa | MasterCard | Mobile Money', 'cardmomo.png'];

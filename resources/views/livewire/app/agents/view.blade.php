@@ -6,7 +6,8 @@
     <x-utils.actionbar :title="$agent->full_name" :showBack="''" wire:ignore.self>
         <x-slot name="action">
             @if(!$agent->reg_com)
-                <button class=" btn @mobile btn-sm @endmobile btn-soft-danger" wire:target="deleteAgent" wire:loading.attr="disabled"
+                <button class=" btn @mobile btn-sm @endmobile btn-soft-danger" wire:target="deleteAgent"
+                        wire:loading.attr="disabled"
                         onclick="handleDelete()"><i wire:target="deleteAgent"
                                                     wire:loading.class="d-none" class="fas fa-trash me-1"></i><span
                         wire:loading class="btn-spinner btn-spinner-soft-danger"></span> Delete
@@ -143,24 +144,23 @@
             </div>
         </div>
     </div>
-    {{--    @if (session()->has('error'))--}}
+    @if (session()->has('error'))
+        <div class="position-absolute top-0 end-0 p-3" style="z-index: 1050">
+            <div id="bs_toast" role="alert" aria-live="assertive" aria-atomic="true" class="toast bg-white">
+                <div class="toast-header">
 
-    {{--        <div class="toast-container position-absolute top-0 end-0 p-3" style="z-index: 1050">--}}
-    {{--            <div role="alert" aria-live="assertive" aria-atomic="true" class="toast fade show bg-white">--}}
-    {{--                <div class="toast-header">--}}
-
-    {{--                    <span class="me-auto badge {{session('error') ? 'badge-soft-danger' : 'badge-soft-success'}}"--}}
-    {{--                          style="    padding: .55em .9em;"><span--}}
-    {{--                            class=" font-14">{{session('error') ? "Error" : "Success"}}</span></span>--}}
-    {{--                    <small class="text-muted">just now</small>--}}
-    {{--                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>--}}
-    {{--                </div>--}}
-    {{--                <div class="toast-body">--}}
-    {{--                    {{session('error_message')}}--}}
-    {{--                </div>--}}
-    {{--            </div>--}}
-    {{--        </div>--}}
-    {{--    @endif--}}
+                    <span class="me-auto badge {{session('error') ? 'badge-soft-danger' : 'badge-soft-success'}}"
+                          style="    padding: .55em .9em;"><span
+                            class=" font-14">{{session('error') ? "Error" : "Success"}}</span></span>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    {{session('error_message')}}
+                </div>
+            </div>
+        </div>
+    @endif
 
 </div>
 

@@ -23,7 +23,6 @@ class MerchantPaymentPolicy
 
     public function processTransaction(User $user, MerchantPayment $merchantPayment)
     {
-        Log::info($this->request);
         if ($user->id !== $merchantPayment->user_id) {
             return Response::deny('You are not allowed to complete this transaction process');
         } elseif ($merchantPayment->status !== 'Pending' && !$this->request->has('fingerprint')) {

@@ -68,7 +68,7 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
         Route::get('/{wallet}/deposit/{temp}', [\App\Http\Controllers\WalletController::class, 'confirmDeposit'])
             ->middleware('can:walletDeposit,wallet')
             ->missing(function (Request $request) {
-                return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Wallet Found']);
+                return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Initialized Transaction Found']);
             });
     });
 

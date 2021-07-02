@@ -21,7 +21,6 @@ class FlutterwaveService
                 "SECKEY" => config('env.fw_sec_key')
             ]);
 
-            Log::debug($result);
             $response = $result->json();
 
             if ($result->status() != 200) {
@@ -29,16 +28,15 @@ class FlutterwaveService
             }
 
             $transaction = self::saveDepositTrans($trans, $response);
-            Log::debug($transaction);
 
             $trans->transaction()->associate($transaction);
             $trans->status = $transaction->status;
 
-            $data = (array)$trans->response;
+            $data = $trans->response;
             unset($data['response']);
             $data['response'] = $response;
 
-            $trans->response = json_encode($data);
+            $trans->response = $data;
 
             if ($trans->status == "Success") {
                 $balance = (new WalletController())->creditWallet($trans->wallet, $trans->amount);
@@ -56,12 +54,10 @@ class FlutterwaveService
 
     private static function saveDepositTrans(MerchantPayment $trans, $response)
     {
-        $trans->response = json_decode($trans->response);
-
         $deposits = new Deposit();
         $deposits->uuid = $trans->reference;
-        $deposits->charge_percentage = $trans->response->charge_percentage;
-        $deposits->charge_fixed = $trans->response->charge_fixed;
+        $deposits->charge_percentage = $trans->response['charge_percentage'];
+        $deposits->charge_fixed = $trans->response['charge_fixed'];
         $deposits->amount = $trans->amount;
         $deposits->status = $response['status'] == 'success' ? "Success" : 'Blocked';
         $deposits->user_id = $trans->user_id;
@@ -79,10 +75,10 @@ class FlutterwaveService
         $transaction->subtotal = $trans->amount;
         $transaction->email = $trans->user->email;
         $transaction->phone = $trans->user->phone;
-        $transaction->percentage = $trans->response->charge_percentage;
-        $transaction->charge_percentage = $trans->response->charge_percentage;
-        $transaction->charge_fixed = $trans->response->charge_fixed;
-        $transaction->total = $trans->response->total;
+        $transaction->percentage = $trans->response['charge_percentage'];
+        $transaction->charge_percentage = $trans->response['charge_percentage'];
+        $transaction->charge_fixed = $trans->response['charge_fixed'];
+        $transaction->total = $trans->response['total'];
         $transaction->status = $response['status'] == 'success' ? "Success" : 'Failed';
         $transaction->note = $response['data']['paymenttype'] == 'card' ? "Deposit Transaction with (" . $response['data']['card']['brand'] . " - " . $response['data']['card']['cardBIN'] . "***" . $response['data']['card']['last4digits'] . " )" : "Deposit Transaction with (" . $response['data']['paymenttype'] . " )";
         $transaction->available_amount = 0;

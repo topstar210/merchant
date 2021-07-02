@@ -18,6 +18,10 @@ class TempTransactions extends Model
         return 'reference';
     }
 
+    protected $casts = [
+        'data' => 'array',
+    ];
+
     public function route()
     {
         return $this->hasOne(CurrencyPaymentMethod::class, 'id', 'payment_method_id')->with(['payment_method']);

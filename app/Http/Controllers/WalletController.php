@@ -27,8 +27,6 @@ class WalletController extends Controller
 
     public function confirmDeposit(Request $request, Wallet $wallet, TempTransactions $temp)
     {
-        $temp->data = json_decode($temp->data);
-
         return view('app.wallet.deposit-confirm', ['wallet' => $wallet, 'temp' => $temp]);
     }
 

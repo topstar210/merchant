@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Log;
 
 class ExchangeService
 {
-    public static function currencyExchange(Currency $from, $amount, $toCurrency = 24)
+    public static function currencyExchange(Currency $from, $amount, $toCurrency = 'USD')
     {
-        $to = Currency::query()->find($toCurrency);
+        $to = Currency::query()->where('code', $toCurrency)->first();
         $rateIncrease = RateIncrements::query()->where('from_id', $from->id)->where('to_id', $to->id)->first();
         $amount = (float)$amount;
 

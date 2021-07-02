@@ -86,10 +86,17 @@ class Deposit extends Component
             'exchange_amount' => $this->total,
             'converted' => false
         ];
-        if (!in_array($this->wallet->currency->code, ['GBP', 'NGN', 'EUR', 'GHS', 'USD'])) {
-            $rates = ExchangeService::currencyExchange($this->wallet->currency, $this->total);
+
+        if ($this->selectedRoute->payment_method->name == 'Orchard' && $this->wallet->currency->code != 'GHS') {
+            $rates = ExchangeService::currencyExchange($this->wallet->currency, $this->total, 'GHS');
             $rates['converted'] = true;
+        } else {
+            if (!in_array($this->wallet->currency->code, ['GBP', 'NGN', 'EUR', 'GHS', 'USD'])) {
+                $rates = ExchangeService::currencyExchange($this->wallet->currency, $this->total);
+                $rates['converted'] = true;
+            }
         }
+
 
         $temp = [
             "payment_method_id" => $this->route,
@@ -97,13 +104,13 @@ class Deposit extends Component
             "reference" => (string)rand(100000000000, 999999999999),
             "wallet_id" => $this->wallet->id,
             "user_id" => user()->id,
-            "data" => json_encode(array_merge($rates, [
+            "data" => array_merge($rates, [
                 "amount" => (double)$this->amount,
                 "total" => $this->total,
                 "charge" => $this->charge,
                 "charge_fixed" => $this->charge_fixed,
                 "charge_percentage" => $this->charge_percentage
-            ]))
+            ])
         ];
 
         TempTransactions::query()->create($temp);

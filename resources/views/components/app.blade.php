@@ -11,8 +11,8 @@
         {{ $slot }}
     </div>
     @if (session()->has('error'))
-        <div class="toast-container position-absolute top-0 end-0 p-3" style="z-index: 1050">
-            <div role="alert" aria-live="assertive" aria-atomic="true" class="toast bg-white">
+        <div class="position-absolute top-0 end-0 p-3" style="z-index: 1050">
+            <div id="bs_toast" role="alert" aria-live="assertive" aria-atomic="true" class="toast bg-white">
                 <div class="toast-header">
 
                     <span class="me-auto badge {{session('error') ? 'badge-soft-danger' : 'badge-soft-success'}}"

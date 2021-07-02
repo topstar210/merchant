@@ -3,31 +3,40 @@ $(document).ready(function () {
 });
 
 function initializeToast() {
-    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+
+    var toastEl = document.getElementById('bs_toast')
     var option = {
         animation: true,
-        autohide: false,
-        delay: 0
+        autohide: true,
+        delay: 6000
     };
-    var toastList = toastElList.map(function (toastEl) {
-        return new bootstrap.Toast(toastEl, option)
-    })
+    var toast = new bootstrap.Toast(toastEl, option);
+    toast.show();
 
-    toastList.forEach(toast => toast.show());
+    // var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    // var option = {
+    //     animation: true,
+    //     autohide: true,
+    //     delay: 0
+    // };
+    // var toastList = toastElList.map(function (toastEl) {
+    //     return new bootstrap.Toast(toastEl, option)
+    // })
+    //
+    // toastList.forEach(toast => toast.show());
 
-    setTimeout(function () {
-        toastList.forEach(toast => toast.dispose());
-        $(".toast").remove();
-    }, 7000);
+    // setTimeout(function () {
+    //     toastList.forEach(toast => toast.dispose());
+    // }, 7000);
 }
 
 $('#noLivewire').submit(function (e) {
     $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span> ');
 });
 
-setTimeout(function () {
-    $('.alert').alert('close').slideUp(500);
-}, 5500);
+// setTimeout(function () {
+//     $('.alert').alert('close').slideUp(500);
+// }, 5500);
 
 $(".select2").select2();
 

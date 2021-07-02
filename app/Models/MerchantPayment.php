@@ -49,6 +49,10 @@ class MerchantPayment extends Model
         return 'reference';
     }
 
+    protected $casts = [
+        'response' => 'array',
+    ];
+
     public function scopeDeposits($query)
     {
         $query->where('transaction_type', DEPOSITS);
