@@ -13,6 +13,7 @@ class MerchantPayment extends Model
         'merchant_id',
         'user_id',
         'transaction_type',
+        'reference',
         'amount',
         'charges',
         'commission',
@@ -24,6 +25,8 @@ class MerchantPayment extends Model
         'account_name',
         'institution',
         'service',
+        'balance_before',
+        'balance_after',
         'product',
         'response',
         'status',
@@ -31,6 +34,20 @@ class MerchantPayment extends Model
         'wallet_id',
         'payment_method_id',
     ];
+
+    protected $appends = [
+        'total_amount'
+    ];
+
+    public function getTotalAmountAttribute()
+    {
+        return (double)($this->amount + $this->charges);
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'reference';
+    }
 
     public function scopeDeposits($query)
     {
@@ -43,6 +60,40 @@ class MerchantPayment extends Model
             if (!empty($date)) {
                 $query->whereDate('created_at', $date);
             }
+        })->when($filters['status'] ?? null, function ($query, $status) {
+            if (!empty($status)) {
+                $query->where('status', $status);
+            }
         });
+    }
+
+    public function payment_method()
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class);
+    }
+
+    public function wallet()
+    {
+        return $this->belongsTo(Wallet::class);
+    }
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class);
+    }
+
+    public function transaction_type()
+    {
+        return $this->belongsTo(TransactionType::class, 'transaction_type');
     }
 }

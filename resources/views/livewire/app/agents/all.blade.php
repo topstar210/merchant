@@ -7,8 +7,8 @@
         @if(count($agents) || !empty($query))
             <x-slot name="action">
                 @can('isMerchant', \App\Models\Permission::class)
-                    <a class=" btn btn-md btn-soft-primary" href="{{url('/app/agents/add')}}" role="button"><i
-                            class="fas fa-plus me-2"></i>Add Agent</a>
+                    <a class=" btn @mobile btn-sm @endmobile btn-soft-primary" href="{{url('/app/agents/add')}}" role="button"><i
+                            class="fas fa-plus me-1"></i>Add Agent</a>
                 @endcan
                 <x-utils.ui.filter-button/>
             </x-slot>
@@ -25,12 +25,14 @@
         <div class="row">
             <div class="col-12">
                 <div class="mt-3 mx-1">
-                    @if(!count($agents) && empty($query))
+                    @if(!count($agents))
                         <x-utils.empty>
-                            <h5><i class="ti-info-alt text-danger"></i> No Agent Added Yet</h5>
+                            <h5><i class="ti-info-alt text-danger"></i> No Agent Found</h5>
                             @can('isMerchant', \App\Models\Permission::class)
-                                <a class=" btn btn-md btn-primary" href="{{url('/app/agents/add')}}"
-                                   role="button"><i class="fas fa-plus me-2"></i>Add Agent</a>
+                                @if(empty($query))
+                                    <a class=" btn btn-md btn-primary" href="{{url('/app/agents/add')}}"
+                                       role="button"><i class="fas fa-plus me-2"></i>Add Agent</a>
+                                @endif
                             @endcan
                         </x-utils.empty>
                     @else
@@ -53,15 +55,12 @@
                                     >
                                         <td>{{$agent->full_name}}
                                             <span class="float-end d-block d-md-none">
-                                                @if(!$agent->reg_com)
-                                                    <span
-                                                        class="badge bg-warning menu-arrow">Invitation Sent</span>
+                                                 @if(!$agent->reg_com)
+                                                    <x-utils.ui.badge :title="'Invitation Sent'" :type="'pending'"/>
                                                 @elseif($agent->status == 'Active')
-                                                    <span
-                                                        class="badge bg-success menu-arrow">Active</span>
+                                                    <x-utils.ui.badge :title="'Active'" :type="'success'"/>
                                                 @else
-                                                    <span
-                                                        class="badge bg-danger menu-arrow">Inactive</span>
+                                                    <x-utils.ui.badge :title="'Inactive'" :type="'failed'"/>
                                                 @endif
                                          <i class="ti-angle-right mx-1 mt-1"></i></span></td>
                                         <td class="hidden-sm">{{$agent->email}}</td>
@@ -72,14 +71,11 @@
                                         <td class="hidden-sm">{{strtoupper($agent->account_number)}}</td>
                                         <td class="hidden-sm">
                                             @if(!$agent->reg_com)
-                                                <span
-                                                    class="badge bg-warning menu-arrow">Invitation Sent</span>
+                                                <x-utils.ui.badge :title="'Invitation Sent'" :type="'pending'"/>
                                             @elseif($agent->status == 'Active')
-                                                <span
-                                                    class="badge bg-success menu-arrow">Active</span>
+                                                <x-utils.ui.badge :title="'Active'" :type="'success'"/>
                                             @else
-                                                <span
-                                                    class="badge bg-danger menu-arrow">Inactive</span>
+                                                <x-utils.ui.badge :title="'Inactive'" :type="'failed'"/>
                                             @endif
 
                                         </td>

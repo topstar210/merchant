@@ -20,4 +20,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::post('create/merchant', [\App\Http\Controllers\Auth\RegisterController::class, 'createMerchant']);
+    Route::get('currency/update', [\App\Http\Controllers\ExchangeController::class, 'currencyRateUpdate']);
 });

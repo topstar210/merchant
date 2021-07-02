@@ -1,6 +1,7 @@
 body, a {
     /*font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;*/
     font-family: Cerebri Sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji !important;
+
 }
 
 .account-body.accountbg {
@@ -19,18 +20,19 @@ body, a {
     box-shadow: 0 3px 12px #d6e4f1;
 }
 
-.toast{
+.toast {
     box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 30%) !important;
     border-radius: .35rem;
     font-size: .78rem;
 }
-.toast-body{
+
+.toast-body {
     background-color: #f7f7f7 !important;
     border-bottom-left-radius: .35rem;
     border-bottom-right-radius: .35rem;
 }
 
-.toast-header{
+.toast-header {
     border-top-left-radius: .35rem;
     border-top-right-radius: .35rem;
 }
@@ -72,6 +74,9 @@ body, a {
     border: 1px solid #abc5e8 !important;
     /*border: 1px solid rgba(30, 130, 76, .5) !important;*/
     border-radius: 4px !important;
+}
+small{
+    line-height: 1.2 !important;
 }
 
 .form-control:focus {
@@ -139,6 +144,27 @@ body, a {
     border-radius: 50%;
     width: 1.5em;
     height: 1.5em;
+}
+
+.loading-spinner,
+.loading-spinner:after {
+    border-radius: 50%;
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.loading-spinner{
+    display: inline-block;
+    top: 2.4px;
+    font-size: 34px;
+    position: relative;
+    text-indent: -9999em;
+    border-top: 0.2em solid #d24444;
+    border-right: 0.2em solid #ca2222;
+    border-bottom: 0.2em solid #9a1717;
+    border-left: 0.2em solid transparent;
+    transform: translateZ(0);
+    animation: spinning 1s infinite linear;
 }
 
 .btn-spinner {
@@ -233,7 +259,7 @@ body, a {
     background: initial;
     /*background-color: #03b86c !important;*/
     /*color: #fff;*/
-    background-color: rgba(3,216,127,0.1);
+    background-color: rgba(3, 216, 127, 0.1);
     color: #03b86c;
     font-size: .8125rem;
 }
@@ -250,7 +276,7 @@ body, a {
     background: initial;
     /*background-color: #f5325c;*/
     /*color: #fff;*/
-    background-color: rgba(245,50,92,0.1);
+    background-color: rgba(245, 50, 92, 0.1);
     color: #f5325c;
     font-size: .8125rem;
 }
@@ -333,7 +359,7 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
 }
 
 .btn-soft-warning {
-    background-color: rgba(255,184,34,0.18);
+    background-color: rgba(255, 184, 34, 0.18);
     color: #ca8900;
 }
 
@@ -352,6 +378,10 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
     /*color: #678eff;*/
     font-size: .8325rem;
     font-weight: 700;
+}
+
+.table td {
+    font-size: 12px;
 }
 
 .table > :not(caption) > * > * {
@@ -401,10 +431,19 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
     box-shadow: 0 3px 14px -3px rgb(0 0 0 / 10%);
 }
 
-.filter-no-hover:hover, .filter-no-hover:focus{
-    background-color: rgba(29,44,72,0.1) !important;
+
+.filter-no-hover:hover, .filter-no-hover:focus {
+    background-color: rgba(29, 44, 72, 0.1) !important;
     box-shadow: none;
     color: #1d2c48 !important;
+}
+
+.ttlr_inline {
+    display: none;
+}
+
+iframe {
+    background-color: #3c3c3cb5 !important;
 }
 
 .page-wrapper .page-content {
@@ -425,19 +464,46 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
     display: none !important;
 }
 
-.activity-card{
+.activity-card {
     height: 450px;
 }
 
+.search-group {
+    margin-bottom: 0 !important;
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+
+
 @media (max-width: 1024px) {
-    .activity-card{
+    .activity-card {
         height: 350px;
     }
+
     .left-sidenav {
         min-width: calc(100vw - 50px);
         max-width: calc(100vw - 50px);
         top: 52px;
         z-index: 1050;
+    }
+
+    .search-group {
+        margin-bottom: 10px !important;
     }
 
     .page-wrapper {
@@ -455,3 +521,5 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
         /*padding: 3px 0 10px 0 !important;*/
     }
 }
+
+

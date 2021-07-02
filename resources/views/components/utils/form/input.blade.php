@@ -4,7 +4,7 @@
         <input id="{{$key}}" type="{{$type ?? 'text'}}" @if(isset($js))@if($js == 'lazy') wire:model.lazy="{{$key}}"
                @elseif($js == 'defer') wire:model.defer="{{$key}}" @else wire:model="{{$key}}" @endif @endif
                class="form-control @error($key) is-invalid @enderror"
-               name="{{$key}}" value="{{$value ?? null}}"
+               name="{{$key}}" value="{{$value ?? null}}" autocomplete="off"
                required>
 
         @error($key)

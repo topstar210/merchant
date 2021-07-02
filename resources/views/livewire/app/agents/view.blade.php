@@ -6,15 +6,15 @@
     <x-utils.actionbar :title="$agent->full_name" :showBack="''" wire:ignore.self>
         <x-slot name="action">
             @if(!$agent->reg_com)
-                <button class=" btn btn-md btn-soft-danger" wire:target="deleteAgent" wire:loading.attr="disabled"
+                <button class=" btn @mobile btn-sm @endmobile btn-soft-danger" wire:target="deleteAgent" wire:loading.attr="disabled"
                         onclick="handleDelete()"><i wire:target="deleteAgent"
-                                                    wire:loading.class="d-none" class="fas fa-trash me-2"></i><span
+                                                    wire:loading.class="d-none" class="fas fa-trash me-1"></i><span
                         wire:loading class="btn-spinner btn-spinner-soft-danger"></span> Delete
                 </button>
             @else
                 <button wire:target="updateAgentStatus" wire:loading.attr="disabled"
                         onclick="handleAgentStatus('{{$agent->status}}')"
-                        class="btn btn-soft-{{$agent->status == 'Active' ? 'danger' : 'success'}} btn-md me-2">
+                        class="btn btn-soft-{{$agent->status == 'Active' ? 'danger' : 'success'}} @mobile btn-sm @endmobile me-1">
                                         <span wire:target="updateAgentStatus"
                                               wire:loading
                                               class="btn-spinner btn-spinner-soft-{{$agent->status == 'Active' ? 'danger' : 'success'}}"></span> {{$agent->status == 'Active' ? 'Deactivate' : 'Activate'}}
@@ -28,16 +28,17 @@
             <div class="col-lg-4">
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h5>Agent Details @if(!$agent->reg_com)
-                                <span
-                                    class="badge bg-warning float-end">Invitation Sent</span>
+                        <h5>Agent Details
+
+                            @if(!$agent->reg_com)
+                                <x-utils.ui.badge :title="'Invitation Sent'" :type="'pending'" class="float-end"/>
                             @elseif($agent->status == 'Active')
-                                <span
-                                    class="badge bg-success  float-end">Active</span>
+                                <x-utils.ui.badge :title="'Active'" :type="'success'" class="float-end"/>
                             @else
-                                <span
-                                    class="badge bg-danger  float-end">Inactive</span>
-                            @endif</h5>
+                                <x-utils.ui.badge :title="'Inactive'" :type="'failed'" class="float-end"/>
+                            @endif
+
+                        </h5>
                     </div>
                     <div class="card-body">
                         <small class="font-10">Account</small>
@@ -68,6 +69,10 @@
                         <small class="font-10">Address</small>
                         <h6 class="mt-0">{{$agent->userDetail->address_1}}
                         </h6>
+                        <hr>
+                        <small class="font-10">Created At</small>
+                        <h6 class="mt-0">{{formatDate($agent->created_at)}}
+                        </h6>
                     </div>
                 </div>
             </div>
@@ -91,12 +96,12 @@
                                 <br>
                                 @if($agent->reg_com)
                                     <div class="mt-2">
-                                        <button class="btn btn-outline-primary btn-sm font-10 me-2"
+                                        <button class="btn btn-outline-primary btn-sm me-2"
                                                 onclick="window.location.href='{{url('app/wallet/'.$wallet->id)}}'">
                                             View Wallet
                                         </button>
                                         <button wire:target="updateWalletStatus"
-                                                class="btn {{$wallet->lock ? 'btn-success' : 'btn-danger'}} btn-sm font-10 me-2"
+                                                class="btn {{$wallet->lock ? 'btn-success' : 'btn-danger'}} btn-sm me-2"
                                                 wire:loading.attr="disabled"
                                                 onclick="handleWalletLock('{{$wallet->id}}', '{{$wallet->lock}}')">{{$wallet->lock ? "Unlock Wallet" : "Lock Wallet"}}
                                         </button>
@@ -127,7 +132,7 @@
                                 <hr class="mt-3 mb-3">
                             @endif
                         @empty
-                            <x-utils.empty>
+                            <x-utils.empty :noFooter="''">
                                 <h5><i class="ti-info-alt text-danger"></i> No Activity Yet</h5>
                             </x-utils.empty>
 

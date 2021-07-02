@@ -4,7 +4,7 @@
         <textarea id="{{$key}}" class="form-control  @error($key) is-invalid @enderror" rows="{{$rows ?? 2}}"
                   @if(isset($js))@if($js == 'lazy') wire:model.lazy="{{$key}}"
                   @elseif($js == 'defer') wire:model.defer="{{$key}}"
-                  @else wire:model="{{$key}}" @endif @endif  name="{{$key}}" required
+                  @else wire:model="{{$key}}" @endif @endif  name="{{$key}}" required autocomplete="off"
         >{{$value ?? null}}</textarea>
 
         @error($key)

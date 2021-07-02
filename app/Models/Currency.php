@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Currency extends Model
 {
-    protected $table    = 'currencies';
+    protected $table = 'currencies';
 
     protected $fillable = [
         'name',
@@ -21,5 +21,14 @@ class Currency extends Model
         'exchange_from'
     ];
 
-    public $timestamps  = false;
+
+    public function deposit_route()
+    {
+        return $this->hasMany(CurrencyPaymentMethod::class, 'currency_id')->whereHas('fee_limit_deposit')->whereHas('payment_method')->where('activated_for', 'like', '%deposit%')->with(['payment_method', 'fee_limit_deposit']);
+    }
+
+    public function transfer_route()
+    {
+        return $this->hasMany(CurrencyPaymentMethod::class, 'currency_id')->whereHas('fee_limit_transfer')->where('activated_for', 'like', '%withdrawal%')->with(['payment_method', 'fee_limit_transfer']);
+    }
 }

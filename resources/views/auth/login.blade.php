@@ -60,27 +60,31 @@
                                             </div><!--end col-->
                                         </div> <!--end form-group-->
                                     </form><!--end form-->
-                                    <hr class="hr-dashed hr-menu">
-                                    <div x-data="{ open: true }">
-                                        <div class="notification-msg" x-show="open" x-transition>
+                                    <div class="hidden-sm">
 
-                                            <div class="d-flex flex-row">
-                                                <img src="{{asset('images/merchant_ad.svg')}}"
-                                                     class="img-fluid text-center" style="width: 120px">
-                                                <div style="margin-left: 10px">
-                                                    <a href="#" @click="open = ! open"
-                                                       class="float-end close-btn text-danger">
-                                                        <i class="mdi mdi-close-circle font-18"></i>
-                                                    </a>
-                                                    <h5 class="mt-3">Become A Merchant</h5>
-                                                    <p class="mb-3 font-11">Do you want to become a merchant and earn
-                                                        revenue as
-                                                        you trade?</p>
-                                                    <a href="javascript: void(0);"
-                                                       class="btn btn-primary btn-sm">Learn More</a>
+                                        <div x-data="{ open: true }">
+                                            <hr class="hr-dashed hr-menu">
+                                            <div class="notification-msg" x-show="open" x-transition>
+
+                                                <div class="d-flex flex-row">
+                                                    <img src="{{asset('images/merchant_ad.svg')}}"
+                                                         class="img-fluid text-center" style="width: 120px">
+                                                    <div style="margin-left: 10px">
+                                                        <a href="#" @click="open = ! open"
+                                                           class="float-end close-btn text-danger">
+                                                            <i class="mdi mdi-close-circle font-18"></i>
+                                                        </a>
+                                                        <h5 class="mt-3">Become A Merchant</h5>
+                                                        <p class="mb-3 font-11">Do you want to become a merchant and
+                                                            earn
+                                                            revenue as
+                                                            you trade?</p>
+                                                        <a href="javascript: void(0);"
+                                                           class="btn btn-primary btn-sm">Learn More</a>
+                                                    </div>
                                                 </div>
-                                            </div>
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

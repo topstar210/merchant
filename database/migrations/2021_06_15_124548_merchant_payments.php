@@ -20,6 +20,7 @@ class MerchantPayments extends Migration
             $table->foreignIdFor(\App\Models\Merchant::class,'merchant_id')->nullable();
             $table->foreignIdFor(\App\Models\User::class,'user_id')->nullable();
             $table->string('transaction_type');
+            $table->string('reference');
             $table->double('amount');
             $table->double('charges')->default(0);
             $table->double('commission')->default(0);
@@ -27,12 +28,14 @@ class MerchantPayments extends Migration
             $table->double('exchange_rate');
             $table->string('base_currency');
             $table->string('exchange_currency');
-            $table->string('account');
+            $table->string('account')->nullable();
             $table->string('account_name')->nullable();
             $table->string('institution')->nullable();
             $table->string('service')->nullable();
+            $table->string('balance_before')->nullable();
+            $table->string('balance_after')->nullable();
             $table->string('product')->nullable();
-            $table->string('response', 2000)->nullable();
+            $table->string('response', 5000)->nullable();
             $table->enum('status', ['Pending','Success','Refund','Blocked','Failed'])->default('Pending');
             $table->foreignIdFor(\App\Models\Transaction::class,'transaction_id')->nullable();
             $table->foreignIdFor(\App\Models\Wallet::class,'wallet_id')->nullable();

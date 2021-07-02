@@ -53,6 +53,7 @@ class User extends Authenticatable
      */
     protected $hidden = [
         'password',
+        'pin',
         'remember_token',
         'phrase',
         'google2fa_secret',

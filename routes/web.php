@@ -58,5 +58,28 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
             ->missing(function (Request $request) {
                 return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Wallet Found']);
             });
+
+        Route::get('/{wallet}/deposit', [\App\Http\Controllers\WalletController::class, 'initDeposit'])
+            ->middleware('can:walletDeposit,wallet')
+            ->missing(function (Request $request) {
+                return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Wallet Found']);
+            });
+
+        Route::get('/{wallet}/deposit/{temp}', [\App\Http\Controllers\WalletController::class, 'confirmDeposit'])
+            ->middleware('can:walletDeposit,wallet')
+            ->missing(function (Request $request) {
+                return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Wallet Found']);
+            });
     });
+
+    Route::match(['get', 'post'], 'deposit/webhook/{payment_method}/{temp}', [\App\Http\Controllers\WebHookController::class, 'initDeposit'])
+        ->missing(function (Request $request) {
+            return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Initialized Transaction Found']);
+        });
+
+    Route::get('/transaction/process/{reference}', [\App\Http\Controllers\ProcessController::class, 'processTransaction'])
+        ->middleware('can:processTransaction,reference')
+        ->missing(function (Request $request) {
+            return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Transaction Found or Transaction already processed']);
+        });
 });
