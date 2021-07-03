@@ -1,9 +1,6 @@
-$(document).ready(function () {
-    initializeToast();
-});
+
 
 function initializeToast() {
-
     var toastEl = document.getElementById('bs_toast')
     var option = {
         animation: true,
@@ -12,31 +9,11 @@ function initializeToast() {
     };
     var toast = new bootstrap.Toast(toastEl, option);
     toast.show();
-
-    // var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-    // var option = {
-    //     animation: true,
-    //     autohide: true,
-    //     delay: 0
-    // };
-    // var toastList = toastElList.map(function (toastEl) {
-    //     return new bootstrap.Toast(toastEl, option)
-    // })
-    //
-    // toastList.forEach(toast => toast.show());
-
-    // setTimeout(function () {
-    //     toastList.forEach(toast => toast.dispose());
-    // }, 7000);
 }
 
 $('#noLivewire').submit(function (e) {
     $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span> ');
 });
-
-// setTimeout(function () {
-//     $('.alert').alert('close').slideUp(500);
-// }, 5500);
 
 $(".select2").select2();
 
@@ -90,8 +67,8 @@ function currencySelectState(state) {
 
     var value = 'eu';
 
-    if (state.element.value !== 'EUR') {
-        value = state.element.value.toLowerCase().substr(0, 2)
+    if (state.element.label !== 'EUR') {
+        value = state.element.label.toLowerCase().substr(0, 2)
     }
 
     var $state = $(
@@ -112,8 +89,8 @@ function currencyState(state) {
 
     var value = 'eu';
 
-    if (state.element.value !== 'EUR') {
-        value = state.element.value.toLowerCase().substr(0, 2)
+    if (state.element.label !== 'EUR') {
+        value = state.element.label.toLowerCase().substr(0, 2)
     }
 
     return $(

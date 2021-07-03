@@ -7,7 +7,7 @@
     <div class="container-fluid app-main">
         <div class="row d-flex justify-content-center">
             @if($transaction->status == 'Pending')
-                <div class="col-lg-4 mx-auto" wire:poll.10s="checkTransaction">
+                <div class="col-lg-4 mx-auto" wire:poll.5s="checkTransaction">
                     <div class="card mt-4">
                         <div class="card-header">
                             <h6><i class="ti-info-alt text-danger"></i> Do not refresh this page</h6>

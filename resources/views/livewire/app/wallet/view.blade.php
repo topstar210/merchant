@@ -12,10 +12,36 @@
                         class="ti-lock"></i> Locked
                 </button>
             @else
-                <button class="btn btn-success @mobile btn-sm @endmobile"
-                        onclick="window.location.href='{{url('app/wallet/'.$wallet->id.'/deposit')}}'" role="button"><i
-                        class="fas fa-plus me-1"></i>Deposit
-                </button>
+                <span class="d-md-none dropdown">
+                        <button class="btn btn-soft-primary btn-sm me-1  dropdown-toggle" id="mobileWalletMenu"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                        <i
+                            class="fas fa-ellipsis-v"></i>
+                    </button>
+                  <ul class="dropdown-menu" aria-labelledby="mobileWalletMenu">
+                    <li><a class="dropdown-item" href="{{url('app/wallet/'.$wallet->id.'/deposit')}}"><i
+                                class="fas fa-plus me-1"></i>Deposit</a></li>
+                    <li><a class="dropdown-item" href="{{url('app/send/'.$wallet->id)}}"><i
+                                class="fab fa-telegram-plane me-1"></i>Send</a></li>
+                  </ul>
+
+                </span>
+                <span class="hidden-sm">
+                    <button class="btn btn-soft-success"
+                            onclick="window.location.href='{{url('app/wallet/'.$wallet->id.'/deposit')}}'"
+                            role="button"><i
+                            class="fas fa-plus me-1"></i>Deposit
+                    </button>
+                    @can('owner', $wallet)
+                        @can('shouldSend', App\Models\Permission::class)
+                            <button class="btn btn-soft-primary"
+                                    onclick="window.location.href='{{url('app/send/'.$wallet->id)}}'"
+                                    role="button"><i
+                                    class="fab fa-telegram-plane me-1"></i>Send
+                        </button>
+                        @endcan
+                    @endcan
+                </span>
             @endif
             @if(count($transactions))
                 <x-utils.ui.filter-button/>
@@ -46,6 +72,13 @@
                             <h5><i class="ti-info-alt text-danger"></i> No Wallet Deposit Found</h5>
                         </x-utils.empty>
                     @else
+                        <div class="d-block d-md-none mx-1">
+                            <h4>
+                                Deposit History
+                            </h4>
+                            <hr class="mb-0">
+                        </div>
+
                         <div class="table-responsive">
                             <table class="table mb-0 table-hover">
                                 <thead>
@@ -74,7 +107,15 @@
                                         onclick="window.location.href='{{url('app/transactions/'.$trx->id)}}'"
                                         wire:key="list{{$loop->index}}"
                                     >
-                                        <td class="hidden-sm">{{$trx->reference}}</td>
+                                        <td>{{$trx->reference}}
+                                            <span class="float-end d-block d-md-none">
+                                                <span class="me-2"><small
+                                                        class="text-muted font-10 fw-light">{{$wallet->currency->code}}</small><b>{{number_format($trx->amount,2)}}</b></span>
+                                            <x-utils.ui.badge :title="$trx->status" :type="strtolower($trx->status)"
+                                                              :mobile="''"/>
+
+                                         <i class="ti-angle-right mx-1 mt-1"></i></span>
+                                        </td>
                                         <td class="hidden-sm">{{number_format($trx->total_amount, 2)}}</td>
                                         <td class="hidden-sm">{{number_format($trx->charges,2)}}</td>
                                         <td class="hidden-sm">{{number_format($trx->balance_before,2)}}</td>

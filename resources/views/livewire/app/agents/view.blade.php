@@ -160,6 +160,13 @@
                 </div>
             </div>
         </div>
+        @push('scripts')
+            <script>
+                $(document).ready(function () {
+                    initializeToast();
+                });
+            </script>
+        @endpush
     @endif
 
 </div>

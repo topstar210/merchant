@@ -72,6 +72,16 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
             });
     });
 
+    Route::prefix('send')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SendController::class, 'index'])
+            ->middleware('can:shouldSend,App\Models\Permission');
+        Route::get('/{wallet}', [\App\Http\Controllers\SendController::class, 'initSend'])
+            ->middleware(['can:owner,wallet', 'can:shouldSend,App\Models\Permission', 'can:notLocked,wallet'])
+            ->missing(function (Request $request) {
+                return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Wallet Found']);
+            });
+    });
+
     Route::match(['get', 'post'], 'deposit/webhook/{payment_method}/{temp}', [\App\Http\Controllers\WebHookController::class, 'initDeposit'])
         ->missing(function (Request $request) {
             return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Initialized Transaction Found']);

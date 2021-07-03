@@ -11,19 +11,32 @@ class WalletPolicy
 {
     use HandlesAuthorization;
 
+    public function owner(User $user, Wallet $wallet)
+    {
+        return $user->id === $wallet->user_id
+            ? Response::allow()
+            : Response::deny('You do not own this wallet.');
+    }
+
+    public function notLocked(User $user, Wallet $wallet)
+    {
+        return !$wallet->lock
+            ? Response::allow()
+            : Response::deny('You can\'t transact with a locked wallet.');
+    }
 
     public function viewWallet(User $user, Wallet $wallet)
     {
         return $user->id === $wallet->user_id || $user->merchant_id === $wallet->user->merchant_id
             ? Response::allow()
-            : Response::deny('You do not own this wallet.');
+            : Response::deny('You do not own this wallet . ');
     }
 
     public function walletDeposit(User $user, Wallet $wallet)
     {
         return ($user->id === $wallet->user_id || $user->merchant_id === $wallet->user->merchant_id) && !$wallet->lock
             ? Response::allow()
-            : Response::deny('You do not own this wallet or wallet is locked.');
+            : Response::deny('You do not own this wallet or wallet is locked . ');
     }
 
 }

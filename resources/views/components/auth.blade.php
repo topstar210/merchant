@@ -12,7 +12,6 @@
         <div class="position-absolute top-0 end-0 p-3" style="z-index: 1050">
             <div id="bs_toast" role="alert" aria-live="assertive" aria-atomic="true" class="toast bg-white">
                 <div class="toast-header">
-
                     <span class="me-auto badge {{session('error') ? 'badge-soft-danger' : 'badge-soft-success'}}"
                           style="    padding: .55em .9em;"><span
                             class=" font-14">{{session('error') ? "Error" : "Success"}}</span></span>
@@ -24,5 +23,12 @@
                 </div>
             </div>
         </div>
+        @push('scripts')
+            <script>
+                $(document).ready(function () {
+                    initializeToast();
+                });
+            </script>
+        @endpush
     @endif
 </x-master>

@@ -23,6 +23,15 @@
                     </a>
                 </li>
             @endcan
+            @can('shouldSend', \App\Models\Permission::class)
+                <li>
+                    <a href="{{url('/app/send')}}">
+                        <i data-feather="send"
+                           class="align-self-center menu-icon"></i>
+                        <span>Send</span>
+                    </a>
+                </li>
+            @endcan
             @can('isMerchant', \App\Models\Permission::class)
                 <li>
                     <a href="{{url('/app/agents')}}">

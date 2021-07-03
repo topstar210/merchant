@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 use App\Http\Controllers\WalletController;
+use App\Http\Utils\Resource;
 use App\Models\Deposit;
 use App\Models\MerchantPayment;
 use App\Models\Transaction;
@@ -27,7 +28,12 @@ class FlutterwaveService
                 $response['status'] = "failed";
             }
 
-            $transaction = self::saveDepositTrans($trans, $response);
+            $final = [
+                'status' => $response['status'] == 'success',
+                'message' =>  ($response['data']['paymenttype'] == 'card' ? "Deposit Transaction with (" . $response['data']['card']['brand'] . " - " . $response['data']['card']['cardBIN'] . "***" . $response['data']['card']['last4digits'] . " )" : "Deposit Transaction with (" . $response['data']['paymenttype'] . " )")
+            ];
+
+            $transaction = Resource::saveDepositTrans($trans, $final);
 
             $trans->transaction()->associate($transaction);
             $trans->status = $transaction->status;
@@ -50,41 +56,6 @@ class FlutterwaveService
         } catch (\Exception $e) {
             Log::error('Exception Error processing Flutterwave Payment', format_exception($e));
         }
-    }
-
-    private static function saveDepositTrans(MerchantPayment $trans, $response)
-    {
-        $deposits = new Deposit();
-        $deposits->uuid = $trans->reference;
-        $deposits->charge_percentage = $trans->response['charge_percentage'];
-        $deposits->charge_fixed = $trans->response['charge_fixed'];
-        $deposits->amount = $trans->amount;
-        $deposits->status = $response['status'] == 'success' ? "Success" : 'Blocked';
-        $deposits->user_id = $trans->user_id;
-        $deposits->currency_id = $trans->wallet->currency_id;
-        $deposits->payment_method_id = $trans->payment_method_id;
-        $deposits->save();
-
-        $transaction = new Transaction();
-        $transaction->user_id = $trans->user_id;
-        $transaction->currency_id = $trans->wallet->currency_id;
-        $transaction->payment_method_id = $trans->payment_method_id;
-        $transaction->transaction_reference_id = $deposits->id;
-        $transaction->transaction_type_id = DEPOSITS;
-        $transaction->uuid = $trans->reference;
-        $transaction->subtotal = $trans->amount;
-        $transaction->email = $trans->user->email;
-        $transaction->phone = $trans->user->phone;
-        $transaction->percentage = $trans->response['charge_percentage'];
-        $transaction->charge_percentage = $trans->response['charge_percentage'];
-        $transaction->charge_fixed = $trans->response['charge_fixed'];
-        $transaction->total = $trans->response['total'];
-        $transaction->status = $response['status'] == 'success' ? "Success" : 'Failed';
-        $transaction->note = $response['data']['paymenttype'] == 'card' ? "Deposit Transaction with (" . $response['data']['card']['brand'] . " - " . $response['data']['card']['cardBIN'] . "***" . $response['data']['card']['last4digits'] . " )" : "Deposit Transaction with (" . $response['data']['paymenttype'] . " )";
-        $transaction->available_amount = 0;
-        $transaction->save();
-
-        return $transaction;
     }
 
 }

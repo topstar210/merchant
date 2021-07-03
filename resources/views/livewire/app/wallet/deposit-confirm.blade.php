@@ -109,8 +109,10 @@
                                                 // alert('Deposit Payment Cancelled');
                                             },
                                             callback: function (response) {
-                                                $('#flw_response').val(JSON.stringify(response.tx));
-                                                $('#flw_form').submit();
+                                                if (response.tx.chargeResponseCode === '00') {
+                                                    $('#flw_response').val(JSON.stringify(response.tx));
+                                                    $('#flw_form').submit();
+                                                }
 
                                                 x.close();
                                             }

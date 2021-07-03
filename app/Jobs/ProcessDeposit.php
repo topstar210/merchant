@@ -53,7 +53,7 @@ class ProcessDeposit implements ShouldQueue
     private function sendEmail()
     {
         try {
-            Mail::to($this->transaction->user->email)->send(new DepositReceipt($this->transaction));
+            Mail::to($this->transaction->user->email)->queue(new DepositReceipt($this->transaction));
         } catch (\Exception $e) {
             Log::error('Exception Error sending Deposit Receipt Email', format_exception($e));
         }

@@ -18,7 +18,7 @@
 
                         @if(count($routes))
                             <form wire:submit.prevent="initiateDeposit">
-                                <x-utils.form.amount-input :key="'amount'" :type="'number'" :js="''"
+                                <x-utils.form.amount-input :key="'amount'" :class="'font-20'" :js="''"
                                                            :currency="$wallet->currency->code"/>
 
 

@@ -6,6 +6,7 @@ use App\Jobs\ProcessDeposit;
 use App\Models\MerchantPayment;
 use App\Models\PaymentMethod;
 use App\Models\TempTransactions;
+use App\Services\OrchardServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -55,6 +56,16 @@ class WebHookController extends Controller
 
     public function handleOrchardDeposit(Request $request, MerchantPayment $reference)
     {
+        Log::info('Response from Orchard Payment', $request->all());
+        if ($request->ip() == '159.8.210.195') {
+            if ($reference->status !== 'Pending') {
+                return response()->json(["error" => true, "error_message" => "Transaction already processed"]);
+            }
+
+            return OrchardServices::handlePayment($reference, $request->all());
+        }
+
+        return response()->json(["error" => true, "error_message" => "request from unknown IP"]);
 
     }
 }

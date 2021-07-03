@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class PermissionPolicy
 {
@@ -20,7 +21,11 @@ class PermissionPolicy
         return true;
     }
 
-
+    public function shouldSend(User $user)
+    {
+        return is_null($user->suspend_payout_date) ? Response::allow()
+            : Response::deny('You are not allowed to send');
+    }
 
 
 }
