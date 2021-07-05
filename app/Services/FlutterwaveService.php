@@ -72,6 +72,8 @@ class FlutterwaveService
         $url = config('env.fw_bank_url') . "/$code?public_key=" . config('env.fw_pub_key');
         $response = Http::get($url);
 
+        Log::info($response->json());
+
         if ($response->status() != 200) {
             return [];
         } else {

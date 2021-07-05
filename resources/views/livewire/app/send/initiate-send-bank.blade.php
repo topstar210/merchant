@@ -87,9 +87,6 @@
                                           class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
-                                    Tooltip on top
-                                </button>
 
                                 @if(!is_null($tempAccount) && !$errors->has('account'))
                                     @if(!empty($tempAccount['account_name']))

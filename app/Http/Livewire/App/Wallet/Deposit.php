@@ -5,6 +5,7 @@ namespace App\Http\Livewire\App\Wallet;
 use App\Models\TempTransactions;
 use App\Models\Wallet;
 use App\Services\ExchangeService;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Deposit extends Component
@@ -30,6 +31,7 @@ class Deposit extends Component
     {
         $this->wallet = $wallet;
         $this->routes = $wallet->currency->deposit_route;
+        Log::info($this->routes);
     }
 
     protected function rules()

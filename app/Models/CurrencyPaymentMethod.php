@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CurrencyPaymentMethod extends Model
 {
+    use Compoships;
+
     protected $table = 'currency_payment_methods';
 
     protected $fillable = [
@@ -26,12 +29,12 @@ class CurrencyPaymentMethod extends Model
 
     public function fee_limit_deposit()
     {
-        return $this->hasOne(FeesLimit::class, 'payment_method_id', 'method_id')->where('transaction_type_id', DEPOSITS)->where('has_transaction', 'Yes');
+        return $this->hasOne(FeesLimit::class, ['currency_id', 'payment_method_id'], ['currency_id', 'method_id'])->where('transaction_type_id', DEPOSITS)->where('has_transaction', 'Yes');
     }
 
     public function fee_limit_transfer()
     {
-        return $this->hasOne(FeesLimit::class, 'payment_method_id', 'method_id')->where('transaction_type_id', WITHDRAWALS)->where('has_transaction', 'Yes');
+        return $this->hasOne(FeesLimit::class, ['currency_id', 'payment_method_id'], ['currency_id', 'method_id'])->where('transaction_type_id', WITHDRAWALS)->where('has_transaction', 'Yes');
     }
 
     public function payment_method()

@@ -37,11 +37,11 @@ class InitiateSendBank extends Component
 
     public function mount(Wallet $wallet, $data)
     {
-        Log::info($data['send_currency']->transfer_route);
-
+        $routes = $data['send_currency']->transfer_route;
+        Log::info($routes);
         $this->wallet = $wallet;
         $this->amount = $data['amount'];
-        $this->payment_method = $data['send_currency']->transfer_route[0];
+        $this->payment_method = count($routes) ? $routes[0] : [];
         $this->rates = $data['rates'];
         $this->recipient_currency = $data['send_currency'];
 
@@ -59,6 +59,7 @@ class InitiateSendBank extends Component
         return [
             'account' => ['required', 'min:10', 'max:20'],
             'recipient_bank' => ['required'],
+            'beneficiary' => ['nullable', 'min:5'],
         ];
     }
 
@@ -160,6 +161,7 @@ class InitiateSendBank extends Component
         } else {
             $this->banks = [];
         }
+
 
         $this->dispatchBrowserEvent('set_banks', $this->banks);
 

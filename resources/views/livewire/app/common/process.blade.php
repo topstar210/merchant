@@ -12,11 +12,11 @@
                         <div class="card-header">
                             <h6><i class="ti-info-alt text-danger"></i> Do not refresh this page</h6>
                         </div>
-                        <div class="card-body text-center pb-5">
-                            <div class="loading-spinner mt-4 mb-4"></div>
+                        <div class="card-body text-center pb-4">
+                            <div class="loading-spinner mt-4 mb-5"></div>
                             <h4>Processing Transaction</h4>
-                            <small class="text-muted">Please wait, we are confirming your transaction. Kindly stay on this page until
-                                this process is completed</small>
+                            <p class="text-muted font-11">Please wait, we are confirming your transaction. Kindly stay on this page until
+                                this process is completed</p>
                         </div>
                     </div>
                 </div>

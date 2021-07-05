@@ -97,7 +97,7 @@
                                 <br>
                                 @if($agent->reg_com)
                                     <div class="mt-2">
-                                        <button class="btn btn-outline-primary btn-sm me-2"
+                                        <button class="btn btn-soft-primary btn-sm me-2"
                                                 onclick="window.location.href='{{url('app/wallet/'.$wallet->id)}}'">
                                             View Wallet
                                         </button>

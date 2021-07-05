@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Awobaz\Compoships\Compoships;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class FeesLimit extends Model
 {
+    use Compoships;
+
     protected $table = 'fees_limits';
     protected $fillable = [
         'currency_id',
