@@ -42,9 +42,11 @@ class Deposit extends Component
 
     public function setRoute($route)
     {
-        $this->route = $route;
-        $this->selectedRoute = $this->routes->where('id', $route)->first();
-        $this->calTotal();
+        if (!empty($route)) {
+            $this->route = $route;
+            $this->selectedRoute = $this->routes->where('id', $route)->first();
+            $this->calTotal();
+        }
     }
 
     public function updatedAmount()
@@ -89,11 +91,9 @@ class Deposit extends Component
 
         if ($this->selectedRoute->payment_method->name == 'Orchard' && $this->wallet->currency->code != 'GHS') {
             $rates = ExchangeService::currencyExchange($this->wallet->currency, $this->total, 'GHS');
-            $rates['converted'] = true;
         } else {
             if (!in_array($this->wallet->currency->code, ['GBP', 'NGN', 'EUR', 'GHS', 'USD'])) {
                 $rates = ExchangeService::currencyExchange($this->wallet->currency, $this->total);
-                $rates['converted'] = true;
             }
         }
 

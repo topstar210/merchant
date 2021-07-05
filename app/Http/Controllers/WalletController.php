@@ -39,4 +39,13 @@ class WalletController extends Controller
         return $wallet->balance;
     }
 
+    public function debitWallet(Wallet $wallet, $amount)
+    {
+        $wallet->refresh();
+        $wallet->balance = (double)($wallet->balance - $amount);
+        $wallet->save();
+
+        return $wallet->balance;
+    }
+
 }

@@ -1,5 +1,22 @@
-<div class="form-group search-group" wire:ignore>
-    <select class="select2 form-control mb-3 custom-select"
+<div class="form-group search-group" wire:ignore
+     x-data="{}"
+     x-init="()=>{
+                var type = '{{$class ?? 'select2'}}'
+ if (type === 'select2') {
+        select2 = $($refs.select).select2();
+    } else if (type === 'country') {
+        select2 = $($refs.select).select2({
+        templateResult: countryState,
+        templateSelection: countrySelectState
+        });
+        } else if (type === 'currency') {
+        select2 = $($refs.select).select2({
+        templateResult: currencyState,
+        templateSelection: currencySelectState
+        });
+        }
+}">
+    <select x-ref="select" class="form-control mb-3 custom-select"
             id="{{$key}}"
             name="{{$key}}"
             @if(isset($js)) wire:model="{{$key}}" @endif style="width: 100%;" required>

@@ -6,11 +6,13 @@ namespace App\Services;
 
 use App\Http\Controllers\WalletController;
 use App\Http\Utils\Resource;
+use App\Mail\TransactionReceipt;
 use App\Models\Deposit;
 use App\Models\MerchantPayment;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class PayswitchService
 {
@@ -54,6 +56,12 @@ class PayswitchService
 
             $trans->save();
             $transaction->save();
+
+            try {
+                Mail::to($trans->user->email)->queue(new TransactionReceipt($trans));
+            } catch (\Exception $e) {
+                Log::error('Exception Error sending Deposit Receipt Email', format_exception($e));
+            }
 
         } catch (\Exception $e) {
             Log::error('Exception Error processing Payswitch Payment', format_exception($e));

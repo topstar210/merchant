@@ -32,25 +32,24 @@
                                     </small> {{number_format($temp->data['total'], 2)}}</h3>
                             </div>
 
-                            @if($temp->data['converted'])
-                                <hr>
-                                <div class="bg-soft-success px-3 py-2 text-end"
-                                     style="border-radius: 7px; box-shadow: 1px 5px 3px -2px rgb(0 0 0 / 10%)">
-                                    <div class="text-start">
-                                        <small><b>You will be debited in {{$temp->data['to_currency'] }}</b></small>
-                                    </div>
-                                    <h3 class="mb-1">
-                                        <strong><small
-                                                class="text-muted font-13 fw-light">{{ $temp->data['to_currency'] }}
-                                            </small> {{ number_format($temp->data['exchange_amount'],2) }}</strong>
-                                    </h3>
-                                    <p class="mb-0 text-muted font-12">At the rate
-                                        of <b>{{ $temp->data['to_currency'] }} {{$temp->data['exchange_rate']}}</b>
-                                        <i class="fas fa-exchange-alt text-danger"></i>
-                                        <b>{{$temp->data['from_currency'] }}
-                                            1</b></p>
+                            {{--                            @if($temp->data['converted'])--}}
+                            <hr>
+                            <div class="py-2 text-end">
+                                <div class="text-start">
+                                    <small><b>You will be charged in {{$temp->data['to_currency'] }}</b></small>
                                 </div>
-                            @endif
+                                <h4 class="mb-1">
+                                    <strong><small
+                                            class="text-muted font-13 fw-light">{{ $temp->data['to_currency'] }}
+                                        </small> {{ number_format($temp->data['exchange_amount'],2) }}</strong>
+                                </h4>
+                                <small class="mb-0 text-muted font-11">At the rate
+                                    of <b>{{ $temp->data['to_currency'] }} {{$temp->data['exchange_rate']}}</b>
+                                    <i class="fas fa-exchange-alt text-danger"></i>
+                                    <b>{{$temp->data['from_currency'] }}
+                                        1</b></small>
+                            </div>
+                            {{--                            @endif--}}
                             <hr>
                             <img src="{{asset('images/'.switchRouteName($temp->route->payment_method->name)[1])}}"
                                  class="img-fluid">
@@ -145,15 +144,15 @@
 
 
                         @else
-                            <div class="bg-soft-danger px-3 py-2 text-center"
-                                 style="border-radius: 7px; box-shadow: 1px 5px 3px -2px rgb(0 0 0 / 10%)">
 
-                                <h6 class="mb-1 font-11">
+                            <div class="alert icon-custom-alert alert-danger b-round-sm fade show mt-2"
+                                 role="alert">
+                                <i class="ti-info-alt alert-icon"></i>
+                                <div class="alert-text font-11">
                                     This Payment Option is currently not supported.
-                                </h6>
+                                </div>
 
                             </div>
-
                         @endif
 
                     </div>

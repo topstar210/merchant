@@ -2,27 +2,24 @@
 
 namespace App\Jobs;
 
-use App\Mail\TransactionReceipt;
 use App\Models\MerchantPayment;
-use App\Services\FlutterwaveService;
-use App\Services\PayswitchService;
+use App\Services\Send\SendAccountService;
+use App\Services\Send\SendWalletService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
-class ProcessDeposit implements ShouldQueue
+class ProcessSend implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public MerchantPayment $transaction;
 
     /**
-     * ProcessDeposit constructor.
+     * ProcessSend constructor.
      * @param MerchantPayment $transaction
      */
     public function __construct(MerchantPayment $transaction)
@@ -37,13 +34,11 @@ class ProcessDeposit implements ShouldQueue
      */
     public function handle()
     {
-        //
-        if ($this->transaction->payment_method->name == 'Flutterwave') {
-            FlutterwaveService::handlePayment($this->transaction);
+        if ($this->transaction->product == 'SW') {
+            SendWalletService::handleSend($this->transaction);
         }
-
-        if ($this->transaction->payment_method->name == 'Payswitch') {
-            PayswitchService::handlePayment($this->transaction);
+        if ($this->transaction->product == 'SA') {
+            SendAccountService::handleSend($this->transaction);
         }
     }
 }

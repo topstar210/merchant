@@ -47,6 +47,7 @@ class ExchangeService
             'from_currency' => $from->code,
             'to_currency' => $to->code,
             'exchange_amount' => $exchangeAmount,
+            'converted' => true
         ];
     }
 

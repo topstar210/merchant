@@ -91,14 +91,14 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            $('#country').on('change', function (e) {
+            $('#country').on('select2:select', function (e) {
                 var phoneCode = $('#country option:selected').attr('label');
             @this.call('setCountry', [e.target.value, phoneCode]);
 
                 $('#phone_code').val(phoneCode).trigger('change')
             });
 
-            $('#state').on('change', function (e) {
+            $('#state').on('select2:select', function (e) {
             @this.set('state', e.target.value);
             });
         });

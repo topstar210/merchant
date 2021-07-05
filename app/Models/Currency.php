@@ -29,6 +29,11 @@ class Currency extends Model
 
     public function transfer_route()
     {
-        return $this->hasMany(CurrencyPaymentMethod::class, 'currency_id')->whereHas('fee_limit_transfer')->where('activated_for', 'like', '%withdrawal%')->with(['payment_method', 'fee_limit_transfer']);
+        return $this->hasMany(CurrencyPaymentMethod::class, 'currency_id')->whereHas('fee_limit_transfer')->where('activated_for', 'like', '%withdrawal%')->with(['payment_method', 'fee_limit_transfer'])->latest()->limit(1);
+    }
+
+    public function scopeSupported($query)
+    {
+        $query->whereIn('code', config('env.supported_currencies'))->where('status', 'Active');
     }
 }

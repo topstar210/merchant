@@ -7,15 +7,16 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Str;
 
-class DepositReceipt extends Mailable
+class TransactionReceipt extends Mailable
 {
     use Queueable, SerializesModels;
 
     public MerchantPayment $trans;
 
     /**
-     * DepositReceipt constructor.
+     * TransactionReceipt constructor.
      * @param MerchantPayment $trans
      */
     public function __construct(MerchantPayment $trans)
@@ -31,7 +32,8 @@ class DepositReceipt extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.deposit_receipt')->subject("Wallet Deposit Receipt: " . $this->trans->reference);
+        return $this->view('emails.transaction_receipt')->subject(Str::title($this->trans->service) . " Transaction Receipt: " . $this->trans->reference);
 
     }
+
 }

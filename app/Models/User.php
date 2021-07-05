@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -117,6 +118,16 @@ class User extends Authenticatable
         return $this->belongsTo(Merchant::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(MerchantPayment::class)->latest();
+    }
+
+    public function recent_transactions()
+    {
+        return $this->hasMany(MerchantPayment::class)->whereDate('created_at', Carbon::now())->latest();
+    }
+
     public function country()
     {
         return $this->belongsTo(Country::class, 'defaultCountry', 'short_name');
@@ -130,6 +141,11 @@ class User extends Authenticatable
     public function scopeAgents($query)
     {
         $query->where('merchant_id', user()->merchant_id)->where('type', 'agent');
+    }
+
+    public function scopeAccount($query, $value)
+    {
+        $query->where('account_number', $value);
     }
 
     public function scopeFilter($query, array $filters)

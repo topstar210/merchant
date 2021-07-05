@@ -7,6 +7,7 @@ namespace App\Http\Utils;
 use App\Models\Deposit;
 use App\Models\MerchantPayment;
 use App\Models\Transaction;
+use App\Models\Withdrawal;
 use Illuminate\Support\Arr;
 
 class Resource
@@ -51,6 +52,42 @@ class Resource
         $transaction->status = $response['status'] ? "Success" : 'Failed';
         $transaction->note = $response['message'];
         $transaction->available_amount = 0;
+        $transaction->save();
+
+        return $transaction;
+    }
+
+    public static function saveSendTrans(MerchantPayment $trans, $response)
+    {
+        $send = new Withdrawal();
+        $send->uuid = $trans->reference;
+        $send->charge_percentage = $trans->response['charge_percentage'];
+        $send->charge_fixed = $trans->response['charge_fixed'];
+        $send->amount = $trans->amount;
+        $send->status = $response['status'] ? "Success" : 'Blocked';
+        $send->user_id = $trans->user_id;
+        $send->currency_id = $trans->wallet->currency_id;
+        $send->payment_method_id = $trans->payment_method_id;
+        $send->payment_method_info = $trans->payment_method->name;
+        $send->save();
+
+        $transaction = new Transaction();
+        $transaction->user_id = $trans->user_id;
+        $transaction->currency_id = $trans->wallet->currency_id;
+        $transaction->payment_method_id = $trans->payment_method_id;
+        $transaction->transaction_reference_id = $send->id;
+        $transaction->transaction_type_id = WITHDRAWALS;
+        $transaction->uuid = $trans->reference;
+        $transaction->subtotal = $trans->amount;
+        $transaction->email = $trans->user->email;
+        $transaction->phone = $trans->user->phone;
+        $transaction->percentage = $trans->response['charge_percentage'];
+        $transaction->charge_percentage = $trans->response['charge_percentage'];
+        $transaction->charge_fixed = $trans->response['charge_fixed'];
+        $transaction->total = $trans->response['total'];
+        $transaction->status = $response['status'] ? "Success" : 'Failed';
+        $transaction->note = $response['message'];
+        $transaction->available_amount = $response['balance'] ?? 0;
         $transaction->save();
 
         return $transaction;

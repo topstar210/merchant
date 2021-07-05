@@ -39,6 +39,13 @@ class MerchantPayment extends Model
         'total_amount'
     ];
 
+    public function getAttribute($key)
+    {
+        [$key, $path] = preg_split('/(->|\.)/', $key, 2) + [null, null];
+
+        return data_get(parent::getAttribute($key), $path);
+    }
+
     public function getTotalAmountAttribute()
     {
         return (double)($this->amount + $this->charges);
@@ -89,6 +96,11 @@ class MerchantPayment extends Model
     public function wallet()
     {
         return $this->belongsTo(Wallet::class);
+    }
+
+    public function recipient_wallet()
+    {
+        return $this->belongsTo(Wallet::class, 'response->recipient_wallet_id')->with(['currency', 'user'])->latest();
     }
 
     public function transaction()

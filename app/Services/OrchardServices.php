@@ -6,7 +6,7 @@ namespace App\Services;
 
 use App\Http\Controllers\WalletController;
 use App\Http\Utils\Resource;
-use App\Mail\DepositReceipt;
+use App\Mail\TransactionReceipt;
 use App\Models\Deposit;
 use App\Models\MerchantPayment;
 use App\Models\Transaction;
@@ -88,7 +88,7 @@ class OrchardServices
             $transaction->save();
 
             try {
-                Mail::to($trans->user->email)->queue(new DepositReceipt($trans));
+                Mail::to($trans->user->email)->queue(new TransactionReceipt($trans));
             } catch (\Exception $e) {
                 Log::error('Exception Error sending Deposit Receipt Email', format_exception($e));
             }
@@ -96,8 +96,64 @@ class OrchardServices
             return response()->json(["error" => false, "error_message" => "Transaction processed successfully"]);
 
         } catch (\Exception $e) {
-            Log::error('Exception Error processing Flutterwave Payment', format_exception($e));
+            Log::error('Exception Error processing Orchard Payment', format_exception($e));
         }
+    }
+
+    public static function getBanks()
+    {
+        return [
+            ["Id" => 1, "Name" => "MTN MOBILE MONEY", "Code" => "MTN"],
+            ["Id" => 2, "Name" => "VODAFONE CASH", "Code" => "VOD"],
+            ["Id" => 3, "Name" => "AIRTELTIGO CASH", "Code" => "AIR"],
+            ["Id" => 4, "Name" => "STANDARD CHARTERED BANK", "Code" => "SCB"],
+            ["Id" => 5, "Name" => "BARCLAYS BANK", "Code" => "BAR"],
+            ["Id" => 6, "Name" => "GCB BANK LTD", "Code" => "GCB"],
+            ["Id" => 7, "Name" => "NATIONAL INVESTMENT BANK", "Code" => "NIB"],
+            ["Id" => 8, "Name" => "AGRICULTURAL DEVELOPMENT BANK", "Code" => "ADB"],
+            ["Id" => 9, "Name" => "UNIVERSAL MERCHANT BANK", "Code" => "UMB"],
+            ["Id" => 10, "Name" => "HFC BANK", "Code" => "HFC"],
+            ["Id" => 11, "Name" => "ZENITH BANK", "Code" => "ZEB"],
+            ["Id" => 12, "Name" => "ECOBANK", "Code" => "ECO"],
+            ["Id" => 13, "Name" => "CAL BANK", "Code" => "CAL"],
+            ["Id" => 14, "Name" => "PRUDENTIAL BANK LTD", "Code" => "PRD"],
+            ["Id" => 15, "Name" => "STANBIC BANK", "Code" => "STA"],
+            ["Id" => 16, "Name" => "FIRST BANK OF NIGERIA", "Code" => "FBN"],
+            ["Id" => 17, "Name" => "BANK OF AFRICA", "Code" => "BOA"],
+//            ["Id" => 18, "Name" => "UNIBANK", "Code" => "UNI"],
+            ["Id" => 19, "Name" => "GUARANTY TRUST BANK", "Code" => "GTB"],
+            ["Id" => 20, "Name" => "FIDELITY BANK", "Code" => "FID"],
+//            ["Id" => 21, "Name" => "BSIC", "Code" => "BSI"],
+            ["Id" => 22, "Name" => "BANK OF BARODA", "Code" => "BOB"],
+            ["Id" => 23, "Name" => "ACCESS BANK", "Code" => "ACC"],
+//            ["Id" => 24, "Name" => "ENERGY BANK", "Code" => "ENE"],
+//            ["Id" => 25, "Name" => "ROYAL BANK", "Code" => "ROY"],
+            ["Id" => 26, "Name" => "FIRST NATIONAL BANK", "Code" => "FNB"],
+            ["Id" => 27, "Name" => "SOVEREIGN BANK", "bank_code" => "SOV "],
+//            ["Id" => 28, "Name" => "PREMIUM BANK", "Code" => "PRM"],
+//            ["Id" => 29, "Name" => "HERITAGE BANK", "Code" => "HRT"],
+            ["Id" => 30, "Name" => "UNITED BANK OF AFRICA", "Code" => "UBA"],
+        ];
+    }
+
+    public static function nameEnquiry($account, $bank)
+    {
+        $response = Http::post(config('env.orc_validate_url'), [
+            "customer_number" => $account,
+            "bank_code" => $bank['Code'],
+            "trans_type" => "AII",
+            "service_id" => config('env.orc_service_id')
+        ]);
+
+        if ($response->status() != 200) {
+            return null;
+        }
+
+        if ($response->json()['resp_code'] == "027" && isset($response->json()['account_name'])) {
+            return $response->json()['account_name'];
+        }
+
+        return null;
     }
 
 
@@ -107,4 +163,5 @@ class OrchardServices
         $signature = hash_hmac('sha256', $data_string, config('env.orc_secret_key'));
         return config('env.orc_client_key') . ':' . $signature;
     }
+
 }

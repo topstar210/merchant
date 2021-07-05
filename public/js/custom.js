@@ -1,5 +1,3 @@
-
-
 function initializeToast() {
     var toastEl = document.getElementById('bs_toast')
     var option = {
@@ -11,28 +9,56 @@ function initializeToast() {
     toast.show();
 }
 
+$('.form-control').keypress(function (e) {
+    if (e.which == 13) return false;
+});
+
 $('#noLivewire').submit(function (e) {
     $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span> ');
 });
 
-$(".select2").select2();
+// function select2AlpineInit(type) {
+//     console.log(type);
+//     if (type === 'select2') {
+//         this.select2 = $(this.$refs.select).select2();
+//     } else if (type === 'phone_code') {
+//         this.select2 = $(this.$refs.select).select2({
+//             templateResult: phoneState,
+//             templateSelection: phoneSelectState
+//         });
+//     } else if (type === 'country') {
+//         this.select2 = $(this.$refs.select).select2({
+//             width: "100%",
+//             templateResult: countryState,
+//             templateSelection: countrySelectState
+//         });
+//     } else if (type === 'currency') {
+//         this.select2 = $(this.$refs.select).select2({
+//             width: "100%",
+//             templateResult: currencyState,
+//             templateSelection: currencySelectState
+//         });
+//     }
+// }
 
-$(".phone_code").select2({
-    templateResult: phoneState,
-    templateSelection: phoneSelectState
-});
-
-$(".country").select2({
-    width: "100%",
-    templateResult: countryState,
-    templateSelection: countrySelectState
-})
-
-$(".currency").select2({
-    width: "100%",
-    templateResult: currencyState,
-    templateSelection: currencySelectState
-})
+// $(".select2").select2();
+//
+// $(".phone_code").select2({
+//     templateResult: phoneState,
+//     templateSelection: phoneSelectState
+// });
+//
+// $(".country").select2({
+//     width: "100%",
+//     templateResult: countryState,
+//     templateSelection: countrySelectState
+// })
+//
+// $(".currency").select2({
+//     width: "100%",
+//     templateResult: currencyState,
+//     templateSelection: currencySelectState
+// })
 
 
 function countrySelectState(state) {

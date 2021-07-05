@@ -38,7 +38,7 @@ class WebHookController extends Controller
                 'institution' => $tp->data['institution'] ?? null,
                 'service' => "DEPOSIT",
                 'balance_before' => $tp->wallet->balance,
-                'product' => "Wallet Funding",
+                'product' => "WF",
                 'response' => $tp->data,
                 'wallet_id' => $tp->wallet->id,
                 'payment_method_id' => $payment_method->id

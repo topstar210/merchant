@@ -33,15 +33,13 @@
                                     @enderror
                                     <form class="form-horizontal auth-form" id="noLivewire" method="POST">
                                         @csrf
-
                                         <x-utils.form.input :key="'email'" :label="'Email Address'" :type="'email'"
                                                             :value="old('email')"/>
                                         <x-utils.form.input :key="'password'" :label="'Password'" :type="'password'"/>
 
                                         <div class="form-group row my-4">
-                                            <div class="col-sm-6">
-                                            </div><!--end col-->
-                                            <div class="col-sm-6 text-end">
+
+                                            <div class="col text-end">
 
                                                 @if (Route::has('password.request'))
                                                     <a class="font-13"
@@ -67,20 +65,24 @@
                                             <div class="notification-msg" x-show="open" x-transition>
 
                                                 <div class="d-flex flex-row">
-                                                    <img src="{{asset('images/merchant_ad.svg')}}"
-                                                         class="img-fluid text-center" style="width: 120px">
-                                                    <div style="margin-left: 10px">
-                                                        <a href="#" @click="open = ! open"
-                                                           class="float-end close-btn text-danger">
-                                                            <i class="mdi mdi-close-circle font-18"></i>
-                                                        </a>
-                                                        <h5 class="mt-3">Become A Merchant</h5>
-                                                        <p class="mb-3 font-11">Do you want to become a merchant and
-                                                            earn
-                                                            revenue as
-                                                            you trade?</p>
-                                                        <a href="javascript: void(0);"
-                                                           class="btn btn-primary btn-sm">Learn More</a>
+                                                    <div class="col-auto">
+                                                        <img src="{{asset('images/merchant_ad.svg')}}"
+                                                             class="img-fluid" style="width: 90px">
+                                                    </div>
+                                                    <div class="col">
+                                                        <div style="margin-left: 10px">
+                                                            <a href="#" @click="open = ! open"
+                                                               class="float-end close-btn text-danger">
+                                                                <i class="mdi mdi-close-circle font-18"></i>
+                                                            </a>
+                                                            <h5 class="mt-0">Become A Merchant</h5>
+                                                            <p class="mb-3 font-11">Do you want to become a merchant and
+                                                                earn
+                                                                revenue as
+                                                                you trade?</p>
+                                                            <a href="javascript: void(0);"
+                                                               class="btn btn-primary btn-sm">Learn More</a>
+                                                        </div>
                                                     </div>
                                                 </div>
 
