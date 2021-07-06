@@ -133,7 +133,7 @@
                                 <div class="alert icon-custom-alert alert-danger b-round-sm fade show mt-2"
                                      role="alert">
                                     <i class="ti-info-alt alert-icon"></i>
-                                    <div class="alert-text font-11">
+                                    <div class="alert-text font-12">
                                         {{$orc_error}}
                                     </div>
 
@@ -148,7 +148,7 @@
                             <div class="alert icon-custom-alert alert-danger b-round-sm fade show mt-2"
                                  role="alert">
                                 <i class="ti-info-alt alert-icon"></i>
-                                <div class="alert-text font-11">
+                                <div class="alert-text font-12">
                                     This Payment Option is currently not supported.
                                 </div>
 

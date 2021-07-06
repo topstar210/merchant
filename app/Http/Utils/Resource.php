@@ -29,7 +29,7 @@ class Resource
         $deposits->charge_percentage = $trans->response['charge_percentage'];
         $deposits->charge_fixed = $trans->response['charge_fixed'];
         $deposits->amount = $trans->amount;
-        $deposits->status = $response['status'] ? "Success" : 'Blocked';
+        $deposits->status = switchSubTransStatus($response['status']);
         $deposits->user_id = $trans->user_id;
         $deposits->currency_id = $trans->wallet->currency_id;
         $deposits->payment_method_id = $trans->payment_method_id;
@@ -49,7 +49,7 @@ class Resource
         $transaction->charge_percentage = $trans->response['charge_percentage'];
         $transaction->charge_fixed = $trans->response['charge_fixed'];
         $transaction->total = $trans->response['total'];
-        $transaction->status = $response['status'] ? "Success" : 'Failed';
+        $transaction->status = switchTransStatus($response['status']);
         $transaction->note = $response['message'];
         $transaction->available_amount = 0;
         $transaction->save();
@@ -64,7 +64,7 @@ class Resource
         $send->charge_percentage = $trans->response['charge_percentage'];
         $send->charge_fixed = $trans->response['charge_fixed'];
         $send->amount = $trans->amount;
-        $send->status = $response['status'] ? "Success" : 'Blocked';
+        $send->status = switchSubTransStatus($response['status']);
         $send->user_id = $trans->user_id;
         $send->currency_id = $trans->wallet->currency_id;
         $send->payment_method_id = $trans->payment_method_id;
@@ -85,7 +85,7 @@ class Resource
         $transaction->charge_percentage = $trans->response['charge_percentage'];
         $transaction->charge_fixed = $trans->response['charge_fixed'];
         $transaction->total = $trans->response['total'];
-        $transaction->status = $response['status'] ? "Success" : 'Failed';
+        $transaction->status = switchTransStatus($response['status']);
         $transaction->note = $response['message'];
         $transaction->available_amount = $response['balance'] ?? 0;
         $transaction->save();

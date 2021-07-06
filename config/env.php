@@ -14,6 +14,7 @@ return [
     'fw_encryption' => env('FW_ENCRYPTION'),
     'fw_verify_url' => env('FW_VERIFY_URL'),
     'fw_bank_url' => env('FW_BANKS_URL'),
+    'fw_send_url' => env('FW_SEND_URL'),
     'fw_validate_url' => env('FW_VALIDATE_URL'),
 
     'orc_payout_url' => env('ORC_PAYOUT_URL'),
@@ -24,6 +25,7 @@ return [
     'orc_secret_key' => env('ORC_SECRET_KEY'),
 
     'cp_bank_url' => env('CP_BANKS_URL'),
+    'cp_send_url' => env('CP_SEND_URL'),
     'cp_validate_url' => env('CP_VALIDATE_URL'),
     'cp_business_code' => env('CP_BUSINESS_CODE'),
     'cp_integration_key' => env('CP_INTEGRATION_KEY'),

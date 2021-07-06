@@ -21,18 +21,6 @@
                             </div>
                             <div class="card-body p-0">
                                 <div class=" p-4">
-{{--                                    @if($errors->any())--}}
-{{--                                        <div--}}
-{{--                                            class="alert icon-custom-alert  alert-danger b-round-sm fade show"--}}
-{{--                                            role="alert">--}}
-{{--                                            <i class="ti-info-alt alert-icon"></i>--}}
-{{--                                            <div class="alert-text">--}}
-{{--                                                {{$errors->first() }}--}}
-{{--                                            </div>--}}
-{{--                                            <button type="button" class="btn-close" data-bs-dismiss="alert"--}}
-{{--                                                    aria-label="Close"></button>--}}
-{{--                                        </div>--}}
-{{--                                    @endif--}}
                                     <h3>Hello, {{user()->first_name." ". user()->last_name}}</h3>
                                     <p><i class="ti-info-alt text-danger"></i> Enter <b>Authorization Token</b> sent to
                                         your email to

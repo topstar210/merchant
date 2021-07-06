@@ -17,7 +17,7 @@ class AddtoWallets extends Migration
         Schema::table('wallets', function (Blueprint $table) {
             //
             $table->boolean('lock')->default(false);
-
+            $table->double('commission')->default(0);
         });
     }
 

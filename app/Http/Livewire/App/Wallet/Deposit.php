@@ -31,7 +31,6 @@ class Deposit extends Component
     {
         $this->wallet = $wallet;
         $this->routes = $wallet->currency->deposit_route;
-        Log::info($this->routes);
     }
 
     protected function rules()

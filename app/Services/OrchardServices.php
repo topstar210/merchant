@@ -10,6 +10,8 @@ use App\Mail\TransactionReceipt;
 use App\Models\Deposit;
 use App\Models\MerchantPayment;
 use App\Models\Transaction;
+use App\Services\Deposit\DepositService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -31,12 +33,8 @@ class OrchardServices
             'currency_val' => $amount
         ];
 
-        $headers = self::computeAuth($data);
-
-        Log::info($headers);
-
         $result = Http::withHeaders([
-            'Authorization' => $headers,
+            'Authorization' => self::computeAuth($data),
             'Content-Type' => 'application/json',
             'timeout' => 180,
             'open_timeout' => 180
@@ -64,39 +62,20 @@ class OrchardServices
             $response['code'] = substr($response['trans_status'], 0, 3);
 
             $final = [
-                'status' => $response['code'] == '000',
-                'message' => $response['message']
+                'status' => $response['code'] == '000' ? 1 : 2,
+                'message' => $response['message'],
+                'response' => $response
             ];
-            $transaction = Resource::saveDepositTrans($trans, $final);
 
-            $trans->transaction()->associate($transaction);
-            $trans->status = $transaction->status;
-
-            $data = $trans->response;
-            unset($data['response']);
-            $data['response'] = $response;
-
-            $trans->response = $data;
-
-            if ($trans->status == "Success") {
-                $balance = (new WalletController())->creditWallet($trans->wallet, $trans->amount);
-                $trans->balance_after = $balance;
-                $transaction->available_amount = $balance;
-            }
-
-            $trans->save();
-            $transaction->save();
-
-            try {
-                Mail::to($trans->user->email)->queue(new TransactionReceipt($trans));
-            } catch (\Exception $e) {
-                Log::error('Exception Error sending Deposit Receipt Email', format_exception($e));
-            }
+            DepositService::completeDeposit($trans, $final);
 
             return response()->json(["error" => false, "error_message" => "Transaction processed successfully"]);
 
         } catch (\Exception $e) {
             Log::error('Exception Error processing Orchard Payment', format_exception($e));
+
+            return response()->json(["error" => true, "error_message" => "Unable to complete transaction update"]);
+
         }
     }
 
@@ -156,6 +135,74 @@ class OrchardServices
         return null;
     }
 
+    public static function sendHandler($account, $bank, $amount, $narration, $reference, $sender)
+    {
+        $momo = in_array($bank['Code'], ['MTN', 'VOD', 'AIR']);
+
+        $data = [
+            "customer_number" => $account,
+            "amount" => $amount,
+            "exttrid" => $reference,
+            "reference" => $momo ? (substr($sender, 0, 25)) : $narration,
+            "service_id" => config('env.orc_service_id'),
+            "ts" => gmdate("Y-m-d H:i:s", time() + 3600 * (0 + date("I"))),
+            "trans_type" => "MTC",
+            "nw" => $momo ? $bank['Code'] : "BNK",
+            "callback_url" => url('api/webhook/send/' . rawurlencode('CyberPay Payout') . '/' . $reference),
+        ];
+
+        if (!$momo) {
+            $data = array_merge($data, ["bank_code" => $bank['Code']]);
+        }
+
+        $response = Http::withHeaders([
+            'Authorization' => self::computeAuth($data),
+            'Content-Type' => 'application/json',
+            'timeout' => 180,
+            'open_timeout' => 180
+        ])->post(config('env.orc_payout_url'), $data);
+
+        Log::info($response->json());
+
+        if ($response->status() != 200) {
+            return [
+                "status" => 'failed',
+                "message" => "Unable to process Send to Bank"
+            ];
+        }
+
+        if ($response->json()['resp_code'] === '015') {
+            return [
+                "status" => 'pending',
+                "message" => $response->json()['resp_desc']
+            ];
+        }
+
+        return [
+            "status" => 'failed',
+            "message" => $response->json()['resp_desc'] ?? "Unable to complete transaction."
+        ];
+    }
+
+    public static function webhookHandler(Request $request, MerchantPayment $trans)
+    {
+        if (in_array($request->ip(), ['159.8.210.195'])) {
+            $data = $request->all();
+
+            $code = substr($data['trans_status'], 0, 3);
+
+            return [
+                "status" => $code == "000" ? 'success' : 'failed',
+                "message" => $data['message'],
+                "response" => $data
+            ];
+        } else {
+            return [
+                "status" => 'failed',
+                "message" => "invalid IP access",
+            ];
+        }
+    }
 
     private static function computeAuth($data)
     {

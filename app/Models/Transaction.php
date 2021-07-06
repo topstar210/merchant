@@ -37,4 +37,14 @@ class Transaction extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function deposit()
+    {
+        return $this->hasOne(Deposit::class, 'uuid');
+    }
+
+    public function withdrawal()
+    {
+        return $this->hasOne(Withdrawal::class, 'uuid');
+    }
 }

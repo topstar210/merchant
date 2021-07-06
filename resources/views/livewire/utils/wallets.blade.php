@@ -16,8 +16,7 @@
             </div>
             <div class="d-flex flex-row mt-1">
                 <div class="col text-end">
-                    <small class="text-muted font-10 ">Available
-                        Balance: {{number_format($wallet->balance, 2)}}</small>
+                    <small class="text-muted font-10 ">Commission: {{$wallet->currency->code}} <b class="font-12 text-success">{{number_format($wallet->commission, 2)}}</b></small>
                 </div>
             </div>
 

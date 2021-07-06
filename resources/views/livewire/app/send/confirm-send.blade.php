@@ -31,8 +31,9 @@
 
                             @if($temp->data['service'] == 'SA')
                                 <small class="font-10">Recipient Account</small>
-                                <h6 class="mt-1">{{$temp->data['account_name']}} <small
-                                        class="fw-light text-muted">({{$temp->data['account']}})</small></h6>
+                                <h6 class="mt-1 mb-0">{{$temp->data['account_name']}}</h6>
+                                <small
+                                    class="fw-light text-muted">{{$temp->data['account']}}</small>
                                 <hr>
 
                             @endif
@@ -76,36 +77,102 @@
                                     <b>{{$temp->data['from_currency'] }}
                                         1</b> </small>
                             </div>
+                        @endif
+
+                        @if($temp->data['service'] == "SB")
+                            <small class="font-10">Recipient Account</small>
+                            <h6 class="mt-1 mb-0">{{$temp->data['account_name']}}</h6>
+                            <small
+                                class="fw-light"><span
+                                    class="fw-light text-muted">{{$temp->data['account']}}</span>
+                                - {{$temp->data['bank']['Name'] ?? $temp->data['bank']['bankName']}}
+                            </small>
+
                             <hr>
-                            <p class="font-10 mb-2">Enter Your Transaction Pin</p>
+                            <div class="d-flex flex-row">
+                                <div class="col">
+                                    <small class="font-10">Amount</small>
+                                    <h4 class="mt-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
+                                        </small> {{number_format($temp->data['amount'], 2)}}</h4>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <i class="fas fa-exchange-alt text-danger"></i>
+                                </div>
+                                <div class="col text-end">
+                                    <small class="font-10">Recipient Receives</small>
+                                    <h4 class="mt-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['to_currency']}}
+                                        </small> {{number_format($temp->data['exchange_amount'], 2)}}</h4>
+
+                                </div>
+
+
+                            </div>
+                            <div class=" text-center">
+                                <small class="font-10 text-muted">At the rate
+                                    of <b>{{ $temp->data['to_currency'] }} {{$temp->data['exchange_rate']}}</b>
+                                    to
+                                    <b>{{$temp->data['from_currency'] }}
+                                        1</b> </small>
+                            </div>
+                            <hr>
+
+                            <div class="d-flex flex-row">
+                                <div class="col-3 me-2">
+                                    <small class="font-10">Charge</small>
+                                    <h6 class="mt-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
+                                        </small> {{number_format($temp->data['charge'], 2)}}</h6>
+                                </div>
+                                <div class="col-3">
+                                    <small class="font-10">Commission</small>
+                                    <h6 class="mt-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
+                                        </small> {{number_format($temp->data['commission'], 2)}}</h6>
+                                </div>
+
+                                <div class="col text-end">
+                                    <small class="font-10">Total</small>
+                                    <h3 class="mt-0 mb-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
+                                        </small> {{number_format($temp->data['total'], 2)}}</h3>
+
+                                </div>
+
+
+                            </div>
+                            <hr>
+                        @endif
+
+                        <p class="font-10 mb-2">Enter Your Transaction Pin</p>
+                        <form wire:submit.prevent="handleSend">
                             <x-utils.pin-entry/>
-                            <button class="btn btn-success w-100" @if($errors->any()) disabled
-                                    @endif wire:target="handleSWSA"
-                                    wire:click="handleSWSA"
-                                    wire:loading.attr="disabled"><span wire:target="handleSWSA"
+                            <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
+                                    @endif wire:target="handleSend"
+                                    wire:loading.attr="disabled"><span wire:target="handleSend"
                                                                        wire:loading class="btn-spinner"></span>
                                 Send
                             </button>
-                            @push('scripts')
-                                <script>
-                                    $('#pincode').pincodeInput({
-                                        inputs: 4,
-                                        placeholders: "- - - - - -",
-                                        hidedigits: true,
-                                        change: function (input, value, inputnumber) {
-
-                                        },
-                                        complete: function (value, e, errorElement) {
-                                        @this.set('pin', value);
-                                        }
-                                    });
-                                </script>
-                            @endpush
-
-                        @endif
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@push('scripts')
+    <script>
+        $('#pincode').pincodeInput({
+            inputs: 4,
+            placeholders: "- - - - - -",
+            hidedigits: true,
+            change: function (input, value, inputnumber) {
+
+            },
+            complete: function (value, e, errorElement) {
+            @this.set('pin', value);
+            }
+        });
+    </script>
+@endpush

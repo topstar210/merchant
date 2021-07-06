@@ -38,11 +38,19 @@ class ConfirmSend extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function handleSWSA()
+    public function handleSend()
     {
         $this->validate();
 
-        return (new SendController())->initializeSWSATransaction($this->temp);
+        if (in_array($this->temp->data['service'], ['SW', 'SA'])) {
+            return (new SendController())->initializeSWSATransaction($this->temp);
+        }
+
+        if ($this->temp->data['service'] == "SB") {
+            return (new SendController())->initializeSBTransaction($this->temp);
+        }
+
+
     }
 
     public function render()

@@ -62,3 +62,49 @@ function switchRouteName($route)
             return [$route, 'card.png'];
     }
 }
+
+function switchTransStatus($status)
+{
+    switch ($status) {
+        case 1:
+            return 'Success';
+            break;
+        case 2:
+            return 'Failed';
+            break;
+        case 3:
+            return 'Pending';
+            break;
+        case 4:
+            return 'Refund';
+            break;
+
+        case 5:
+            return 'Blocked';
+            break;
+
+        default :
+            return 'Failed';
+    }
+}
+
+function switchSubTransStatus($status)
+{
+    switch ($status) {
+        case 1:
+            return 'Success';
+            break;
+        case 2 || 5:
+            return 'Blocked';
+            break;
+        case 3:
+            return 'Pending';
+            break;
+        case 4:
+            return 'Refund';
+            break;
+
+        default :
+            return 'Failed';
+    }
+}

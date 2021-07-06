@@ -92,8 +92,10 @@
                                         <b class="text-dark font-18">{{number_format($wallet->balance, 2)}}</b>
                                     </span>
                                 </h5>
-                                <div class="float-end"><small class="text-muted font-10">Available
-                                        Balance: {{number_format($wallet->balance, 2)}}</small></div>
+                                <div class="float-end">
+                                    <small class="text-muted font-10 ">Commission: {{$wallet->currency->code}} <b class="font-12 text-success">{{number_format($wallet->commission, 2)}}</b></small>
+
+                                </div>
                                 <br>
                                 @if($agent->reg_com)
                                     <div class="mt-2">

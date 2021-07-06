@@ -9,19 +9,23 @@ use App\Services\FlutterwaveService;
 use App\Services\OrchardServices;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class InitiateSendBank extends Component
 {
     public $payment_method;
+    public $supported;
     public $wallet;
     public $recipient_currency;
     public $rates;
     public $amount;
     public $total = 0;
     public $charge = 0;
-    private $charge_fixed = 0;
-    private $charge_percentage = 0;
+    public $commission = 0;
+    public $charge_fixed = 0;
+    public $charge_percentage = 0;
 
     public $banks;
     public $selectedBank;
@@ -33,14 +37,13 @@ class InitiateSendBank extends Component
     public $beneficiary;
 
     public $account;
-    public $errorAccount = false;
 
     public function mount(Wallet $wallet, $data)
     {
         $routes = $data['send_currency']->transfer_route;
-        Log::info($routes);
         $this->wallet = $wallet;
         $this->amount = $data['amount'];
+        $this->supported = count($routes) ? true : false;
         $this->payment_method = count($routes) ? $routes[0] : [];
         $this->rates = $data['rates'];
         $this->recipient_currency = $data['send_currency'];
@@ -59,7 +62,7 @@ class InitiateSendBank extends Component
         return [
             'account' => ['required', 'min:10', 'max:20'],
             'recipient_bank' => ['required'],
-            'beneficiary' => ['nullable', 'min:5'],
+            'beneficiary' => [Rule::requiredIf(!is_null($this->tempAccount))],
         ];
     }
 
@@ -92,8 +95,7 @@ class InitiateSendBank extends Component
 
     public function updatedBeneficiary()
     {
-        $this->tempAccount['account_name'] = $this->beneficiary;
-        $this->selectedAccount = $this->tempAccount;
+        $this->selectedAccount['account_name'] = $this->beneficiary;
     }
 
     public function updatedAccount()
@@ -124,10 +126,12 @@ class InitiateSendBank extends Component
                     "account" => $this->account,
                     "account_name" => $account_name
                 ];
-                $this->errorAccount = false;
+                if (empty($account_name)) {
+                    $this->selectedAccount = $this->tempAccount;
+                }
             } else {
                 $this->tempAccount = null;
-                $this->errorAccount = true;
+                throw ValidationException::withMessages(['account' => 'No account found']);
             }
         }
     }
@@ -147,6 +151,7 @@ class InitiateSendBank extends Component
             }
             $this->charge = $this->charge_percentage + $this->charge_fixed;
             $this->total = $this->amount + $this->charge;
+            $this->commission = (double)(($this->charge * user()->merchant->commission) / 100);
         }
     }
 
@@ -163,7 +168,7 @@ class InitiateSendBank extends Component
         }
 
 
-        $this->dispatchBrowserEvent('set_banks', $this->banks);
+        $this->dispatchBrowserEvent('set_banks', array_reverse($this->banks));
 
     }
 
@@ -174,24 +179,27 @@ class InitiateSendBank extends Component
         $this->calCharge();
         $reference = (string)rand(100000000000, 999999999999);
 
-//        TempTransactions::query()->create([
-//            "payment_method_id" => 1,
-//            "transaction_type_id" => WITHDRAWALS,
-//            "reference" => $reference,
-//            "wallet_id" => $this->wallet->id,
-//            "user_id" => user()->id,
-//            "data" => array_merge($this->rates, [
-//                "recipient_wallet_id" => (int)$this->recipient_account_wallet,
-//                "service" => 'SA',
-//                "amount" => (double)$this->amount,
-//                "total" => (double)$this->amount,
-//                "account" => $this->recipient_irt_account,
-//                "account_name" => $this->selectedAccount->full_name,
-//                "charge" => 0,
-//                "charge_fixed" => 0,
-//                "charge_percentage" => 0
-//            ])
-//        ]);
+        TempTransactions::query()->create([
+            "payment_method_id" => $this->payment_method->id,
+            "transaction_type_id" => WITHDRAWALS,
+            "reference" => $reference,
+            "wallet_id" => $this->wallet->id,
+            "user_id" => user()->id,
+            "data" => array_merge($this->rates, [
+                "service" => 'SB',
+                "amount" => (double)$this->amount,
+                "total" => (double)$this->total,
+                "bank" => $this->selectedBank,
+                "account" => $this->account,
+                "account_name" => $this->selectedAccount['account_name'],
+                "charge" => $this->charge,
+                "charge_fixed" => $this->charge_fixed,
+                "charge_percentage" => $this->charge_percentage,
+                "commission" => $this->commission
+            ])
+        ]);
+
+        request()->session()->forget('sendBank_' . $this->wallet->id,);
 
         $this->emit('finishBank');
 

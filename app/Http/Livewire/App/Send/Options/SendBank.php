@@ -19,6 +19,8 @@ class SendBank extends Component
 
     public $amount = 0;
     public $send_currency;
+    public $max;
+
     protected $listeners = ['processingAccount' => 'lockAction', 'processingWallet' => 'lockAction', 'finishAccount' => 'unlockAction', 'finishBankWallet' => 'unlockAction'];
 
     public function mount($wallet)
@@ -26,6 +28,7 @@ class SendBank extends Component
         $this->wallet = $wallet;
         $this->currencies = Currency::supported()->get();
         $this->currency_ids = $this->currencies->implode('id', ',');
+        $this->max = $this->wallet->balance - ($this->wallet->balance * (3 / 100));
     }
 
     protected $messages = [
@@ -39,7 +42,7 @@ class SendBank extends Component
     {
         return [
             'send_currency' => ['required', 'in:' . $this->currency_ids],
-            'amount' => ['required', 'numeric', 'min:10', 'max:' . $this->wallet->balance],
+            'amount' => ['required', 'numeric', 'min:10', 'max:' . $this->max],
         ];
     }
 

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Mail\TransactionReceipt;
 use App\Models\MerchantPayment;
+use App\Services\Deposit\DepositService;
 use App\Services\FlutterwaveService;
 use App\Services\PayswitchService;
 use Illuminate\Bus\Queueable;
@@ -37,13 +38,6 @@ class ProcessDeposit implements ShouldQueue
      */
     public function handle()
     {
-        //
-        if ($this->transaction->payment_method->name == 'Flutterwave') {
-            FlutterwaveService::handlePayment($this->transaction);
-        }
-
-        if ($this->transaction->payment_method->name == 'Payswitch') {
-            PayswitchService::handlePayment($this->transaction);
-        }
+        DepositService::handleDeposit($this->transaction);
     }
 }

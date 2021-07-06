@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\MerchantPayment;
 use App\Services\Send\SendAccountService;
+use App\Services\Send\SendBankService;
 use App\Services\Send\SendWalletService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -24,7 +25,7 @@ class ProcessSend implements ShouldQueue
      */
     public function __construct(MerchantPayment $transaction)
     {
-        $this->transaction = $transaction->load('user');
+        $this->transaction = $transaction;
     }
 
     /**
@@ -39,6 +40,10 @@ class ProcessSend implements ShouldQueue
         }
         if ($this->transaction->product == 'SA') {
             SendAccountService::handleSend($this->transaction);
+        }
+
+        if ($this->transaction->product == 'SB') {
+            SendBankService::handleSend($this->transaction);
         }
     }
 }

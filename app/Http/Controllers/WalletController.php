@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MerchantPayment;
 use App\Models\TempTransactions;
 use App\Models\Wallet;
+use App\Models\WalletDebitLock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -46,6 +48,41 @@ class WalletController extends Controller
         $wallet->save();
 
         return $wallet->balance;
+    }
+
+    public function lockDebit(Wallet $wallet, $amount, $reference)
+    {
+        $wallet->balance = (double)($wallet->balance - $amount);
+        $wallet->save();
+
+        return $wallet->debit_locks()->create([
+            'amount' => $amount,
+            'reference' => $reference
+        ]);
+    }
+
+    public function removeLockDebit(MerchantPayment $transaction)
+    {
+        $lock = $transaction->debit_lock;
+        if ($lock instanceof WalletDebitLock) {
+            $lock->delete();
+        }
+        return $transaction->wallet->balance;
+    }
+
+    public function reverseLockDebit(MerchantPayment $transaction)
+    {
+        $lock = $transaction->debit_lock;
+
+        if ($lock instanceof WalletDebitLock) {
+            $balance = (double)($transaction->wallet->balance + $lock->amount);
+
+            $transaction->wallet()->update(['balance' => $balance]);
+
+            $lock->delete();
+        }
+
+        return $transaction->wallet->balance;
     }
 
 }

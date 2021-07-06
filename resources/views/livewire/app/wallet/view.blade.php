@@ -7,6 +7,7 @@
                        wire:ignore.self>
 
         <x-slot name="action">
+
             @if($wallet->lock)
                 <button class="btn btn-soft-danger @mobile btn-sm @endmobile" disabled style="opacity: 1 !important;"><i
                         class="ti-lock"></i> Locked
@@ -19,14 +20,19 @@
                             class="fas fa-ellipsis-v"></i>
                     </button>
                   <ul class="dropdown-menu" aria-labelledby="mobileWalletMenu">
+                      <li class=" text-center mt-2"><small class="text-muted font-10">Commission Earned<br>{{$wallet->currency->code}} <b class="font-13 text-success">{{number_format($wallet->commission, 2)}}</b></small><hr></li>
                     <li><a class="dropdown-item" href="{{url('app/wallet/'.$wallet->id.'/deposit')}}"><i
-                                class="fas fa-plus me-1"></i>Deposit</a></li>
+                                class="fas fa-plus me-2"></i>Deposit</a></li>
                     <li><a class="dropdown-item" href="{{url('app/send/'.$wallet->id)}}"><i
-                                class="fab fa-telegram-plane me-1"></i>Send</a></li>
+                                class="fab fa-telegram-plane me-2"></i>Send</a></li>
                   </ul>
 
                 </span>
                 <span class="hidden-sm">
+                      <button class="btn btn-soft-secondary @mobile btn-sm @endmobile" disabled
+                              style="opacity: 1 !important;"> Commission: {{$wallet->currency->code}} <b
+                              class="text-success">{{number_format($wallet->commission, 2)}}</b>
+            </button>
                     <button class="btn btn-soft-success"
                             onclick="window.location.href='{{url('app/wallet/'.$wallet->id.'/deposit')}}'"
                             role="button"><i

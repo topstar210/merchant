@@ -26,7 +26,12 @@ Route::prefix('v1')->group(function () {
             ->missing(function (Request $request) {
                 return response()->json(['error' => true, 'error_message' => 'No Initialized Transaction Found']);
             });
+
+        Route::prefix('send')->group(function () {
+            Route::post('/{payment_method}/{reference}', [\App\Http\Controllers\WebHookController::class, 'handleSend'])
+                ->missing(function (Request $request) {
+                    return response()->json(['error' => true, 'error_message' => 'No Initialized Transaction Found or Invalid Service Provider']);
+                });
+        });
     });
-
-
 });

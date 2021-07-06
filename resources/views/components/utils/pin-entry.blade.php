@@ -2,7 +2,7 @@
     <div class="form-group mb-3">
         <div class="input-group">
             <div wire:ignore>
-                <input type="text" id="pincode" name="pin" class="form-control" disabled required>
+                <input type="text" id="pincode" name="pin" class="form-control" style="display: none" disabled required>
             </div>
             @error('pin')
             <span class="invalid-feedback" role="alert">

@@ -32,6 +32,11 @@ class Wallet extends Model
         return $this->hasMany(MerchantPayment::class)->whereDate('created_at', Carbon::now())->whereIn('transaction_type', [WITHDRAWALS])->where('status', 'Success')->latest();
     }
 
+    public function debit_locks()
+    {
+        return $this->hasMany(WalletDebitLock::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

@@ -57,18 +57,26 @@
                                     1</b> </small>
                         </div>
                         <hr>
-                        @if(empty($payment_method))
+                        @if(!$supported)
                             <div class="alert icon-custom-alert alert-danger b-round-sm fade show mt-2"
                                  role="alert">
                                 <i class="ti-info-alt alert-icon"></i>
-                                <div class="alert-text font-11">
+                                <div class="alert-text font-12">
                                     This currency is currently not supported.
                                 </div>
 
                             </div>
-
                         @else
                             <form wire:submit.prevent="continueSendBank">
+                                <div class="row">
+                                    <div class="col">
+                                        <x-utils.form.input :key="'account'" :js="'lazy'" :label="'Account Number'"/>
+                                    </div>
+                                    <div class="col-auto" wire:target="account, setSelectedBank" wire:loading>
+                                    <span wire:target="account, setSelectedBank" wire:loading
+                                          class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
+                                    </div>
+                                </div>
                                 <div class="row" wire:init="retrieveBanks">
                                     <div class="col">
                                         <x-utils.form.select :key="'recipient_bank'" :js="''" :label="'Choose Bank'"/>
@@ -78,15 +86,7 @@
                                           class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
-                                        <x-utils.form.input :key="'account'" :js="'lazy'" :label="'Account Number'"/>
-                                    </div>
-                                    <div class="col-auto" wire:target="account" wire:loading>
-                                    <span wire:target="account" wire:loading
-                                          class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
-                                    </div>
-                                </div>
+
 
                                 @if(!is_null($tempAccount) && !$errors->has('account'))
                                     @if(!empty($tempAccount['account_name']))

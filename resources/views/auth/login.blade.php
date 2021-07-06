@@ -24,7 +24,7 @@
                                     <div class="alert icon-custom-alert alert-danger b-round-sm fade show"
                                          role="alert">
                                         <i class="ti-info-alt alert-icon"></i>
-                                        <div class="alert-text">
+                                        <div class="alert-text font-12">
                                             {{$message }}
                                         </div>
                                         <button type="button" class="btn-close" data-bs-dismiss="alert"

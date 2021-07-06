@@ -6,7 +6,10 @@ use App\Jobs\ProcessDeposit;
 use App\Models\MerchantPayment;
 use App\Models\PaymentMethod;
 use App\Models\TempTransactions;
+use App\Services\CyberpayService;
+use App\Services\FlutterwaveService;
 use App\Services\OrchardServices;
+use App\Services\Send\SendBankService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -66,6 +69,39 @@ class WebHookController extends Controller
         }
 
         return response()->json(["error" => true, "error_message" => "request from unknown IP"]);
+    }
+
+
+    public function handleSend(Request $request, PaymentMethod $payment_method, MerchantPayment $reference)
+    {
+        if ($reference->status !== 'Pending') {
+            $send = [
+                "status" => 'reject',
+                "message" => "Transaction already processed",
+            ];
+        }else {
+            if ($payment_method->name === 'CyberPay Payout') {
+                $send = CyberpayService::webhookHandler($request, $reference);
+            } elseif ($payment_method->name === 'Flutterwave Payout') {
+                $send = FlutterwaveService::webhookHandler($request, $reference);
+            } elseif ($payment_method->name === 'Orchard') {
+                $send = OrchardServices::webhookHandler($request, $reference);
+            } else {
+                $send = [
+                    "status" => 'reject',
+                    "message" => "Invalid Request Received",
+                ];
+            }
+        }
+
+        if ($send['status'] == 'reject') {
+            return response()->json(['error' => true, 'message' => $send['message']]);
+
+        } else {
+            SendBankService::completeSend($reference, $send, true);
+            return response()->json(['error' => false, 'message' => 'transaction updated successfully']);
+        }
 
     }
+
 }

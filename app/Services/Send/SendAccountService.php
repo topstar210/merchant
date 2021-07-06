@@ -21,7 +21,7 @@ class SendAccountService
             $recipient_wallet = $trans->recipient_wallet;
 
             $final_send = [
-                'status' => true,
+                'status' => 1,
                 'message' => 'Send to Account Successful | ' . $trans->base_currency . '' . $trans->amount . ' | Recipient Account:' . $trans->account_name . ' (' . $trans->account . ')',
                 'balance' => $balance,
             ];
@@ -50,7 +50,7 @@ class SendAccountService
             $balance_deposit = (new WalletController())->creditWallet($recipient_wallet, $deposit->exchange_amount);
 
             $final_deposit = [
-                'status' => true,
+                'status' => 1,
                 'message' => 'Wallet transfer received from ' . $trans->merchant->merchant_name . ' | ' . $trans->exchange_currency . $deposit->exchange_amount,
             ];
 
@@ -71,11 +71,11 @@ class SendAccountService
                 Mail::to($trans->user->email)->queue(new TransactionReceipt($trans));
                 Mail::to($recipient_wallet->user->email)->queue(new TransactionReceipt($deposit));
             } catch (\Exception $e) {
-                Log::error('Exception Error sending Deposit Receipt Email', format_exception($e));
+                Log::error('Exception Error sending Send Receipt Email', format_exception($e));
             }
 
         } catch (\Exception $e) {
-            Log::error('Exception Error Handling Send to Wallet Transaction', format_exception($e));
+            Log::error('Exception Error Handling Send to Account Transaction', format_exception($e));
         }
     }
 
