@@ -77,6 +77,7 @@
                                     <b>{{$temp->data['from_currency'] }}
                                         1</b> </small>
                             </div>
+                            <hr>
                         @endif
 
                         @if($temp->data['service'] == "SB")

@@ -32,24 +32,24 @@
                                     </small> {{number_format($temp->data['total'], 2)}}</h3>
                             </div>
 
-                            {{--                            @if($temp->data['converted'])--}}
-                            <hr>
-                            <div class="py-2 text-end">
-                                <div class="text-start">
-                                    <small><b>You will be charged in {{$temp->data['to_currency'] }}</b></small>
+                            @if($temp->data['converted'])
+                                <hr>
+                                <div class="py-2 text-end">
+                                    <div class="text-start">
+                                        <small><b>You will be charged in {{$temp->data['to_currency'] }}</b></small>
+                                    </div>
+                                    <h4 class="mb-1">
+                                        <strong><small
+                                                class="text-muted font-13 fw-light">{{ $temp->data['to_currency'] }}
+                                            </small> {{ number_format($temp->data['exchange_amount'],2) }}</strong>
+                                    </h4>
+                                    <small class="mb-0 text-muted font-11">At the rate
+                                        of <b>{{ $temp->data['to_currency'] }} {{$temp->data['exchange_rate']}}</b>
+                                        <i class="fas fa-exchange-alt text-danger"></i>
+                                        <b>{{$temp->data['from_currency'] }}
+                                            1</b></small>
                                 </div>
-                                <h4 class="mb-1">
-                                    <strong><small
-                                            class="text-muted font-13 fw-light">{{ $temp->data['to_currency'] }}
-                                        </small> {{ number_format($temp->data['exchange_amount'],2) }}</strong>
-                                </h4>
-                                <small class="mb-0 text-muted font-11">At the rate
-                                    of <b>{{ $temp->data['to_currency'] }} {{$temp->data['exchange_rate']}}</b>
-                                    <i class="fas fa-exchange-alt text-danger"></i>
-                                    <b>{{$temp->data['from_currency'] }}
-                                        1</b></small>
-                            </div>
-                            {{--                            @endif--}}
+                            @endif
                             <hr>
                             <img src="{{asset('images/'.switchRouteName($temp->route->payment_method->name)[1])}}"
                                  class="img-fluid">

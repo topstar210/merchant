@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'min_send'=> 1,
+
     'exchange_url' => env('EXCHANGE_URL'),
     'exchange_key' => env('EXCHANGE_KEY'),
 
@@ -16,8 +18,10 @@ return [
     'fw_bank_url' => env('FW_BANKS_URL'),
     'fw_send_url' => env('FW_SEND_URL'),
     'fw_validate_url' => env('FW_VALIDATE_URL'),
+    'fw_requery_url' => env('FW_REQUERY_URL'),
 
     'orc_payout_url' => env('ORC_PAYOUT_URL'),
+    'orc_requery_url' => env('ORC_REQUERY_URL'),
     'orc_payment_url' => env('ORC_PAYMENT_URL'),
     'orc_validate_url' => env('ORC_VALIDATE_URL'),
     'orc_service_id' => env('ORC_SERVICE_ID'),

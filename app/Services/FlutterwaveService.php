@@ -107,27 +107,26 @@ class FlutterwaveService
 
         $response = Http::post(config('env.fw_send_url'), $data);
 
-        Log::info($response->json());
-
         if ($response->status() != 200) {
             return [
                 "status" => 'failed',
-                "message" => "Unable to process Send to Bank"
+                "message" => "Unable to process Send to Bank",
             ];
         }
 
         if ($response->json()['status'] !== 'success') {
             return [
                 "status" => 'failed',
-                "message" => $response->json()['message']
+                "message" => $response->json()['message'],
+                "response" => $response->json()
             ];
         }
 
         return [
             "status" => 'pending',
-            "message" => $response->json()['message']
+            "message" => $response->json()['message'],
+            "response" => ['ref' => $response->json()['data']['id']]
         ];
-
     }
 
     public static function webhookHandler(Request $request, MerchantPayment $trans)
@@ -139,5 +138,39 @@ class FlutterwaveService
             "message" => $data['transfer']['complete_message'],
             "response" => $data
         ];
+    }
+
+    public static function requery($ref, $reference)
+    {
+        $url = config('env.fw_requery_url') . "?seckey=" . config('env.fw_sec_key') . "&reference=$reference&id=$ref";
+        $response = Http::get($url);
+
+        if ($response->status() != 200) {
+            return [
+                "status" => 'pending',
+                "message" => "Unable to process transaction requery",
+                "response" => ['ref' => $ref]
+            ];
+        }
+
+        if ($response->json()['status'] == 'success' && $response->json()['data']['transfers']['status'] == "SUCCESSFUL") {
+            return [
+                "status" => 'success',
+                "message" => $response->json()['data']['transfers']['complete_message'],
+                "response" => $response->json()
+            ];
+        } elseif ($response->json()['status'] == 'success' && $response->json()['data']['transfers']['status'] == "FAILED") {
+            return [
+                "status" => 'failed',
+                "message" => $response->json()['data']['transfers']['complete_message'],
+                "response" => $response->json()
+            ];
+        } else {
+            return [
+                "status" => 'pending',
+                "message" => $response->json()['message'],
+                "response" => ['ref' => $ref]
+            ];
+        }
     }
 }

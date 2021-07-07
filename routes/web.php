@@ -94,7 +94,7 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
 
 
     Route::get('/transaction/process/{reference}', [\App\Http\Controllers\ProcessController::class, 'processTransaction'])
-        ->middleware('can:processTransaction,reference')
+//        ->middleware('can:processTransaction,reference')
         ->missing(function (Request $request) {
             return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Transaction Found or Transaction already processed']);
         });

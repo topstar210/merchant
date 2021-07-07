@@ -17,8 +17,8 @@ class MerchantPayments extends Migration
 
         Schema::create('merchant_payments_rev', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Merchant::class,'merchant_id')->nullable();
-            $table->foreignIdFor(\App\Models\User::class,'user_id')->nullable();
+            $table->foreignIdFor(\App\Models\Merchant::class, 'merchant_id')->nullable();
+            $table->foreignIdFor(\App\Models\User::class, 'user_id')->nullable();
             $table->string('transaction_type');
             $table->string('reference');
             $table->double('amount');
@@ -35,11 +35,12 @@ class MerchantPayments extends Migration
             $table->string('balance_before')->nullable();
             $table->string('balance_after')->nullable();
             $table->string('product')->nullable();
-            $table->string('response', 5000)->nullable();
-            $table->enum('status', ['Pending','Success','Refund','Blocked','Failed'])->default('Pending');
-            $table->foreignIdFor(\App\Models\Transaction::class,'transaction_id')->nullable();
-            $table->foreignIdFor(\App\Models\Wallet::class,'wallet_id')->nullable();
-            $table->foreignIdFor(\App\Models\PaymentMethod::class,'payment_method_id')->nullable();
+            $table->string('response', 4500)->nullable();
+            $table->enum('status', ['Pending', 'Success', 'Refund', 'Blocked', 'Failed'])->default('Pending');
+            $table->string('message', 500)->nullable();
+            $table->foreignIdFor(\App\Models\Transaction::class, 'transaction_id')->nullable();
+            $table->foreignIdFor(\App\Models\Wallet::class, 'wallet_id')->nullable();
+            $table->foreignIdFor(\App\Models\PaymentMethod::class, 'payment_method_id')->nullable();
             $table->timestamps();
         });
     }

@@ -41,7 +41,7 @@ class SendWallet extends Component
     {
         return [
             'recipient_wallet' => ['required', 'in:' . $this->other_wallet_ids],
-            'amount' => ['required', 'numeric', 'min:10', 'max:' . $this->wallet->balance],
+            'amount' => ['required', 'numeric', 'min:'.config('env.min_send'), 'max:' . $this->wallet->balance],
         ];
     }
 

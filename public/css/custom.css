@@ -6,8 +6,8 @@ body, a {
 
 .account-body.accountbg {
     /*background-image: url(../images/move_forward_lines.svg);*/
-    background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #00f18d, #008850) !important;
-    /*background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #00c171, #007c49) !important;*/
+    /*background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #00f18d, #008850) !important;*/
+    background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #6dcaa0, #017545) !important;
 }
 
 /*.d-grid .btn-spinner {*/

@@ -63,10 +63,8 @@ class WalletController extends Controller
 
     public function removeLockDebit(MerchantPayment $transaction)
     {
-        $lock = $transaction->debit_lock;
-        if ($lock instanceof WalletDebitLock) {
-            $lock->delete();
-        }
+        $transaction->debit_lock()->delete();
+
         return $transaction->wallet->balance;
     }
 
@@ -74,12 +72,12 @@ class WalletController extends Controller
     {
         $lock = $transaction->debit_lock;
 
-        if ($lock instanceof WalletDebitLock) {
+        if (!is_null($lock)) {
             $balance = (double)($transaction->wallet->balance + $lock->amount);
 
             $transaction->wallet()->update(['balance' => $balance]);
 
-            $lock->delete();
+            $transaction->debit_lock()->delete();
         }
 
         return $transaction->wallet->balance;

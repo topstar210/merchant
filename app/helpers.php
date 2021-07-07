@@ -108,3 +108,21 @@ function switchSubTransStatus($status)
             return 'Failed';
     }
 }
+
+function switchProducts($product)
+{
+    switch ($product) {
+        case 'WF':
+            return 'Wallet Funding';
+            break;
+        case 'SW':
+            return 'Send to Wallet';
+            break;
+        case 'SA':
+            return 'Send to Account';
+            break;
+        case 'SB':
+            return 'Send to Bank';
+            break;
+    }
+}

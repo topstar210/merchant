@@ -108,13 +108,13 @@ class MerchantPayment extends Model
         return $this->belongsTo(Transaction::class);
     }
 
-    public function transaction_type()
+    public function transaction_types()
     {
         return $this->belongsTo(TransactionType::class, 'transaction_type');
     }
 
     public function debit_lock()
     {
-        return $this->hasOne(WalletDebitLock::class, 'reference');
+        return $this->hasOne(WalletDebitLock::class, 'reference', 'reference');
     }
 }

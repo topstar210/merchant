@@ -51,7 +51,7 @@ class OrchardServices
         return [
             "status" => $response['resp_code'] == '000',
             "link" => $response['redirect_url'] ?? null,
-            "message" => $response['resp_code'] == '000' ? $response['resp_desc'] : 'Unable to initialize payment. Try another option',
+            "message" => $response['resp_code'] == '000' ? $response['resp_desc'] : 'Payment initialization failed. Try another option',
         ];
     }
 
@@ -200,6 +200,51 @@ class OrchardServices
             return [
                 "status" => 'failed',
                 "message" => "invalid IP access",
+            ];
+        }
+    }
+
+    public static function requery($reference)
+    {
+        $data = [
+            'trans_type' => 'TSC',
+            'service_id' => config('env.orc_service_id'),
+            'exttrid' => $reference
+        ];
+
+        $response = Http::withHeaders([
+            'Authorization' => self::computeAuth($data),
+            'Content-Type' => 'application/json',
+            'timeout' => 180,
+            'open_timeout' => 180
+        ])->post(config('env.orc_requery_url'), $data);
+
+        if ($response->status() != 200) {
+            return [
+                "status" => 'pending',
+                "message" => "Unable to process transaction requery",
+            ];
+        }
+
+        $code = substr($response->json()['trans_status'], 0, 3);
+
+        if ($code == "000") {
+            return [
+                "status" => 'success',
+                "message" => $response->json()['message'],
+                "response" => $response->json()
+            ];
+        } elseif ($code == "015") {
+            return [
+                "status" => 'pending',
+                "message" => $response->json()['message'],
+            ];
+
+        } else {
+            return [
+                "status" => 'failed',
+                "message" => $response->json()['message'],
+                "response" => $response->json()
             ];
         }
     }

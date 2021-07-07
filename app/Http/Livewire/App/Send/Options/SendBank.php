@@ -42,7 +42,7 @@ class SendBank extends Component
     {
         return [
             'send_currency' => ['required', 'in:' . $this->currency_ids],
-            'amount' => ['required', 'numeric', 'min:10', 'max:' . $this->max],
+            'amount' => ['required', 'numeric', 'min:'.config('env.min_send'), 'max:' . $this->max],
         ];
     }
 

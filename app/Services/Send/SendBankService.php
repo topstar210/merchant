@@ -21,11 +21,11 @@ class SendBankService
         try {
             $narration = "Fund transfer from " . $trans->merchant->merchant_name . " to " . $trans->account_name;
 
-            if ($trans->route->payment_method->name === 'CyberPay Payout') {
-                $send = CyberpayService::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->reference, $trans->account_name);
-            } elseif ($trans->route->payment_method->name === 'Flutterwave Payout') {
+            if ($trans->payment_method->name === 'CyberPay Payout') {
+                $send = CyberpayService::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->reference, $trans->account_name, $trans->user);
+            } elseif ($trans->payment_method->name === 'Flutterwave Payout') {
                 $send = FlutterwaveService::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->exchange_currency, $trans->reference, $trans->account_name);
-            } elseif ($trans->route->payment_method->name === 'Orchard') {
+            } elseif ($trans->payment_method->name === 'Orchard') {
                 $send = OrchardServices::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->reference, $trans->merchant->merchant_name);
             } else {
                 $send = [
@@ -56,7 +56,13 @@ class SendBankService
 
             if ($webhook) {
                 $trans->status = switchTransStatus($status);
+                $trans->message = $response['message'] ?? null;
                 $trans->balance_after = $balance;
+
+                $data = $trans->response;
+                unset($data['response']);
+                $data['response'] = $response['response'] ?? [];
+                $trans->response = $data;
 
                 $trans->save();
 
@@ -67,7 +73,7 @@ class SendBankService
             } else {
                 $final_send = [
                     'status' => $status,
-                    'message' => 'Send to Bank Successful | ' . $trans->base_currency . '' . $trans->amount . ' | Recipient Account: ' . $trans->account_name . ' (' . $trans->account . ') ' . $trans->institution . ' | Exchange Amount: ' . $trans->exchange_currency . '' . $trans->exchange_amount,
+                    'message' => $response['status'] == 'success' ? ('Send to Bank Successful | ' . $trans->base_currency . '' . $trans->amount . ' | Recipient Account: ' . $trans->account_name . ' (' . $trans->account . ') ' . $trans->institution . ' | Exchange Amount: ' . $trans->exchange_currency . '' . number_format($trans->exchange_amount, 2)) : $response['message'],
                     'balance' => $balance,
                 ];
 
@@ -75,9 +81,25 @@ class SendBankService
 
                 $trans->transaction()->associate($transaction);
                 $trans->status = $transaction->status;
+                $trans->message = $response['message'] ?? null;
                 $trans->balance_after = $balance;
 
+                if (isset($response['response'])) {
+                    $data = $trans->response;
+                    unset($data['response']);
+                    $data['response'] = $response['response'];
+                    $trans->response = $data;
+                }
+
                 $trans->save();
+            }
+
+            if ($status == 1) {
+                $trans->commission = $trans->response['commission'];
+                $trans->save();
+
+                $total_commission = ($trans->wallet->commission + $trans->response['commission']);
+                $trans->wallet()->update(['commission' => $total_commission]);
             }
 
             if (in_array($status, [1, 2])) {

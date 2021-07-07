@@ -51,7 +51,7 @@ class CyberpayService
         return $response->json()['data']['accountName'];
     }
 
-    public static function sendHandler($account, $bank, $amount, $narration, $reference, $account_name)
+    public static function sendHandler($account, $bank, $amount, $narration, $reference, $account_name, $user)
     {
         $beneficiary = str_replace('  ', ' ', $account_name);
         $beneficiary = explode(' ', $beneficiary);
@@ -61,8 +61,8 @@ class CyberpayService
             "businessCode" => config('env.cp_business_code'),
             "beneficiaryLastName" => $beneficiary[0],
             "beneficiaryOtherName" => $beneficiary[1] ?? $beneficiary[0],
-            "senderLastName" => user()->last_name,
-            "senderOtherName" => user()->first_name,
+            "senderLastName" => $user->last_name,
+            "senderOtherName" => $user->first_name,
             "amount" => (int)($amount * 100),
             "accountNumber" => $account,
             "bankCode" => $bank['bankCode'],
@@ -92,13 +92,8 @@ class CyberpayService
             ];
         }
 
-        if ($response->json()['message'] == "Transaction successful") {
-
-            return [
-                "status" => 'success',
-                "message" => $response->json()['message'],
-                "response" => $response->json()
-            ];
+        if (($response->json()['succeeded'] && $response->json()['message'] == "Funds transfer completed") || ($response->json()['succeeded'] && $response->json()['message'] == "Transaction successful")) {
+            return self::requery($response->json()['data']);
         }
 
         return [
@@ -118,5 +113,29 @@ class CyberpayService
             "message" => $data['Data']['Message'],
             "response" => $data
         ];
+    }
+
+    public static function requery($ref)
+    {
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'ApiKey' => base64_encode(config('env.cp_integration_key'))
+        ])->get(config('env.cp_send_url') . '/' . $ref . '/requery');
+
+        Log::info($response);
+
+        if ($response->json()['succeeded'] && $response->json()['data']['status'] == "Successful") {
+            return [
+                "status" => 'success',
+                "message" => $response->json()['message'],
+                "response" => $response->json()
+            ];
+        } else {
+            return [
+                "status" => 'pending',
+                "message" => $response->json()['message'],
+                "response" => ['ref' => $ref]
+            ];
+        }
     }
 }

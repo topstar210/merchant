@@ -9,6 +9,7 @@ use Livewire\Component;
 class Process extends Component
 {
     public MerchantPayment $transaction;
+    public $count = 30;
 
     public function mount($transaction)
     {
@@ -20,6 +21,9 @@ class Process extends Component
         $this->transaction->fresh();
         if ($this->transaction->status == 'Success') {
             $this->emitTo('utils.wallets', 'refreshWallet');
+        }
+        if ($this->transaction->status == 'Pending') {
+            $this->count++;
         }
 
     }

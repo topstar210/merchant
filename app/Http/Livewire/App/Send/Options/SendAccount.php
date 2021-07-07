@@ -51,7 +51,7 @@ class SendAccount extends Component
         return [
             'recipient_irt_account' => ['required', 'min:11', 'not_in:' . user()->account_number, 'exists:users,account_number'],
             'recipient_account_wallet' => ['required', 'in:' . $this->selectedAccount_wallet_ids],
-            'amount' => ['required', 'numeric', 'min:10', 'max:' . $this->wallet->balance],
+            'amount' => ['required', 'numeric', 'min:'.config('env.min_send'), 'max:' . $this->wallet->balance],
         ];
     }
 
