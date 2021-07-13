@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Utils\Resource;
 use App\Jobs\ProcessDeposit;
 use App\Models\MerchantPayment;
 use App\Models\PaymentMethod;
@@ -23,7 +24,13 @@ class WebHookController extends Controller
 
             $temp->delete();
 
-            $tp->data = array_merge($tp->data, ['response' => $request->except('_token')]);
+            $response = $request->all();
+
+            if ($payment_method->name == 'Flutterwave') {
+                $response = json_decode($response['response']);
+            }
+
+            $tp->data = array_merge($tp->data, ['response' => $response]);
 
             $transaction = MerchantPayment::query()->create([
                 'merchant_id' => user()->merchant_id,
@@ -42,6 +49,7 @@ class WebHookController extends Controller
                 'service' => "DEPOSIT",
                 'balance_before' => $tp->wallet->balance,
                 'product' => "WF",
+                'initiator_id' => $tp->user_id,
                 'response' => $tp->data,
                 'wallet_id' => $tp->wallet->id,
                 'payment_method_id' => $payment_method->id
@@ -50,6 +58,8 @@ class WebHookController extends Controller
             if (!in_array($payment_method, ['Orchard'])) {
                 ProcessDeposit::dispatch($transaction);
             }
+
+            Resource::logActivity('Attempted '.switchProducts('WF').' | '.$tp->data['from_currency'].number_format($tp->data['amount'],2));
 
             return redirect('app/transaction/process/' . $tp->reference);
         }
@@ -79,7 +89,7 @@ class WebHookController extends Controller
                 "status" => 'reject',
                 "message" => "Transaction already processed",
             ];
-        }else {
+        } else {
             if ($payment_method->name === 'CyberPay Payout') {
                 $send = CyberpayService::webhookHandler($request, $reference);
             } elseif ($payment_method->name === 'Flutterwave Payout') {

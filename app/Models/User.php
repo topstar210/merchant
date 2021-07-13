@@ -108,6 +108,11 @@ class User extends Authenticatable
         return $this->hasMany(Wallet::class)->with('currency')->latest();
     }
 
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class)->where('is_default', 'Yes')->with('currency');
+    }
+
     public function noLockWallets()
     {
         return $this->hasMany(Wallet::class)->where('lock', false)->with('currency')->latest();

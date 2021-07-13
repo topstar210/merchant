@@ -7,7 +7,8 @@
                        wire:ignore.self>
 
         <x-slot name="action">
-
+ <span  wire:target="$set" wire:loading
+        class="btn-spinner btn-spinner-soft-danger me-2"></span>
             @if($wallet->lock)
                 <button class="btn btn-soft-danger @mobile btn-sm @endmobile" disabled style="opacity: 1 !important;"><i
                         class="ti-lock"></i> Locked
@@ -78,13 +79,6 @@
                             <h5><i class="ti-info-alt text-danger"></i> No Wallet Deposit Found</h5>
                         </x-utils.empty>
                     @else
-                        <div class="d-block d-md-none mx-1">
-                            <h4>
-                                Deposit History
-                            </h4>
-                            <hr class="mb-0">
-                        </div>
-
                         <div class="table-responsive">
                             <table class="table mb-0 table-hover">
                                 <thead>
@@ -110,17 +104,29 @@
                                 <tbody>
                                 @foreach($transactions as $trx)
                                     <tr style="cursor: pointer"
-                                        onclick="window.location.href='{{url('app/transactions/'.$trx->id)}}'"
+                                        onclick="window.location.href='{{url('app/report/transactions/view/'.$trx->reference)}}'"
                                         wire:key="list{{$loop->index}}"
                                     >
                                         <td>{{$trx->reference}}
                                             <span class="float-end d-block d-md-none">
                                                 <span class="me-2"><small
-                                                        class="text-muted font-10 fw-light">{{$wallet->currency->code}}</small><b>{{number_format($trx->amount,2)}}</b></span>
+                                                        class="text-muted font-10 fw-light">{{$wallet->currency->code}}</small> <b>{{number_format($trx->amount,2)}}</b></span>
                                             <x-utils.ui.badge :title="$trx->status" :type="strtolower($trx->status)"
                                                               :mobile="''"/>
 
                                          <i class="ti-angle-right mx-1 mt-1"></i></span>
+                                            <div class="d-block d-md-none">
+                                                <div class=" d-flex flex-row">
+
+                                                    <div class="col-auto text-end">
+                                                        <small
+                                                            class="text-muted font-10 fw-light">{{formatDate($trx->created_at)}} <span class="text-dark">|</span> {{$trx->user == user()->first_name ? 'You' : $trx->user}} <span class="text-dark">|</span> {{switchProducts($trx->product)}}</small>
+                                                    </div>
+                                                    <div class="col">
+                                                    </div>
+                                                </div>
+
+                                            </div>
                                         </td>
                                         <td class="hidden-sm">{{number_format($trx->total_amount, 2)}}</td>
                                         <td class="hidden-sm">{{number_format($trx->charges,2)}}</td>

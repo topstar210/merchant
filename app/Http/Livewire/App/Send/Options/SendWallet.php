@@ -21,7 +21,7 @@ class SendWallet extends Component
     public $amount = 0;
     public $recipient_wallet;
 
-    protected $listeners = ['processingAccount' => 'lockAction', 'processingBank' => 'lockAction', 'finishAccount' => 'unlockAction', 'finishBank' => 'unlockAction'];
+    protected $listeners = ['processingAccount' => 'lockAction', 'processingBank' => 'lockAction', 'processingCommission' => 'lockAction', 'finishCommission' => 'unlockAction', 'finishAccount' => 'unlockAction', 'finishBank' => 'unlockAction'];
 
     public function mount($wallet)
     {
@@ -41,7 +41,7 @@ class SendWallet extends Component
     {
         return [
             'recipient_wallet' => ['required', 'in:' . $this->other_wallet_ids],
-            'amount' => ['required', 'numeric', 'min:'.config('env.min_send'), 'max:' . $this->wallet->balance],
+            'amount' => ['required', 'numeric', 'min:' . config('env.min_send'), 'max:' . $this->wallet->balance],
         ];
     }
 
@@ -102,7 +102,9 @@ class SendWallet extends Component
                 "total" => (double)$this->amount,
                 "charge" => 0,
                 "charge_fixed" => 0,
-                "charge_percentage" => 0
+                "charge_percentage" => 0,
+                "ip" => request()->ip(),
+                "browser" => request()->userAgent(),
             ])
         ]);
 

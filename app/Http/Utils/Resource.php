@@ -4,11 +4,14 @@
 namespace App\Http\Utils;
 
 
+use App\Exports\TransactionReceipt;
+use App\Models\ActivityLog;
 use App\Models\Deposit;
 use App\Models\MerchantPayment;
 use App\Models\Transaction;
 use App\Models\Withdrawal;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class Resource
 {
@@ -51,7 +54,7 @@ class Resource
         $transaction->total = $trans->response['total'];
         $transaction->status = switchTransStatus($response['status']);
         $transaction->note = $response['message'];
-        $transaction->available_amount = 0;
+        $transaction->available_amount = $response['balance'] ?? 0;
         $transaction->save();
 
         return $transaction;
@@ -93,5 +96,61 @@ class Resource
         return $transaction;
     }
 
+
+    public static function sortTransactionCollection($transactions)
+    {
+
+        $_transactions = [];
+        foreach ($transactions as $record) {
+            $data = [
+                'Reference' => (string)$record->reference,
+                'Date' => date('d F Y h:i a', strtotime($record->created_at)),
+                'Transaction Type' => $record->service,
+                'Transaction Service' => switchProducts($record->product),
+                'Wallet' => $record->base_currency,
+                'Amount' => $record->amount,
+                'Charge' => $record->charge,
+                'Total' => $record->total_amount,
+                'Commission' => $record->commission,
+                'Balance Before' => $record->balance_before,
+                'Balance After' => $record->balance_after,
+                'Account' => $record->account,
+                'Account Name' => $record->account_name,
+                'Institution' => $record->institution,
+                'Status' => $record->status,
+                'Exchange Currency' => $record->exchange_currency,
+                'Exchange Rate' => $record->exchange_rate,
+                'Exchange Amount' => $record->exchange_amount,
+            ];
+
+            if (user()->isMerchant()) {
+                 array_merge($data, ['Initiator' => $record->user == user()->first_name ? 'You' : $record->user]);
+            }
+
+            array_push($_transactions, $data);
+        }
+
+
+
+        return $_transactions;
+    }
+
+
+    public static function downloadReceipt(MerchantPayment $transaction)
+    {
+        $invoice = \PDF::loadView('exports.pdf.transaction', $transaction);
+        return $invoice->download($transaction->reference . ".pdf");
+    }
+
+    public static function logActivity($activity)
+    {
+        ActivityLog::create([
+            "user_id" => user()->id,
+            "type" => "User",
+            "ip_address" => request()->ip(),
+            "browser_agent" => request()->userAgent(),
+            "activity" => $activity,
+        ]);
+    }
 
 }

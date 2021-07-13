@@ -21,7 +21,7 @@ class SendBank extends Component
     public $send_currency;
     public $max;
 
-    protected $listeners = ['processingAccount' => 'lockAction', 'processingWallet' => 'lockAction', 'finishAccount' => 'unlockAction', 'finishBankWallet' => 'unlockAction'];
+    protected $listeners = ['processingAccount' => 'lockAction', 'processingWallet' => 'lockAction', 'processingCommission' => 'lockAction', 'finishCommission' => 'unlockAction', 'finishAccount' => 'unlockAction', 'finishBankWallet' => 'unlockAction'];
 
     public function mount($wallet)
     {
@@ -42,7 +42,7 @@ class SendBank extends Component
     {
         return [
             'send_currency' => ['required', 'in:' . $this->currency_ids],
-            'amount' => ['required', 'numeric', 'min:'.config('env.min_send'), 'max:' . $this->max],
+            'amount' => ['required', 'numeric', 'min:' . config('env.min_send'), 'max:' . $this->max],
         ];
     }
 

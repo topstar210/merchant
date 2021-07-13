@@ -42,24 +42,23 @@
                         </div>
                     </div>
 
-                @endif
-                <hr class="hr-dashed hr-menu">
 
-                <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
-                        @endif wire:target="continueSendBank"
-                        wire:loading.attr="disabled"><span
-                        wire:target="continueSendBank" wire:loading class="btn-spinner"></span> Continue
-                </button>
+                    <hr class="hr-dashed hr-menu">
+
+                    <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
+                            @endif wire:target="continueSendBank"
+                            wire:loading.attr="disabled"><span
+                            wire:target="continueSendBank" wire:loading class="btn-spinner"></span> Continue
+                    </button>
+                @endif
             </form>
         </div>
     </div>
 </div>
 @push('scripts')
     <script>
-        $(document).ready(function () {
-            $('#send_currency').on('select2:select', function (e) {
-            @this.call('setSendCurrency', e.target.value);
-            });
+        $('#send_currency').on('select2:select', function (e) {
+        @this.call('setSendCurrency', e.target.value);
         });
     </script>
 @endpush

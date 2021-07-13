@@ -28,4 +28,9 @@ class Merchant extends Model
         return $this->hasMany(User::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(MerchantPayment::class)->latest();
+    }
+
 }

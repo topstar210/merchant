@@ -38,6 +38,7 @@ class MerchantPayments extends Migration
             $table->string('response', 4500)->nullable();
             $table->enum('status', ['Pending', 'Success', 'Refund', 'Blocked', 'Failed'])->default('Pending');
             $table->string('message', 500)->nullable();
+            $table->integer('initiator_id')->nullable();
             $table->foreignIdFor(\App\Models\Transaction::class, 'transaction_id')->nullable();
             $table->foreignIdFor(\App\Models\Wallet::class, 'wallet_id')->nullable();
             $table->foreignIdFor(\App\Models\PaymentMethod::class, 'payment_method_id')->nullable();

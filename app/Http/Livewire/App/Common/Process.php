@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\App\Common;
 
+use App\Http\Utils\Resource;
 use App\Models\MerchantPayment;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -9,12 +10,13 @@ use Livewire\Component;
 class Process extends Component
 {
     public MerchantPayment $transaction;
-    public $count = 30;
+    public $count = 0;
 
     public function mount($transaction)
     {
         $this->transaction = $transaction;
     }
+
 
     public function checkTransaction()
     {

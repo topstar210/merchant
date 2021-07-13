@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Utils\Resource;
 use App\Jobs\ProcessSend;
 use App\Models\Currency;
 use App\Models\MerchantPayment;
 use App\Models\TempTransactions;
 use App\Models\Wallet;
+use App\Services\CyberpayService;
+use App\Services\FlutterwaveService;
+use App\Services\OrchardServices;
+use App\Services\Send\SendBankService;
 use Illuminate\Http\Request;
 
 class SendController extends Controller
@@ -64,11 +69,14 @@ class SendController extends Controller
             'balance_before' => $tp->wallet->balance,
             'product' => $tp->data['service'],
             'response' => $tp->data,
+            'initiator_id' => $tp->user_id,
             'wallet_id' => $tp->wallet_id,
             'payment_method_id' => $tp->payment_method_id
         ]);
 
         ProcessSend::dispatch($transaction);
+
+        Resource::logActivity('Attempted '.switchProducts($tp->data['service']).' | '.$tp->data['from_currency'].number_format($tp->data['amount'],2));
 
         return redirect('app/transaction/process/' . $tp->reference);
     }
@@ -101,6 +109,7 @@ class SendController extends Controller
             'balance_before' => $tp->wallet->balance,
             'product' => $tp->data['service'],
             'response' => $tp->data,
+            'initiator_id' => $tp->user_id,
             'wallet_id' => $tp->wallet_id,
             'payment_method_id' => $tp->route->payment_method->id
         ]);
@@ -109,6 +118,62 @@ class SendController extends Controller
 
         ProcessSend::dispatch($transaction);
 
+        Resource::logActivity('Attempted '.switchProducts($tp->data['service']).' | '.$tp->data['from_currency'].number_format($tp->data['amount'],2));
+
         return redirect('app/transaction/process/' . $tp->reference);
+    }
+
+    public function initializeCWTransaction(TempTransactions $temp)
+    {
+        $tp = $temp->replicate();
+
+        $temp->delete();
+
+        $transaction = MerchantPayment::query()->create([
+            'merchant_id' => user()->merchant_id,
+            'user_id' => $tp->wallet->user_id,
+            'transaction_type' => $tp->transaction_type_id,
+            'reference' => $tp->reference,
+            'amount' => $tp->data['amount'],
+            'charges' => $tp->data['charge'],
+            'exchange_amount' => $tp->data['exchange_amount'],
+            'exchange_rate' => $tp->data['exchange_rate'],
+            'base_currency' => $tp->data['from_currency'],
+            'exchange_currency' => $tp->data['to_currency'],
+            'service' => "COMMISSION WITHDRAWAL",
+            'balance_before' => $tp->wallet->balance,
+            'product' => $tp->data['service'],
+            'response' => $tp->data,
+            'wallet_id' => $tp->wallet_id,
+            'initiator_id' => $tp->user_id,
+            'payment_method_id' => $tp->payment_method_id
+        ]);
+
+        ProcessSend::dispatch($transaction);
+
+        Resource::logActivity('Attempted '.switchProducts($tp->data['service']).' | '.$tp->data['from_currency'].number_format($tp->data['amount'],2));
+
+        return redirect('app/transaction/process/' . $tp->reference);
+
+    }
+
+    public function requerySend(MerchantPayment $transaction)
+    {
+        if ($transaction->payment_method->name === 'CyberPay Payout') {
+            $query = CyberpayService::requery($transaction->response['response']['id'] ?? $transaction->response['response']['ref']);
+        } elseif ($transaction->payment_method->name === 'Flutterwave Payout') {
+            $query = FlutterwaveService::requery($transaction->response['response']['id'] ?? $transaction->response['response']['ref'], $transaction->reference);
+        } elseif ($transaction->payment_method->name === 'Orchard') {
+            $query = OrchardServices::requery($transaction->reference);
+        } else {
+            $query = [
+                "status" => 'failed',
+                "message" => "Unable to requery transaction"
+            ];
+        }
+
+        SendBankService::completeSend($transaction, $query);
+
+        return $query;
     }
 }

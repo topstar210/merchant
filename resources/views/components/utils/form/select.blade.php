@@ -31,7 +31,7 @@
             <select x-ref="select" id="{{$key}}" name="{{$key}}"
                     @if(isset($js)) wire:model="{{$key}}" @endif
                     class="form-control mb-3 @error($key) is-invalid @enderror custom-select" style="width: 100%;"
-                    required>
+                    @if(!isset($not_required)) required @endif>
                 <option value="">Select</option>
                 {{$slot}}
             </select>

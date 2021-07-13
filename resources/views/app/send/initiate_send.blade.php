@@ -15,6 +15,7 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="accordion" id="sendAccordion">
+                                <livewire:app.send.options.commission-wallet :wallet="$wallet"/>
                                 <livewire:app.send.options.send-wallet :wallet="$wallet"/>
                                 <livewire:app.send.options.send-account :wallet="$wallet"/>
                                 <livewire:app.send.options.send-bank :wallet="$wallet"/>

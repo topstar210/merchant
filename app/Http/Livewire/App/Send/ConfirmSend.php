@@ -50,7 +50,9 @@ class ConfirmSend extends Component
             return (new SendController())->initializeSBTransaction($this->temp);
         }
 
-
+        if ($this->temp->data['service'] == "CW") {
+            return (new SendController())->initializeCWTransaction($this->temp);
+        }
     }
 
     public function render()

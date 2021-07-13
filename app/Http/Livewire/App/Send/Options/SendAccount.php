@@ -27,7 +27,7 @@ class SendAccount extends Component
     public $recipient_irt_account;
     public $recipient_account_wallet;
 
-    protected $listeners = ['processingWallet' => 'lockAction', 'processingBank' => 'lockAction', 'finishWallet' => 'unlockAction', 'finishBank' => 'unlockAction'];
+    protected $listeners = ['processingWallet' => 'lockAction', 'processingBank' => 'lockAction',  'processingCommission' => 'lockAction', 'finishCommission' => 'unlockAction', 'finishWallet' => 'unlockAction', 'finishBank' => 'unlockAction'];
 
     public function mount($wallet)
     {
@@ -136,7 +136,9 @@ class SendAccount extends Component
                 "account_name" => $this->selectedAccount->full_name,
                 "charge" => 0,
                 "charge_fixed" => 0,
-                "charge_percentage" => 0
+                "charge_percentage" => 0,
+                "ip"=> request()->ip(),
+                "browser"=> request()->userAgent(),
             ])
         ]);
 

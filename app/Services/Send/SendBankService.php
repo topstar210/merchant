@@ -73,7 +73,7 @@ class SendBankService
             } else {
                 $final_send = [
                     'status' => $status,
-                    'message' => $response['status'] == 'success' ? ('Send to Bank Successful | ' . $trans->base_currency . '' . $trans->amount . ' | Recipient Account: ' . $trans->account_name . ' (' . $trans->account . ') ' . $trans->institution . ' | Exchange Amount: ' . $trans->exchange_currency . '' . number_format($trans->exchange_amount, 2)) : $response['message'],
+                    'message' => $response['status'] == 'success' ? ('Send to Bank Successful | ' . $trans->base_currency . '' . $trans->amount . ' | Recipient Account: ' . $trans->account_name . ' (' . $trans->account . ') ' . $trans->institution . ' | Sent Amount: ' . $trans->exchange_currency . '' . number_format($trans->exchange_amount, 2)) : $response['message'],
                     'balance' => $balance,
                 ];
 

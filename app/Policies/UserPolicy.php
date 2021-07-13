@@ -13,7 +13,7 @@ class UserPolicy
 
     public function viewAgent(User $user, User $model)
     {
-        return $user->merchant_id === $model->merchant_id
+        return $user->merchant_id === $model->merchant_id && $user->isMerchant()
             ? Response::allow()
             : Response::deny('You do not own this agent.');
     }

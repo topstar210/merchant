@@ -34,21 +34,19 @@
                                     <div class="col-5">
 
                                         <small class="font-10">Charges</small>
-                                        <h4 class="mt-0"><small
+                                        <h6 class="mt-0"><small
                                                 class="text-muted font-10 fw-light">{{$wallet->currency->code}}
                                             </small> {{number_format($charge,2)}}
-                                        </h4>
+                                        </h6>
                                     </div>
 
                                     <div class="col-7 text-end">
-                                        <div class="bg-soft-success px-2 py-1"
-                                             style="border-radius: 7px; box-shadow: 1px 5px 3px -2px rgb(0 0 0 / 10%)">
+
                                             <small class="font-10">Total</small>
-                                            <h4 class="mt-0"><small
+                                            <h3 class="mt-0"><small
                                                     class="text-muted font-10 fw-light">{{$wallet->currency->code}}
                                                 </small> {{number_format($total,2)}}
-                                            </h4>
-                                        </div>
+                                            </h3>
 
                                     </div>
                                 </div>

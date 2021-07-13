@@ -41,17 +41,20 @@ class SendWalletService
             $deposit->charges = 0;
             $deposit->exchange_amount = (float)($deposit->amount * $deposit->exchange_rate);
             $deposit->amount = $deposit->exchange_amount;
+            $deposit->exchange_rate = 1;
+            $deposit->base_currency = $deposit->exchange_currency;
             $deposit->service = "DEPOSIT";
             $deposit->product = "WF";
             $deposit->balance_before = $recipient_wallet->balance;
             $deposit->wallet_id = $recipient_wallet->id;
+            $deposit->initiator_id = $trans->user_id;
             $deposit->reference = (string)rand(100000000000, 999999999999);
 
             $balance_deposit = (new WalletController())->creditWallet($recipient_wallet, $deposit->exchange_amount);
 
             $final_deposit = [
                 'status' => 1,
-                'message' => 'Wallet transfer received | ' . $trans->exchange_currency . $deposit->exchange_amount,
+                'message' => 'Wallet transfer received | From: '.$trans->base_currency.' Wallet | ' . $trans->exchange_currency . number_format($deposit->exchange_amount, 2),
             ];
 
             $transaction_deposit = Resource::saveDepositTrans($trans, $final_deposit);

@@ -20,21 +20,30 @@ class FlutterwaveService
     public static function checkStatus(MerchantPayment $trans)
     {
         try {
-            $result = Http::post(config('env.fw_verify_url'), [
-                "txref" => $trans->reference,
-                "SECKEY" => config('env.fw_sec_key')
-            ]);
+            $response = Http::withToken(config('env.fw_sec_key'))->get(config('env.fw_verify_url') . '/' . $trans->response['response']['id'] . '/verify');
 
-            $response = $result->json();
+            Log::info('Flutterwave CheckStatus for:' . $trans->reference, $response->json());
 
-            if ($result->status() != 200) {
-                $response['status'] = "failed";
+            if ($response->status() != 200) {
+                return [
+                    'status' => 2,
+                    'message' => "Unable to verify deposit transaction",
+                    'response' => $response->json()
+                ];
+            }
+
+            if ($response->json()['status'] == 'success' && $response->json()['data']['status'] == 'successful') {
+                return [
+                    'status' => 1,
+                    'message' => ($response->json()['data']['payment_type'] == 'card' ? "Deposit Transaction with (" . $response->json()['data']['card']['type'] . " - " . $response->json()['data']['card']['first_6digits'] . "***" . $response->json()['data']['card']['last_4digits'] . ") | Card Country:" . $response->json()['data']['card']['country'] . " | Amount: " . $response->json()['data']['currency'] . $response->json()['data']['amount'] : "Deposit Transaction with (" . $response->json()['data']['payment_type'] . " )"),
+                    'response' => $response->json()
+                ];
             }
 
             return [
-                'status' => $response['status'] == 'success' ? 1 : 2,
-                'message' => $response['status'] == 'success' ? ($response['data']['paymenttype'] == 'card' ? "Deposit Transaction with (" . $response['data']['card']['brand'] . " - " . $response['data']['card']['cardBIN'] . "***" . $response['data']['card']['last4digits'] . " )" : "Deposit Transaction with (" . $response['data']['paymenttype'] . " )") : "Unable to verify deposit transaction",
-                'response' => $response
+                'status' => 2,
+                'message' => "Unable to verify deposit transaction",
+                'response' => $response->json()
             ];
 
         } catch (\Exception $e) {
@@ -56,35 +65,45 @@ class FlutterwaveService
 
         if ($response->status() != 200) {
             return [];
-        } else {
-            if (!isset($response->json()['data']['Banks'])) {
-                return [];
-            }
-            return $response->json()['data']['Banks'];
         }
+
+        if ($response->json()['status'] == 'success') {
+            if (count($response->json()['data']['Banks'])) {
+                return $response->json()['data']['Banks'];
+            }
+            if (in_array($code, ['XOF', 'XAF'])) {
+                return [
+                    ['Id' => 10000, 'code' => 'FMM', 'Name' => 'Francophone Mobile Money']
+                ];
+            }
+        }
+
+        return [];
+
     }
 
     public static function nameEnquiry($account, $bank)
     {
-        $response = Http::post(config('env.fw_validate_url'), [
-            "recipientaccount" => $account,
-            "destbankcode" => $bank['Code'],
-            "PBFPubKey" => config('env.fw_pub_key')
-        ]);
+        $response = Http::withToken(config('env.fw_sec_key'))
+            ->post(config('env.fw_validate_url'), [
+                    "account_number" => $account,
+                    "account_bank" => $bank['Code'],
+                ]
+            );
+
+        Log::info('Flutterwave Name Enquiry for:' . $account, $response->json());
 
         if ($response->status() != 200) {
             return null;
         }
 
-        if ($response->json()['status'] !== 'success') {
-            return null;
+        if ($response->json()['status'] == 'success') {
+            return $response->json()['data']['account_name'];
         }
 
-        if (is_null($response->json()['data']['data']['accountname'])) {
-            return null;
-        }
+        return null;
 
-        return $response->json()['data']['data']['accountname'];
+
     }
 
     public static function sendHandler($account, $bank, $amount, $narration, $currency, $reference, $account_name)
@@ -107,6 +126,8 @@ class FlutterwaveService
 
         $response = Http::post(config('env.fw_send_url'), $data);
 
+        Log::info('Flutterwave initial response for:' . $reference, $response->json());
+
         if ($response->status() != 200) {
             return [
                 "status" => 'failed',
@@ -117,15 +138,15 @@ class FlutterwaveService
         if ($response->json()['status'] !== 'success') {
             return [
                 "status" => 'failed',
-                "message" => $response->json()['message'],
-                "response" => $response->json()
+                "message" => $response->json()['data']['complete_message'],
+                "response" => $response->json()['data']
             ];
         }
 
         return [
             "status" => 'pending',
             "message" => $response->json()['message'],
-            "response" => ['ref' => $response->json()['data']['id']]
+            "response" => $response->json()['data']
         ];
     }
 
@@ -142,34 +163,36 @@ class FlutterwaveService
 
     public static function requery($ref, $reference)
     {
-        $url = config('env.fw_requery_url') . "?seckey=" . config('env.fw_sec_key') . "&reference=$reference&id=$ref";
-        $response = Http::get($url);
+        $response = Http::withToken(config('env.fw_sec_key'))
+            ->get(config('env.fw_requery_url') . $ref);
+
+        Log::info('Flutterwave Requery for:' . $reference, $response->json());
 
         if ($response->status() != 200) {
             return [
                 "status" => 'pending',
                 "message" => "Unable to process transaction requery",
-                "response" => ['ref' => $ref]
+                "response" => ['id' => $ref]
             ];
         }
 
-        if ($response->json()['status'] == 'success' && $response->json()['data']['transfers']['status'] == "SUCCESSFUL") {
+        if ($response->json()['status'] == 'success' && $response->json()['data']['status'] == "SUCCESSFUL") {
             return [
                 "status" => 'success',
-                "message" => $response->json()['data']['transfers']['complete_message'],
-                "response" => $response->json()
+                "message" => $response->json()['data']['complete_message'],
+                "response" => $response->json()['data']
             ];
-        } elseif ($response->json()['status'] == 'success' && $response->json()['data']['transfers']['status'] == "FAILED") {
+        } elseif ($response->json()['status'] == 'success' && $response->json()['data']['status'] == "FAILED") {
             return [
                 "status" => 'failed',
-                "message" => $response->json()['data']['transfers']['complete_message'],
-                "response" => $response->json()
+                "message" => $response->json()['data']['complete_message'],
+                "response" => $response->json()['data']
             ];
         } else {
             return [
                 "status" => 'pending',
-                "message" => $response->json()['message'],
-                "response" => ['ref' => $ref]
+                "message" => $response->json()['data']['complete_message'],
+                "response" => ['id' => $ref]
             ];
         }
     }

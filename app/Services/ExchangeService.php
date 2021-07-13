@@ -45,10 +45,51 @@ class ExchangeService
         return [
             'exchange_rate' => $exchangeRate,
             'from_currency' => $from->code,
-            'to_currency' => $to->code,
+            'to_currency' => $toCurrency,
             'exchange_amount' => $exchangeAmount,
             'converted' => true
         ];
+    }
+
+    public static function currencyExchangeBulk(Currency $from, $amount, $toCurrencies)
+    {
+        $ids = $toCurrencies->pluck('id');
+        $rateIncreases = RateIncrements::query()->where('from_id', $from->id)->whereIn('to_id', $ids)->get();
+        $_all = [];
+
+        foreach ($toCurrencies as $to) {
+            if (!$from->is($to)) {
+                $rateIncrease = $rateIncreases->where('to_id', $to->id)->first();
+                $amount = (float)$amount;
+
+                $exchangeRate = $to->rate / $from->rate;
+                $exchangeAmount = (float)($exchangeRate) * $amount;
+
+                if ($rateIncrease instanceof RateIncrements) {
+                    if ($rateIncrease->increase > 0) {
+                        $rateIncrement = $rateIncrease->increase;
+                        $exchangeRate = $exchangeRate * (1 + $rateIncrement / 100);
+                        $exchangeAmount = $exchangeAmount * (1 + $rateIncrement / 100);
+                    }
+                    if ($rateIncrease->decrease > 0) {
+                        $rateIncrement = $rateIncrease->decrease;
+                        $exchangeRate = $exchangeRate * (1 - $rateIncrement / 100);
+                        $exchangeAmount = $exchangeAmount * (1 - $rateIncrement / 100);
+                    }
+                }
+
+                $_all[] = [
+                    'exchange_rate' => $exchangeRate,
+                    'from_currency' => $from->code,
+                    'to_currency' => $to->code,
+                    'exchange_amount' => $exchangeAmount,
+                    'converted' => true
+                ];
+            }
+        }
+
+
+        return $_all;
     }
 
     public static function getCurrencyRate($from, $to)

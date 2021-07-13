@@ -93,7 +93,8 @@
                                     </span>
                                 </h5>
                                 <div class="float-end">
-                                    <small class="text-muted font-10 ">Commission: {{$wallet->currency->code}} <b class="font-12 text-success">{{number_format($wallet->commission, 2)}}</b></small>
+                                    <small class="text-muted font-10 ">Commission: {{$wallet->currency->code}} <b
+                                            class="font-12 text-success">{{number_format($wallet->commission, 2)}}</b></small>
 
                                 </div>
                                 <br>
@@ -122,13 +123,65 @@
                         @endforelse
                     </div>
                 </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h6>Today's Summary
+                        </h6>
+                    </div>
+                    <div class="card-body m-0 p-0" style="min-height: 100px" wire:init="getSummary">
+                        <nav>
+                            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                @foreach($agent_wallets as $index => $wallet)
+                                    <button class="nav-link {{$loop->first ? 'active' : ''}}"
+                                            id="nav-{{$wallet->id}}-tab"
+                                            data-bs-toggle="tab" data-bs-target="#nav-{{$wallet->id}}" type="button"
+                                            role="tab"
+                                            aria-controls="nav-{{$wallet->id}}"
+                                            aria-selected="true">{{$wallet->currency->code}} Wallet
+                                    </button>
+
+                                @endforeach
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            @if(!is_null($summary))
+                                @foreach($summary as $index => $sum)
+                                    <div class="tab-pane fade {{$loop->first ? 'show active' : ''}}"
+                                         id="nav-{{$sum->id ?? $sum['id']}}"
+                                         role="tabpanel" aria-labelledby="nav-{{$sum->id ?? $sum['id']}}-tab">
+                                        <div class="p-3 pb-2">
+
+
+                                            <h5><small class="font-12">Deposits</small> <span class="float-end"><span
+                                                        class="fw-light font-12 text-muted">{{$sum->currency->code ?? $sum['currency']['code']}}</span> {{number_format($sum->depositSum ?? $sum['depositSum'], 2)}}
+                                    </span>
+                                            </h5>
+                                            <hr>
+                                            <h5><small class="font-12">Withdrawals</small> <span class="float-end"><span
+                                                        class="fw-light font-12 text-muted">{{$sum->currency->code ?? $sum['currency']['code']}}</span> {{number_format($sum->withdrawalSum ?? $sum['withdrawalSum'], 2)}}
+                                </span>
+                                            </h5>
+                                            <hr>
+                                            <h5><small class="font-12">Commission Earned</small><span class="float-end"><span
+                                                        class="fw-light font-12 text-muted">{{$sum->currency->code ?? $sum['currency']['code']}}</span> {{number_format($sum->commissionSum ?? $sum['commissionSum'], 2)}}
+                                    </span>
+                                            </h5>
+                                        </div>
+
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+
+                    </div>
+                </div>
             </div>
             <div class="col-lg-4">
                 <div class="card mt-4">
                     <div class="card-header">
                         <h5>Recent Activities</h5>
                     </div>
-                    <div class="card-body activity-card overflow-scroll mb-3">
+                    <div class="card-body activity-card mb-3" data-simplebar>
                         @forelse($agent->activities as $act)
                             <x-utils.ui.activity :activity="$act" :browser="Browser::parse($act->browser_agent)"/>
                             @if(!$loop->last)
@@ -162,13 +215,6 @@
                 </div>
             </div>
         </div>
-        @push('scripts')
-            <script>
-                $(document).ready(function () {
-                    initializeToast();
-                });
-            </script>
-        @endpush
     @endif
 
 </div>
@@ -218,5 +264,9 @@
                 }
             })
         }
+
+        Livewire.on('showAlert', (e) => {
+            initializeToast();
+        });
     </script>
 @endpush

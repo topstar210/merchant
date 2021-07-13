@@ -13,16 +13,24 @@
                     </div>
                     <div class="card-body">
                         <div wire:ignore>
-                            <small class="font-10">Amount</small>
-                            <h4 class="mt-0"><small
-                                    class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
-                                </small> {{number_format($temp->data['amount'], 2)}}</h4>
-                            <hr>
-                            <small class="font-10">Charge</small>
-                            <h4 class="mt-0"><small
-                                    class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
-                                </small> {{number_format($temp->data['charge'], 2)}}</h4>
 
+                            <div class="d-flex flex-row">
+                                <div class="col">
+                                    <small class="font-10">Amount</small>
+                                    <h4 class="mt-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
+                                        </small> {{number_format($temp->data['amount'], 2)}}</h4>
+                                </div>
+
+                                <div class="col text-end">
+                                    <small class="font-10">Charge</small>
+                                    <h6 class="mt-0"><small
+                                            class="text-muted font-10 fw-light">{{$temp->data['from_currency']}}
+                                        </small> {{number_format($temp->data['charge'], 2)}}</h6>
+
+
+                                </div>
+                            </div>
                             <hr>
 
                             <div class="text-end">

@@ -39,11 +39,12 @@ class DepositService
         $trans->transaction()->associate($transaction);
         $trans->status = $transaction->status;
 
-        $data = $trans->response;
-        unset($data['response']);
-        $data['response'] = $final['response'];
-
-        $trans->response = $data;
+        if (isset($final['response'])) {
+            $data = $trans->response;
+            unset($data['response']);
+            $data['response'] = $final['response'];
+            $trans->response = $data;
+        }
 
         if ($trans->status == "Success") {
             $balance = (new WalletController())->creditWallet($trans->wallet, $trans->amount);

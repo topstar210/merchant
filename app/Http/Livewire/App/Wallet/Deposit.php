@@ -110,7 +110,9 @@ class Deposit extends Component
                 "total" => $this->total,
                 "charge" => $this->charge,
                 "charge_fixed" => $this->charge_fixed,
-                "charge_percentage" => $this->charge_percentage
+                "charge_percentage" => $this->charge_percentage,
+                "ip"=> request()->ip(),
+                "browser"=> request()->userAgent(),
             ])
         ];
 

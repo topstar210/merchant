@@ -49,7 +49,11 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
             ->missing(function (Request $request) {
                 return Redirect::route('app.agents')->with(['error' => true, 'error_message' => 'No Agent found']);
             });
+    });
 
+    Route::prefix('account')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AccountController::class, 'index']);
+        Route::get('security/{change}', [\App\Http\Controllers\AccountController::class, 'changeSecurity']);
     });
 
     Route::prefix('wallet')->group(function () {
@@ -92,9 +96,27 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
             });
     });
 
+    Route::prefix('report')->group(function () {
+        Route::prefix('transactions')->group(function () {
+            Route::get('/', [\App\Http\Controllers\ReportController::class, 'allTransactions'])
+                ->middleware('can:viewTransactions,App\Models\Permission');
+            Route::get('/view/{reference}', [\App\Http\Controllers\ReportController::class, 'viewTransaction'])
+                ->middleware('can:owner,reference')
+                ->missing(function (Request $request) {
+                    return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Transaction Found']);
+                });
+            Route::get('/receipt/{reference}', [\App\Http\Controllers\ReportController::class, 'downloadReceipt'])
+                ->middleware('can:owner,reference')
+                ->missing(function (Request $request) {
+                    return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Transaction Found']);
+                });
+        });
+
+    });
+
 
     Route::get('/transaction/process/{reference}', [\App\Http\Controllers\ProcessController::class, 'processTransaction'])
-//        ->middleware('can:processTransaction,reference')
+        ->middleware('can:processTransaction,reference')
         ->missing(function (Request $request) {
             return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Transaction Found or Transaction already processed']);
         });

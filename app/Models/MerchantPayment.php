@@ -32,6 +32,7 @@ class MerchantPayment extends Model
         'status',
         'transaction_id',
         'wallet_id',
+        'initiator_id',
         'payment_method_id',
     ];
 
@@ -75,6 +76,18 @@ class MerchantPayment extends Model
             if (!empty($status)) {
                 $query->where('status', $status);
             }
+        })->when($filters['wallet'] ?? null, function ($query, $wallet) {
+            if (!empty($wallet)) {
+                $query->where('wallet_id', $wallet);
+            }
+        })->when($filters['initiator'] ?? null, function ($query, $initiator) {
+            if (!empty($initiator)) {
+                $query->where('user_id', $initiator);
+            }
+        })->when($filters['service'] ?? null, function ($query, $service) {
+            if (!empty($service)) {
+                $query->where('product', $service);
+            }
         });
     }
 
@@ -116,5 +129,23 @@ class MerchantPayment extends Model
     public function debit_lock()
     {
         return $this->hasOne(WalletDebitLock::class, 'reference', 'reference');
+    }
+
+    public function scopeSummary($query, array $filters)
+    {
+        $query->where('status', 'Success')
+            ->when($filters['type'] ?? null, function ($query, $type) {
+                if (!is_null($type)) {
+                    $query->where('transaction_type', $type);
+                }
+            })->when($filters['date'] ?? null, function ($query, $date) {
+                if (!is_null($date)) {
+                    $query->whereDate('created_at', $date);
+                }
+            })->when($filters['wallet'] ?? null, function ($query, $wallet) {
+                if (!is_null($wallet)) {
+                    $query->where('wallet_id', $wallet);
+                }
+            });
     }
 }

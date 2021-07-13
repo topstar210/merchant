@@ -4,6 +4,8 @@ namespace App\Policies;
 
 use App\Models\MerchantPayment;
 use App\Models\User;
+use App\Models\Wallet;
+use Carbon\Carbon;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Http\Request;
@@ -25,10 +27,17 @@ class MerchantPaymentPolicy
     {
         if ($user->id !== $merchantPayment->user_id) {
             return Response::deny('You are not allowed to complete this transaction process');
-        } elseif ($merchantPayment->status !== 'Pending' && !$this->request->has('fingerprint')) {
-            return Response::deny('Transaction already processed or do not exist');
+        } elseif (Carbon::now()->diffInMinutes(Carbon::parse($merchantPayment->created_at)) > 10 && !$this->request->has('fingerprint')) {
+            return Response::deny('Transaction already processed');
         }
         return Response::allow();
+    }
+
+    public function owner(User $user, MerchantPayment $merchantPayment)
+    {
+        return $user->id === $merchantPayment->user_id || ($user->merchant_id === $merchantPayment->user->merchant_id && $user->isMerchant())
+            ? Response::allow()
+            : Response::deny('You are not authorized to view this transaction.');
     }
 
 }

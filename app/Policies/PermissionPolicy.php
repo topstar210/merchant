@@ -21,6 +21,11 @@ class PermissionPolicy
         return true;
     }
 
+    public function viewTransactions(User $user)
+    {
+        return true;
+    }
+
     public function shouldSend(User $user)
     {
         return is_null($user->suspend_payout_date) ? Response::allow()

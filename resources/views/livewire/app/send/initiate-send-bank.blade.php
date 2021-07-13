@@ -156,7 +156,7 @@
     <script>
         window.addEventListener('set_banks', event => {
             $.map(event.detail, function (val, key) {
-                var newOption = new Option(val.Name ?? val.bankName, val.Id ?? val.id, false, false);
+                var newOption = new Option((val.Name ?? val.bankName).toUpperCase(), val.Id ?? val.id, false, false);
                 $('#recipient_bank').append(newOption).trigger('change');
             })
         })

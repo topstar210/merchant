@@ -16,6 +16,7 @@ class ActivityLog extends Model
         'ip_address',
         'browser_agent',
         'created_at',
+        'activity',
     ];
 
     public function user()

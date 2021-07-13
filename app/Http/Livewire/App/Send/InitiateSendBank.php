@@ -195,7 +195,9 @@ class InitiateSendBank extends Component
                 "charge" => $this->charge,
                 "charge_fixed" => $this->charge_fixed,
                 "charge_percentage" => $this->charge_percentage,
-                "commission" => $this->commission
+                "commission" => $this->commission,
+                "ip" => request()->ip(),
+                "browser" => request()->userAgent(),
             ])
         ]);
 

@@ -20,7 +20,8 @@ class Rules
                     ->symbols()
                     ->uncompromised(3)],
                 'password_confirmation' => 'required|same:password',
-                'pin' => 'required|size:4',
+                'pin' => ['required', 'size:4', 'not_in:0000,1234'],
+
             ];
     }
 

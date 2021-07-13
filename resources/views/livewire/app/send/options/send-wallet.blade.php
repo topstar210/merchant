@@ -41,15 +41,15 @@
                         </div>
                     </div>
 
+
+                    <hr class="hr-dashed hr-menu">
+
+                    <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
+                            @endif wire:target="continueSendWallet"
+                            wire:loading.attr="disabled"><span
+                            wire:target="continueSendWallet" wire:loading class="btn-spinner"></span> Continue
+                    </button>
                 @endif
-                <hr class="hr-dashed hr-menu">
-
-                <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
-                        @endif wire:target="continueSendWallet"
-                        wire:loading.attr="disabled"><span
-                        wire:target="continueSendWallet" wire:loading class="btn-spinner"></span> Continue
-                </button>
-
             </form>
         </div>
     </div>

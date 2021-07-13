@@ -35,6 +35,8 @@ class CyberpayService
             "accountId" => $account
         ]);
 
+        Log::info('CyberPay Name Enquiry for:' . $account, $response->json());
+
         if ($response->status() != 200) {
             return null;
         }
@@ -76,7 +78,7 @@ class CyberpayService
             'ApiKey' => base64_encode(config('env.cp_integration_key'))
         ])->post(config('env.cp_send_url'), $data);
 
-        Log::info($response->json());
+        Log::info('CyberPay Response for payout:' . $reference, $response->json());
 
         if ($response->status() != 200) {
             return [
@@ -99,7 +101,7 @@ class CyberpayService
         return [
             "status" => 'pending',
             "message" => $response->json()['message'],
-            "response" => ['ref' => $response->json()['data']]
+            "response" => ['id' => $response->json()['data']]
         ];
 
     }
@@ -122,7 +124,7 @@ class CyberpayService
             'ApiKey' => base64_encode(config('env.cp_integration_key'))
         ])->get(config('env.cp_send_url') . '/' . $ref . '/requery');
 
-        Log::info($response);
+        Log::info('CyberPay Requery',$response->json());
 
         if ($response->json()['succeeded'] && $response->json()['data']['status'] == "Successful") {
             return [

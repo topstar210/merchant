@@ -30,7 +30,7 @@ const WITHDRAWALS = 2;
 
 function statusList()
 {
-    return ['Blocked', 'Failed', 'Pending', 'Refund', 'Success'];
+    return ['Success', 'Failed', 'Pending', 'Blocked', 'Refund'];
 }
 
 function formatDate($date)
@@ -61,6 +61,8 @@ function switchRouteName($route)
         default :
             return [$route, 'card.png'];
     }
+
+
 }
 
 function switchTransStatus($status)
@@ -111,18 +113,16 @@ function switchSubTransStatus($status)
 
 function switchProducts($product)
 {
-    switch ($product) {
-        case 'WF':
-            return 'Wallet Funding';
-            break;
-        case 'SW':
-            return 'Send to Wallet';
-            break;
-        case 'SA':
-            return 'Send to Account';
-            break;
-        case 'SB':
-            return 'Send to Bank';
-            break;
-    }
+    return serviceProductList()[$product] ?? $product;
+}
+
+function serviceProductList()
+{
+    return [
+        'WF' => 'Wallet Funding',
+        'SW' => 'Send to Wallet',
+        'SA' => 'Send to Account',
+        'SB' => 'Send to Bank',
+        'CW' => 'Commission to Wallet',
+    ];
 }

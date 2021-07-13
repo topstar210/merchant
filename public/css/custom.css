@@ -7,7 +7,7 @@ body, a {
 .account-body.accountbg {
     /*background-image: url(../images/move_forward_lines.svg);*/
     /*background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #00f18d, #008850) !important;*/
-    background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #6dcaa0, #017545) !important;
+    background-image: url(../images/move_forward_lines.svg), linear-gradient(to right, #ab9e33, #017545) !important;
 }
 
 /*.d-grid .btn-spinner {*/
@@ -30,6 +30,16 @@ body, a {
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, .125);
     border-radius: .25rem;
+}
+
+.badge.badge-soft-danger {
+    color: #ec0033 !important;
+}
+
+.badge.badge-soft-success-alt {
+    background-color: rgba(3,216,127,0.12) !important;
+    color: #019859 !important;
+    box-shadow: 0px 0px 13px 0px rgb(3 216 127 / 5%);
 }
 
 .accordion-item:last-of-type {
@@ -354,6 +364,17 @@ small {
 .left-sidenav {
     min-width: 300px;
     max-width: 300px;
+    border-right: 0;
+}
+.dashboard-converter{
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    height: 200px;
+    /*max-height: 100%;*/
+    background-image: url(../images/move_forward_lines.png), linear-gradient(to right, #ab9e33, #017545) !important;
+    background-position: center center;
+    background-size: cover;
 }
 
 .page-wrapper {
@@ -428,7 +449,7 @@ body.dark-sidenav .left-sidenav-menu li > a.active {
 .table th {
     /*color: #366aff;*/
     /*color: #678eff;*/
-    font-size: .8325rem;
+    font-size: .75rem;
     font-weight: 700;
 }
 

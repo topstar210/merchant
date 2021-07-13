@@ -33,25 +33,28 @@ class OrchardServices
             'currency_val' => $amount
         ];
 
-        $result = Http::withHeaders([
+        $response = Http::withHeaders([
             'Authorization' => self::computeAuth($data),
             'Content-Type' => 'application/json',
             'timeout' => 180,
             'open_timeout' => 180
         ])->post(config('env.orc_payment_url'), $data);
 
-        $response = $result->json();
 
-        Log::info($response);
+        Log::info('Orchard response for Checkout initialization', $response->json());
 
-        if ($result->status() !== 200) {
-            $response['resp_code'] == '100';
+        if ($response->status() !== 200) {
+            return [
+                "status" => false,
+                "link" => null,
+                "message" => 'Payment initialization failed. Try another option',
+            ];
         }
 
         return [
-            "status" => $response['resp_code'] == '000',
-            "link" => $response['redirect_url'] ?? null,
-            "message" => $response['resp_code'] == '000' ? $response['resp_desc'] : 'Payment initialization failed. Try another option',
+            "status" => $response->json()['resp_code'] == '000',
+            "link" => $response->json()['redirect_url'] ?? null,
+            "message" => $response->json()['resp_code'] == '000' ? $response->json()['resp_desc'] : 'Payment initialization failed. Try another option',
         ];
     }
 
@@ -59,6 +62,8 @@ class OrchardServices
     public static function handlePayment(MerchantPayment $trans, $response)
     {
         try {
+            Log::info('Response from Orchard Checkout for:' . $trans->reference, $response);
+
             $response['code'] = substr($response['trans_status'], 0, 3);
 
             $final = [
@@ -124,6 +129,8 @@ class OrchardServices
             "service_id" => config('env.orc_service_id')
         ]);
 
+        Log::info('Orchard Name Enquiry for:' . $account, $response->json());
+
         if ($response->status() != 200) {
             return null;
         }
@@ -162,7 +169,7 @@ class OrchardServices
             'open_timeout' => 180
         ])->post(config('env.orc_payout_url'), $data);
 
-        Log::info($response->json());
+        Log::info('Orchard Payout Initial Response for:'.$reference,$response->json());
 
         if ($response->status() != 200) {
             return [
@@ -218,6 +225,8 @@ class OrchardServices
             'timeout' => 180,
             'open_timeout' => 180
         ])->post(config('env.orc_requery_url'), $data);
+
+        Log::info('Orchard Requery for:'.$reference,$response->json());
 
         if ($response->status() != 200) {
             return [

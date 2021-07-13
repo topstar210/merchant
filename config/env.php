@@ -35,7 +35,7 @@ return [
     'cp_integration_key' => env('CP_INTEGRATION_KEY'),
     'cp_wallet_code' => env('CP_WALLET_CODE'),
 
-    'supported_currencies' => ['GHS', 'NGN', 'ZAR', 'XOF', 'XAF', 'UGX', 'KES', 'ZMW', 'RWF', 'TZS', 'USD', 'EUR', 'GBP']
+    'supported_currencies' => ['USD','GHS', 'NGN', 'ZAR', 'XOF', 'XAF', 'UGX', 'KES', 'ZMW', 'RWF', 'TZS', 'GBP', 'EUR']
 
 
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\App\Wallet;
 
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -18,15 +19,15 @@ class View extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public function updatingDate()
+    public function updating()
     {
         $this->resetPage();
     }
-
-    public function updatingStatus()
-    {
-        $this->resetPage();
-    }
+//
+//    public function updatingStatus()
+//    {
+//        $this->resetPage();
+//    }
 
     public function mount(Wallet $wallet)
     {
@@ -40,6 +41,9 @@ class View extends Component
 
     public function depositList()
     {
-        return $this->wallet->transactions()->deposits()->filter(["date" => $this->date, "status" => $this->status])->latest()->paginate(11);
+        return $this->wallet->transactions()->deposits()->addSelect(['user' => User::select('first_name')
+            ->whereColumn('id', 'merchant_payments_rev.initiator_id')
+            ->limit(1)
+        ])->filter(["date" => $this->date, "status" => $this->status])->latest()->paginate(20);
     }
 }

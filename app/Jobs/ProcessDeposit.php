@@ -22,6 +22,8 @@ class ProcessDeposit implements ShouldQueue
 
     public MerchantPayment $transaction;
 
+    public $timeout = 180;
+
     /**
      * ProcessDeposit constructor.
      * @param MerchantPayment $transaction

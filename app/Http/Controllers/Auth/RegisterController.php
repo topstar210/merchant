@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateMerchantRequest;
+use App\Http\Utils\Resource;
 use App\Http\Utils\Rules;
 use App\Mail\AgentInvitedMail;
 use App\Mail\MerchantCreatedMail;
@@ -206,10 +207,12 @@ class RegisterController extends Controller
 
             $hash = Hash::make((string)($user->id . ":" . $user->email));
 
+            Resource::logActivity('Created a new agent | ' . $user->full_name);
+
             $signature = base64_encode("$hash:$user->id:$user->email");
             $url = url("/setup/complete/$signature");
 
-            Mail::to($user)->send(new AgentInvitedMail($user, user()->merchant, $url));
+            Mail::to($user)->queue(new AgentInvitedMail($user, user()->merchant, $url));
 
             return [
                 'error' => false,

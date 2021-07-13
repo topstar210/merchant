@@ -6,7 +6,7 @@
     <x-utils.actionbar :title="'Reference: '.$transaction->reference" wire:ignore/>
     <div class="container-fluid app-main">
         <div class="row d-flex justify-content-center">
-            @if($count == 30 && $transaction->status == 'Pending')
+            @if($count == 20 && $transaction->status == 'Pending')
                 <div class="col-lg-4 mx-auto">
                     <div class="card mt-4">
                         <div class="card-header">
@@ -27,7 +27,7 @@
 
             @else
                 @if($transaction->status == 'Pending')
-                    <div class="col-lg-4 mx-auto" wire:poll.2s="checkTransaction">
+                    <div class="col-lg-4 mx-auto" wire:poll.3s="checkTransaction">
                         <div class="card mt-4">
                             <div class="card-header">
                                 <h6><i class="ti-info-alt text-danger"></i> Do not refresh this page</h6>
@@ -117,7 +117,7 @@
                                 <h6 class="mt-1 font-12 fw-light">{{$transaction->transaction->note}}</h6>
                                 <hr>
 
-                                <button class="btn btn-soft-primary">Print Receipt</button>
+                                <a class="btn btn-soft-danger"  target="_blank" href="{{url('app/report/transactions/receipt/'.$transaction->reference)}}"><i class="far fa-file-pdf"></i> Download Receipt</a>
                             </div>
                         </div>
                     </div>

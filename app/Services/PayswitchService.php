@@ -19,23 +19,27 @@ class PayswitchService
     public static function checkStatus(MerchantPayment $trans)
     {
         try {
-            $result = Http::withHeaders([
+            $response = Http::withHeaders([
                 'Merchant-Id' => config('env.ps_mid')
             ])->get(config('env.ps_verify_url') . $trans->reference . '/status');
 
-            $response = $result->json();
+            Log::info('PaySwitch Check Status for:' . $trans->reference, $response->json());
 
-            if ($result->status() != 200) {
-                $response['code'] = "100";
+            if ($response->status() != 200) {
+                return [
+                    'status' => 2,
+                    'message' => "Unable to verify Deposit Transaction",
+                    'response' => []
+                ];
             }
 
-            $msg = $response['code'] == "000" ? ("Actual Debit amount of " . $trans->response['to_currency'] . " " . $trans->response['exchange_amount'] . ", at the rate of " . $trans->response['from_currency'] . $trans->response['exchange_rate'] . " => " . $trans->response['to_currency'] . "1") : "";
-            $msg1 = $response['code'] == "000" ? ("Deposit Transaction with " . $response['r_switch'] . " " . $response['subscriber_number'] . ". " . $msg) : ("Deposit Transaction Failed. " . $response['reason'] ?? "");
+            $msg = $response->json()['code'] == "000" ? ("Actual Debit amount of " . $trans->response['to_currency'] . " " . $trans->response['exchange_amount'] . ", at the rate of " . $trans->response['from_currency'] . $trans->response['exchange_rate'] . " => " . $trans->response['to_currency'] . "1") : "";
+            $msg1 = $response->json()['code'] == "000" ? ("Deposit Transaction with " . $response->json()['r_switch'] . " " . $response->json()['subscriber_number'] . ". " . $msg) : ("Deposit Transaction Failed. " . $response->json()['reason'] ?? "");
 
             return [
-                'status' => $response['code'] == '000' ? 1 : 2,
+                'status' => $response->json()['code'] == '000' ? 1 : 2,
                 'message' => $msg1,
-                'response' => $response
+                'response' => $response->json()
             ];
 
 

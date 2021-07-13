@@ -13,7 +13,15 @@
             <h5 class="mt-0"><small class="text-muted">Send money to another IRT Account holder</small></h5>
             <hr>
             <form wire:submit.prevent="continueSendAccount">
-                <x-utils.form.input :key="'recipient_irt_account'" :js="''" :label="'IRT Account Number'"/>
+                <div class="row">
+                    <div class="col">
+                        <x-utils.form.input :key="'recipient_irt_account'" :js="''" :label="'IRT Account Number'"/>
+                    </div>
+                    <div class="col-auto" wire:target="recipient_irt_account" wire:loading>
+                                    <span wire:target="recipient_irt_account" wire:loading
+                                          class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
+                    </div>
+                </div>
 
                 @if(!is_null($tempAccount) && !$errors->has('recipient_irt_account'))
                     <div class="card-alt card-body">
@@ -78,14 +86,15 @@
                             </div>
                         </div>
 
-                    @endif
-                    <hr class="hr-dashed hr-menu">
 
-                    <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
-                            @endif wire:target="continueSendAccount"
-                            wire:loading.attr="disabled"><span
-                            wire:target="continueSendAccount" wire:loading class="btn-spinner"></span> Continue
-                    </button>
+                        <hr class="hr-dashed hr-menu">
+
+                        <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
+                                @endif wire:target="continueSendAccount"
+                                wire:loading.attr="disabled"><span
+                                wire:target="continueSendAccount" wire:loading class="btn-spinner"></span> Continue
+                        </button>
+                    @endif
                 @else
                     <select class="d-none" id="recipient_account_wallet">
 

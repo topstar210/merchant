@@ -41,6 +41,16 @@ class WalletController extends Controller
         return $wallet->balance;
     }
 
+    public function walletCommissionWithdrawal(Wallet $wallet, $amount)
+    {
+        $wallet->refresh();
+        $wallet->balance = (double)($wallet->balance + $amount);
+        $wallet->commission = (double)($wallet->commission - $amount);
+        $wallet->save();
+
+        return $wallet->balance;
+    }
+
     public function debitWallet(Wallet $wallet, $amount)
     {
         $wallet->refresh();

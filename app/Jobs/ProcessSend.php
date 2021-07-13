@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\MerchantPayment;
+use App\Services\Send\CommissionWithdrawal;
 use App\Services\Send\SendAccountService;
 use App\Services\Send\SendBankService;
 use App\Services\Send\SendWalletService;
@@ -18,6 +19,8 @@ class ProcessSend implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public MerchantPayment $transaction;
+
+    public $timeout = 180;
 
     /**
      * ProcessSend constructor.
@@ -44,6 +47,10 @@ class ProcessSend implements ShouldQueue
 
         if ($this->transaction->product == 'SB') {
             SendBankService::handleSend($this->transaction);
+        }
+
+        if ($this->transaction->product == 'CW') {
+            CommissionWithdrawal::handleSend($this->transaction);
         }
     }
 }
