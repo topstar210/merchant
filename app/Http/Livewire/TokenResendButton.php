@@ -20,7 +20,7 @@ class TokenResendButton extends Component
     public function render()
     {
         return <<<'blade'
-            <button class=" btn btn-sm btn-primary" wire:click="resendToken" wire:loading.attr="disabled"><span wire:loading class="btn-spinner"></span> Resend Token</button>
+          <small class="me-2">Haven't received the Authorization Token?</small> <button class=" btn btn-sm btn-primary" wire:click="resendToken" wire:loading.attr="disabled"><span wire:loading class="btn-spinner"></span> Resend Token</button>
         blade;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\App\Account;
 
+use App\Http\Utils\Resource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -53,9 +54,10 @@ class Security extends Component
     public function changeAction()
     {
         $this->validate();
-        Log::info('validated');
 
         User::query()->where('id', \user()->id)->update($this->action == 'password' ? ['password' => Hash::make($this->password)] : ['pin' => $this->pin]);
+
+        Resource::logActivity("Changed $this->action");
 
         return redirect('logout');
     }

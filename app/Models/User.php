@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use App\Mail\ResetPasswordMail;
+use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -41,6 +42,13 @@ class User extends Authenticatable
         'address_verified',
         'identity_verified',
     ];
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = url('password/reset/'.$token.'?email='.$this->email);
+
+        $this->notify(new ResetPasswordNotification($url));
+    }
 
     protected $appends = [
         'full_name'

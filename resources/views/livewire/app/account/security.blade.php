@@ -13,7 +13,6 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        {{print_r($errors->all())}}
                         <form wire:submit.prevent="changeAction">
                             <x-utils.form.input :key="'current_password'" :label="'Current Password'" :type="'password'"
                                                 :js="''"/>

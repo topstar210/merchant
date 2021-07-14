@@ -31,7 +31,9 @@
                                         <x-utils.pin-entry/>
                                         <input class="d-none" name="pin" id="pin">
                                     </form>
-                                    <livewire:token-resend-button/>
+                                    <div class="mt-4">
+                                        <livewire:token-resend-button/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
