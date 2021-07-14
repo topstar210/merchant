@@ -23,6 +23,10 @@ migrate:
 	@php artisan migrate
 
 serve:
+	@composer install --optimize-autoloader --no-dev
+	@php artisan config:cache
+	@php artisan route:cache
+	@php artisan view:cache
 	@npm install pm2@latest -g
 	@pm2 start irt-worker.yaml
 	@$(MAKE) note
