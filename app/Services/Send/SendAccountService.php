@@ -30,6 +30,7 @@ class SendAccountService
 
             $trans->transaction()->associate($transaction);
             $trans->status = $transaction->status;
+            $trans->message = 'Send to Account Successful';
             $trans->balance_after = $balance;
 
 
@@ -62,6 +63,7 @@ class SendAccountService
             if ($recipient_wallet->user->isMerchant() || $recipient_wallet->user->isAgent()) {
                 $deposit->transaction()->associate($transaction_deposit);
                 $deposit->balance_after = $balance_deposit;
+                $deposit->message ='Wallet transfer received successful';
                 $deposit->save();
             }
 

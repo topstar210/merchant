@@ -56,7 +56,7 @@ class SendBankService
 
             if ($webhook) {
                 $trans->status = switchTransStatus($status);
-                $trans->message = $response['message'] ?? null;
+                $trans->message = $response['message'] ?? 'Send to bank failed';
                 $trans->balance_after = $balance;
 
                 $data = $trans->response;
@@ -102,7 +102,7 @@ class SendBankService
                 $trans->wallet()->update(['commission' => $total_commission]);
             }
 
-            if (in_array($status, [1, 2])) {
+            if (in_array($status, [1])) {
                 try {
                     Mail::to($trans->user->email)->queue(new TransactionReceipt($trans));
                 } catch (\Exception $e) {

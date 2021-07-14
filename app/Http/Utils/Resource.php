@@ -138,7 +138,7 @@ class Resource
 
     public static function downloadReceipt(MerchantPayment $transaction)
     {
-        $invoice = \PDF::loadView('exports.pdf.transaction', $transaction);
+        $invoice = \PDF::loadView('exports.pdf.transaction', ['transaction'=>$transaction]);
         return $invoice->download($transaction->reference . ".pdf");
     }
 

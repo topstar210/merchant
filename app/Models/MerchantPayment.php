@@ -148,4 +148,23 @@ class MerchantPayment extends Model
                 }
             });
     }
+
+    public function scopeAltSummary($query, array $filters)
+    {
+        $query->where('status', 'Success')
+            ->when($filters['type'] ?? null, function ($query, $type) {
+                if (!is_null($type)) {
+                    $query->where('transaction_type', $type);
+                }
+            })->when($filters['cur'] ?? null, function ($query, $cur) {
+                if (!is_null($cur)) {
+                    $query->where('base_currency', $cur);
+                }
+            })->when($filters['date'] ?? null, function ($query, $date) {
+                if (!is_null($date)) {
+                    $range = explode('~', $date);
+                    $query->whereBetween('created_at', [$range[0], $range[1]]);
+                }
+            });
+    }
 }

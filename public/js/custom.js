@@ -17,50 +17,6 @@ $('#noLivewire').submit(function (e) {
     $('button[type=submit]').attr('disabled', true).prepend('<span class="btn-spinner"></span> ');
 });
 
-// function select2AlpineInit(type) {
-//     console.log(type);
-//     if (type === 'select2') {
-//         this.select2 = $(this.$refs.select).select2();
-//     } else if (type === 'phone_code') {
-//         this.select2 = $(this.$refs.select).select2({
-//             templateResult: phoneState,
-//             templateSelection: phoneSelectState
-//         });
-//     } else if (type === 'country') {
-//         this.select2 = $(this.$refs.select).select2({
-//             width: "100%",
-//             templateResult: countryState,
-//             templateSelection: countrySelectState
-//         });
-//     } else if (type === 'currency') {
-//         this.select2 = $(this.$refs.select).select2({
-//             width: "100%",
-//             templateResult: currencyState,
-//             templateSelection: currencySelectState
-//         });
-//     }
-// }
-
-// $(".select2").select2();
-//
-// $(".phone_code").select2({
-//     templateResult: phoneState,
-//     templateSelection: phoneSelectState
-// });
-//
-// $(".country").select2({
-//     width: "100%",
-//     templateResult: countryState,
-//     templateSelection: countrySelectState
-// })
-//
-// $(".currency").select2({
-//     width: "100%",
-//     templateResult: currencyState,
-//     templateSelection: currencySelectState
-// })
-
-
 function countrySelectState(state) {
     if (!state.id) {
         return state.text;
@@ -148,13 +104,3 @@ function phoneState(state) {
         '<span><span class="flag-icon flag-icon-' + state.element.label.toLowerCase() + '" style="margin-right: 10px"></span>' + state.text + '</span>'
     );
 }
-
-//
-// function expandTextArea() {
-//     var textArea = document.getElementById('textarea');
-//     textArea.addEventListener('keyup', function () {
-//         this.style.overflow = 'hidden';
-//         this.style.height = 0;
-//         this.style.height = this.scrollHeight + 'px';
-//     }, false);
-// }

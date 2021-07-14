@@ -126,3 +126,10 @@ Route::middleware(['auth', 'twoFA'])->prefix('app')->group(function () {
             return Redirect::route('app.dashboard')->with(['error' => true, 'error_message' => 'No Initialized Transaction Found']);
         });
 });
+
+
+Route::get('/mailable', function () {
+    $trans = \App\Models\MerchantPayment::find(100);
+
+    return new App\Mail\TransactionReceipt($trans);
+});

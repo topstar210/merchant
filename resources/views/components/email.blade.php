@@ -159,7 +159,7 @@
                                 <tr>
                                     <td style="font-family: sans-serif; font-size: 15px; vertical-align: top;">
                                         <img src="{{asset('images/default-logo.png')}}"
-                                             alt="Useful alt text"
+                                             alt="IMO Rapid Transfer"
                                              height="50" border="0"
                                              style="border:0; float: right; margin-bottom: 30px; margin-top: 10px; outline:none; text-decoration:none; display:block;">
 

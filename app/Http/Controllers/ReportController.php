@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Utils\Resource;
 use App\Models\MerchantPayment;
+use App\Services\SummaryService;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -23,5 +24,10 @@ class ReportController extends Controller
     {
         return Resource::downloadReceipt($reference);
 
+    }
+
+    public function altSummary()
+    {
+        return SummaryService::handleSummary(\request()->all());
     }
 }

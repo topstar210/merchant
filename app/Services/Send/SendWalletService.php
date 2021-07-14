@@ -31,6 +31,7 @@ class SendWalletService
 
             $trans->transaction()->associate($transaction);
             $trans->status = $transaction->status;
+            $trans->message ='Send to Wallet Successful';
             $trans->balance_after = $balance;
 
 
@@ -61,6 +62,7 @@ class SendWalletService
 
             $deposit->transaction()->associate($transaction_deposit);
             $deposit->balance_after = $balance_deposit;
+            $deposit->message ='Wallet transfer received Successful';
             $transaction_deposit->available_amount = $balance_deposit;
 
             $trans->save();
