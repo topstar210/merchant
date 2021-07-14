@@ -11,7 +11,7 @@
                         <div class="card">
                             <div class="card-body p-0 auth-header-box">
                                 <div class="text-center p-3">
-                                    <a href="index.html" class="logo logo-admin">
+                                    <a  class="logo logo-admin">
                                         <img src="{{asset('images/default-logo.png')}}" height="50" alt="logo"
                                              class="auth-logo">
                                     </a>
