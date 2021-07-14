@@ -31,6 +31,9 @@ serve:
 # 	@pm2 start irt-worker.yaml
 	@$(MAKE) note
 
+# 	Alternative to running queues in share hosting
+# 	*/5	*	*	*	*	/usr/local/bin/php /home/imodckeu/merchant/artisan queue:work --sleep=3 --tries=3 --max-time=3600
+
 note:
 	@echo "\n======================================== [NOTE] ========================================"
 	@echo "You're ready to go! IMO Rapid Transfer Agent Platform Setup successfully:					 "
