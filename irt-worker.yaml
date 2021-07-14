@@ -1,0 +1,13 @@
+apps:
+  - name: irt-worker
+    script: artisan
+    exec_mode: fork
+    interpreter: php
+    instances: 1
+    args:
+      - queue:work
+      - --tries=5
+      - --sleep=1
+    error_file: ./storage/logs/queue.error.log
+    out_file: ./storage/logs/queue.out.log
+    pid_file: ./storage/app/queue.pid
