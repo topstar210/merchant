@@ -59,6 +59,7 @@ class MerchantPayment extends Model
 
     protected $casts = [
         'response' => 'array',
+        'user_id'=> 'integer'
     ];
 
     public function scopeDeposits($query)

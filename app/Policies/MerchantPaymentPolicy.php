@@ -25,11 +25,9 @@ class MerchantPaymentPolicy
 
     public function processTransaction(User $user, MerchantPayment $merchantPayment)
     {
-        Log::info($user->id);
-        Log::info($merchantPayment->user_id);
         if ($user->merchant_id === $merchantPayment->user->merchant_id && $user->isMerchant()) {
             return Response::allow();
-        } elseif ($user->id !== (int)$merchantPayment->user_id) {
+        } elseif ($user->id !== $merchantPayment->user_id) {
             return Response::deny('You are not allowed to complete this transaction process');
         } elseif (Carbon::now()->diffInMinutes(Carbon::parse($merchantPayment->created_at)) > 10 && !$this->request->has('fingerprint')) {
             return Response::deny('Transaction already processed');

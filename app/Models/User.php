@@ -45,7 +45,7 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        $url = url('password/reset/'.$token.'?email='.$this->email);
+        $url = url('password/reset/' . $token . '?email=' . $this->email);
 
         $this->notify(new ResetPasswordNotification($url));
     }
@@ -75,6 +75,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'merchant_id' => 'integer'
     ];
 
     public static function boot()

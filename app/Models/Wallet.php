@@ -17,6 +17,10 @@ class Wallet extends Model
         'is_default'
     ];
 
+    protected $casts = [
+        'user_id'=> 'integer'
+    ];
+
     public function currency()
     {
         return $this->belongsTo(Currency::class, 'currency_id');
