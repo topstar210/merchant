@@ -26,7 +26,7 @@ class MerchantPaymentPolicy
     public function processTransaction(User $user, MerchantPayment $merchantPayment)
     {
         Log::info($user->id);
-        Log::info();
+        Log::info($merchantPayment->user_id);
         if ($user->merchant_id === $merchantPayment->user->merchant_id && $user->isMerchant()) {
             return Response::allow();
         } elseif ($user->id !== (int)$merchantPayment->user_id) {
