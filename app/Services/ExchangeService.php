@@ -103,7 +103,6 @@ class ExchangeService
 
         if ($response->status() == 200) {
             $rates = $response->json()['rates'];
-            Log::info($rates);
             return $rates[$to] / $rates[$from];
         }
 

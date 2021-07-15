@@ -38,9 +38,7 @@ class All extends Component
         } else {
             $this->wallets = \user()->wallets;
         }
-
-        Log::info($this->wallets);
-
+        
         $this->dispatchBrowserEvent('set_wallets', $this->wallets);
     }
 
