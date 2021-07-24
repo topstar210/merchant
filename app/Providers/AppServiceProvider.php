@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\SanitizeInput;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+//        Livewire::addPersistentMiddleware([
+//            SanitizeInput::class,
+//        ]);
     }
 
     /**

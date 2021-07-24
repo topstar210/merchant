@@ -80,7 +80,7 @@
                                                                 earn
                                                                 revenue as
                                                                 you trade?</p>
-                                                            <a href="javascript: void(0);"
+                                                            <a href="https://imorapidtransfer.com/learn-more" target="_blank"
                                                                class="btn btn-primary btn-sm">Learn More</a>
                                                         </div>
                                                     </div>
