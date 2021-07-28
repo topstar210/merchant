@@ -94,7 +94,7 @@
                                     <h6 class="mt-1 mb-0">{{$temp->data['extra']['recipient_bank']}} | {{$temp->data['extra']['routing_number']}} | {{$temp->data['extra']['swift_code']}}</h6>
                                     <hr>
                                     <small class="font-10">Recipient Address</small>
-                                    <h6 class="mt-1 mb-0">{{$temp->data['extra']['beneficiary_address'] ?? ($temp->data['extra']['street_number']." ".$temp->data['extra']['street_name'].", ".$temp->data['extra']['city'])}} | {{\App\Http\Utils\Resource::supportedEUCountries()[$temp->data['extra']['recipient_country']]}}</h6>
+                                    <h6 class="mt-1 mb-0">{{$temp->data['extra']['beneficiary_address'] ?? ($temp->data['extra']['street_number']." ".$temp->data['extra']['street_name'].", ".$temp->data['extra']['city'])}} | {{$temp->data['extra']['recipient_country']}}</h6>
 
                                 @else
                                     <small class="font-10">Recipient Account</small>

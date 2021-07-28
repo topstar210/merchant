@@ -179,8 +179,6 @@ class FlutterwaveService
             $data['meta'][0] = (object)$data['meta'][0];
         }
 
-        Log::info($data);
-
         $response = Http::post(config('env.fw_send_url'), $data);
 
         Log::info('Flutterwave initial response for:' . $reference, $response->json());

@@ -104,7 +104,7 @@ class SendController extends Controller
             'exchange_currency' => $tp->data['to_currency'],
             'account' => $tp->data['account'] ?? null,
             'account_name' => $tp->data['account_name'] ?? null,
-            'institution' => $tp->data['bank']['Name'] ?? $tp->data['bank']['bankName'],
+            'institution' => $tp->data['bank']['Name'] ?? $tp->data['bank']['bankName'] ?? $tp->data['extra']['recipient_bank'],
             'service' => "WITHDRAWAL",
             'balance_before' => $tp->wallet->balance,
             'product' => $tp->data['service'],

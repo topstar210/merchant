@@ -20,7 +20,7 @@
                                 transaction and clicking <b>"Requery"</b></p>
 
                             <hr>
-                            <a class="btn btn-soft-primary">View Transaction</a>
+                            <a class="btn btn-soft-primary" href="{{url('/app/report/transactions/view/'.$transaction->reference)}}">View Transaction</a>
                         </div>
                     </div>
                 </div>

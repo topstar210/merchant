@@ -31,6 +31,8 @@ class View extends Component
             $query['message']
         );
 
+        $this->emitTo('utils.wallets', 'refreshWallet');
+
         $this->emit('showAlert');
     }
 

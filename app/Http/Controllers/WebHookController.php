@@ -59,7 +59,7 @@ class WebHookController extends Controller
                 ProcessDeposit::dispatch($transaction);
             }
 
-            Resource::logActivity('Attempted '.switchProducts('WF').' | '.$tp->data['from_currency'].number_format($tp->data['amount'],2));
+            Resource::logActivity('Attempted ' . switchProducts('WF') . ' | ' . $tp->data['from_currency'] . number_format($tp->data['amount'], 2));
 
             return redirect('app/transaction/process/' . $tp->reference);
         }
@@ -84,6 +84,8 @@ class WebHookController extends Controller
 
     public function handleSend(Request $request, PaymentMethod $payment_method, MerchantPayment $reference)
     {
+        Log::info('Webhook response for:' . $reference . ' | from:' . $payment_method, $request->all());
+
         if ($reference->status !== 'Pending') {
             $send = [
                 "status" => 'reject',
