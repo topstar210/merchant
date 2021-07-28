@@ -59,8 +59,8 @@ class FlutterwaveService
 
     public static function getBanks($code)
     {
-        $code = substr($code, 0, 2);
-        $url = config('env.fw_bank_url') . "/$code?public_key=" . config('env.fw_pub_key');
+        $short_code = substr($code, 0, 2);
+        $url = config('env.fw_bank_url') . "/$short_code?public_key=" . config('env.fw_pub_key');
         $response = Http::get($url);
 
         if ($response->status() != 200) {
@@ -68,14 +68,15 @@ class FlutterwaveService
         }
 
         if ($response->json()['status'] == 'success') {
-            if (count($response->json()['data']['Banks'])) {
-                return $response->json()['data']['Banks'];
-            }
             if (in_array($code, ['XOF', 'XAF'])) {
                 return [
                     ['Id' => 10000, 'code' => 'FMM', 'Name' => 'Francophone Mobile Money']
                 ];
             }
+            if (count($response->json()['data']['Banks'])) {
+                return $response->json()['data']['Banks'];
+            }
+
         }
 
         return [];
@@ -106,11 +107,10 @@ class FlutterwaveService
 
     }
 
-    public static function sendHandler($account, $bank, $amount, $narration, $currency, $reference, $account_name)
+    public static function sendHandler($account, $bank, $amount, $narration, $currency, $reference, $account_name, $data_extra)
     {
         $data = [
-            "account_bank" => $bank['Code'],
-            "account_number" => $account,
+
             "amount" => $amount,
             "seckey" => config('env.fw_sec_key'),
             "narration" => $narration,
@@ -120,9 +120,66 @@ class FlutterwaveService
             "debit_currency" => $currency
         ];
 
-        if (in_array($currency, ['KES', 'RWF', 'TZS', 'UGX', 'XAF', 'XOF', 'ZMW', 'ZAR'])) {
+        if (in_array($currency, ['GHS', 'KES', 'RWF', 'TZS', 'UGX', 'XAF', 'XOF', 'ZMW', 'ZAR'])) {
             $data = array_merge($data, ['beneficiary_name' => $account_name]);
         }
+
+        if (in_array($currency, ['USD', 'EUR', 'GBP'])) {
+            $data = array_merge($data,
+                [
+                    'beneficiary_name' => $account_name,
+                    "meta" => [
+                        [
+                            "AccountNumber" => $account,
+                            "RoutingNumber" => $data_extra['extra']['routing_number'],
+                            "SwiftCode" => $data_extra['extra']['swift_code'],
+                            "BankName" => $data_extra['extra']['recipient_bank'],
+                            "BeneficiaryName" => $account_name,
+                            "BeneficiaryCountry" => $data_extra['extra']['recipient_country']
+                        ]
+                    ]
+                ]
+            );
+
+            if (in_array($currency, ['USD'])) {
+                $data['meta'][0] = array_merge($data['meta'][0], [
+                    "BeneficiaryAddress" => $data_extra['extra']['beneficiary_address']
+                ]);
+            }
+
+            if (in_array($currency, ['EUR', 'GBP'])) {
+                $data['meta'][0] = array_merge($data['meta'][0], [
+                    "PostalCode" => $data_extra['extra']['postal_code'], // Beneficiary postal code
+                    "StreetNumber" => $data_extra['extra']['street_number'],
+                    "StreetName" => $data_extra['extra']['street_name'],
+                    "City" => $data_extra['extra']['city']
+                ]);
+            }
+        } else {
+            $data = array_merge($data, [
+                "account_bank" => $bank['Code'],
+                "account_number" => $account,
+            ]);
+            if (in_array($currency, ['ZAR'])) {
+                $data = array_merge($data, [
+                    "meta" => [
+                        [
+                            "FirstName" => explode(' ', $account_name)[0],
+                            "LastName" => explode(' ', $account_name)[1] ?? '',
+                            "EmailAddress" => "info@imorapidtransfer.com",
+                            "MobileNumber" => "+233303979715",
+                            "Address" => $data_extra['extra']['beneficiary_address']
+                        ]
+                    ]
+                ]);
+            }
+        }
+
+        if (isset($data['meta'])) {
+            $data['meta'][0] = (object)$data['meta'][0];
+        }
+
+        Log::info($data);
 
         $response = Http::post(config('env.fw_send_url'), $data);
 

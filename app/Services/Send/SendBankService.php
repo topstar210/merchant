@@ -24,7 +24,7 @@ class SendBankService
             if ($trans->payment_method->name === 'CyberPay Payout') {
                 $send = CyberpayService::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->reference, $trans->account_name, $trans->user);
             } elseif ($trans->payment_method->name === 'Flutterwave Payout') {
-                $send = FlutterwaveService::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->exchange_currency, $trans->reference, $trans->account_name);
+                $send = FlutterwaveService::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->exchange_currency, $trans->reference, $trans->account_name, $trans->response);
             } elseif ($trans->payment_method->name === 'Orchard') {
                 $send = OrchardServices::sendHandler($trans->account, $trans->response['bank'], $trans->exchange_amount, $narration, $trans->reference, $trans->merchant->merchant_name);
             } else {

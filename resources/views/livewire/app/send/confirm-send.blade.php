@@ -82,14 +82,29 @@
                             @endif
 
                             @if($temp->data['service'] == "SB")
-                                <small class="font-10">Recipient Account</small>
-                                <h6 class="mt-1 mb-0">{{$temp->data['account_name']}}</h6>
-                                <small
-                                    class="fw-light"><span
-                                        class="fw-light text-muted">{{$temp->data['account']}}</span>
-                                    - {{$temp->data['bank']['Name'] ?? $temp->data['bank']['bankName']}}
-                                </small>
+                                @if(in_array($temp->data['to_currency'], ['USD', 'EUR', 'GBP']))
+                                    <small class="font-10">Recipient Account</small>
+                                    <h6 class="mt-1 mb-0">{{$temp->data['account_name']}}</h6>
+                                    <small
+                                        class="fw-light"><span
+                                            class="fw-light text-muted">{{$temp->data['account']}}</span>
+                                    </small>
+                                    <hr>
+                                    <small class="font-10">Bank | Routing Number | Swift Code</small>
+                                    <h6 class="mt-1 mb-0">{{$temp->data['extra']['recipient_bank']}} | {{$temp->data['extra']['routing_number']}} | {{$temp->data['extra']['swift_code']}}</h6>
+                                    <hr>
+                                    <small class="font-10">Recipient Address</small>
+                                    <h6 class="mt-1 mb-0">{{$temp->data['extra']['beneficiary_address'] ?? ($temp->data['extra']['street_number']." ".$temp->data['extra']['street_name'].", ".$temp->data['extra']['city'])}} | {{\App\Http\Utils\Resource::supportedEUCountries()[$temp->data['extra']['recipient_country']]}}</h6>
 
+                                @else
+                                    <small class="font-10">Recipient Account</small>
+                                    <h6 class="mt-1 mb-0">{{$temp->data['account_name']}}</h6>
+                                    <small
+                                        class="fw-light"><span
+                                            class="fw-light text-muted">{{$temp->data['account']}}</span>
+                                        - {{$temp->data['bank']['Name'] ?? $temp->data['bank']['bankName']}}
+                                    </small>
+                                @endif
                                 <hr>
                                 <div class="d-flex flex-row">
                                     <div class="col">

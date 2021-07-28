@@ -124,12 +124,11 @@ class Resource
             ];
 
             if (user()->isMerchant()) {
-                 array_merge($data, ['Initiator' => $record->user == user()->first_name ? 'You' : $record->user]);
+                array_merge($data, ['Initiator' => $record->user == user()->first_name ? 'You' : $record->user]);
             }
 
             array_push($_transactions, $data);
         }
-
 
 
         return $_transactions;
@@ -138,7 +137,7 @@ class Resource
 
     public static function downloadReceipt(MerchantPayment $transaction)
     {
-        $invoice = \PDF::loadView('exports.pdf.transaction', ['transaction'=>$transaction]);
+        $invoice = \PDF::loadView('exports.pdf.transaction', ['transaction' => $transaction]);
         return $invoice->download($transaction->reference . ".pdf");
     }
 
@@ -151,6 +150,21 @@ class Resource
             "browser_agent" => request()->userAgent(),
             "activity" => $activity,
         ]);
+    }
+
+    public static function supportedEUCountries()
+    {
+        return [
+            'BE' => 'Belgium',
+            'FR' => 'France',
+            'DE' => 'Germany',
+            'GR' => 'Greece',
+            'IT' => 'Italy',
+            'MT' => 'Malta',
+            'NL' => 'Netherland',
+            'PT' => 'Portugal',
+            'ES' => 'Spain',
+        ];
     }
 
 }

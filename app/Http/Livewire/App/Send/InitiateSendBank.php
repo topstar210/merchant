@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\App\Send;
 
+use App\Http\Utils\Resource;
 use App\Models\TempTransactions;
 use App\Models\Wallet;
 use App\Services\CyberpayService;
@@ -30,24 +31,37 @@ class InitiateSendBank extends Component
     public $banks;
     public $selectedBank;
     public $recipient_bank;
+    public $eu_countries;
 
     public $tempAccount;
     public $selectedAccount;
 
     public $beneficiary;
 
+    public $beneficiary_name;
+    public $routing_number;
+    public $swift_code;
+    public $postal_code;
+    public $street_number;
+    public $street_name;
+    public $city;
+    public $recipient_country;
+    public $beneficiary_address;
+
+
     public $account;
 
     public function mount(Wallet $wallet, $data)
     {
         $routes = $data['send_currency']->transfer_route;
+        Log::info($routes);
         $this->wallet = $wallet;
         $this->amount = $data['amount'];
         $this->supported = count($routes) ? true : false;
         $this->payment_method = count($routes) ? $routes[0] : [];
         $this->rates = $data['rates'];
         $this->recipient_currency = $data['send_currency'];
-
+        $this->eu_countries = Resource::supportedEUCountries();
     }
 
     protected $messages = [
@@ -60,9 +74,18 @@ class InitiateSendBank extends Component
     protected function rules()
     {
         return [
-            'account' => ['required', 'min:10', 'max:20'],
+            'account' => ['required', 'min:9', 'max:20'],
             'recipient_bank' => ['required'],
             'beneficiary' => [Rule::requiredIf(!is_null($this->tempAccount))],
+            'beneficiary_name' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['USD', 'EUR', 'GBP']))],
+            'routing_number' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['USD', 'EUR', 'GBP']))],
+            'swift_code' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['USD', 'EUR', 'GBP']))],
+            'postal_code' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['EUR', 'GBP']))],
+            'street_number' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['EUR', 'GBP']))],
+            'street_name' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['EUR', 'GBP']))],
+            'city' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['EUR', 'GBP']))],
+            'recipient_country' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['EUR']))],
+            'beneficiary_address' => [Rule::requiredIf(in_array($this->recipient_currency->code, ['USD', 'ZAR']))],
         ];
     }
 
@@ -111,7 +134,7 @@ class InitiateSendBank extends Component
                 $account_name = CyberpayService::nameEnquiry($this->account, $this->selectedBank);
             }
             if ($this->payment_method->payment_method->name === 'Flutterwave Payout') {
-                if (in_array($this->recipient_currency->code, ['KES', 'RWF', 'TZS', 'UGX', 'XAF', 'XOF', 'ZMW', 'ZAR'])) {
+                if (in_array($this->recipient_currency->code, ['GHS', 'KES', 'RWF', 'TZS', 'UGX', 'XAF', 'XOF', 'ZMW', 'ZAR'])) {
                     $account_name = '';
                 } else {
                     $account_name = FlutterwaveService::nameEnquiry($this->account, $this->selectedBank);
@@ -167,7 +190,6 @@ class InitiateSendBank extends Component
             $this->banks = [];
         }
 
-
         $this->dispatchBrowserEvent('set_banks', array_reverse($this->banks));
 
     }
@@ -191,13 +213,24 @@ class InitiateSendBank extends Component
                 "total" => (double)$this->total,
                 "bank" => $this->selectedBank,
                 "account" => $this->account,
-                "account_name" => $this->selectedAccount['account_name'],
+                "account_name" => $this->selectedAccount['account_name'] ?? $this->beneficiary_name,
                 "charge" => $this->charge,
                 "charge_fixed" => $this->charge_fixed,
                 "charge_percentage" => $this->charge_percentage,
                 "commission" => $this->commission,
                 "ip" => request()->ip(),
                 "browser" => request()->userAgent(),
+                "extra" => [
+                    'routing_number' => $this->routing_number ?? null,
+                    'swift_code' => $this->swift_code ?? null,
+                    'postal_code' => $this->postal_code ?? null,
+                    'street_number' => $this->street_number ?? null,
+                    'street_name' => $this->street_name ?? null,
+                    'city' => $this->city ?? null,
+                    'recipient_bank' => $this->recipient_bank ?? null,
+                    'recipient_country' => switchSendUGECountry($this->recipient_currency->code, $this->recipient_country),
+                    'beneficiary_address' => $this->beneficiary_address ?? null,
+                ]
             ])
         ]);
 

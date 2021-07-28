@@ -126,3 +126,18 @@ function serviceProductList()
         'CW' => 'Commission to Wallet',
     ];
 }
+
+
+function switchSendUGECountry($currency_code, $country_code = null)
+{
+    switch ($currency_code) {
+        case 'USD':
+            return 'US';
+        case 'GBP':
+            return 'UK';
+        case 'EUR':
+            return $country_code;
+        default:
+            return $currency_code;
+    }
+}

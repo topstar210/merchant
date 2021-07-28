@@ -70,74 +70,167 @@
                             <form wire:submit.prevent="continueSendBank">
                                 <div class="row">
                                     <div class="col">
-                                        <x-utils.form.input :key="'account'" :js="'lazy'" :label="'Account Number'"/>
+                                        <x-utils.form.input :key="'account'" :js="'lazy'"
+                                                            :label="in_array($recipient_currency->code, ['GHS','KES', 'RWF', 'TZS', 'UGX', 'XAF', 'XOF', 'ZMW']) ? 'Account Number / Mobile Number' : 'Account Number'"/>
                                     </div>
                                     <div class="col-auto" wire:target="account, setSelectedBank" wire:loading>
                                     <span wire:target="account, setSelectedBank" wire:loading
                                           class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
                                     </div>
                                 </div>
-                                <div class="row" wire:init="retrieveBanks">
-                                    <div class="col">
-                                        <x-utils.form.select :key="'recipient_bank'" :js="''" :label="'Choose Bank'"/>
+                                @if(in_array($recipient_currency->code, ['USD', 'EUR', 'GBP']))
+                                    <div class="row">
+                                        <div class="col">
+                                            <x-utils.form.input :key="'beneficiary_name'" :js="'lazy'"
+                                                                :label="'Account Name'"/>
+                                        </div>
                                     </div>
-                                    <div class="col-auto" wire:target="retrieveBanks" wire:loading>
-                                    <span wire:target="retrieveBanks" wire:loading
-                                          class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
+                                    @if(in_array($recipient_currency->code, ['EUR']))
+                                        <div class="row">
+                                            <div class="col">
+                                                <x-utils.form.select :key="'recipient_country'" :js="''"
+                                                                     :label="'Recipient Country'">
+                                                    @foreach($eu_countries as $key=> $value)
+                                                        <option value="{{$key}}">{{$value}}</option>
+                                                    @endforeach
+
+                                                </x-utils.form.select>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div class="row">
+                                        <div class="col">
+                                            <x-utils.form.input :key="'recipient_bank'" :js="'lazy'"
+                                                                :label="'Bank Name'"/>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <x-utils.form.input :key="'routing_number'" :js="'lazy'"
+                                                                :label="'Routing Number'"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <x-utils.form.input :key="'swift_code'" :js="'lazy'"
+                                                                :label="'Swift Code'"/>
+                                        </div>
+                                    </div>
+                                    @if(in_array($recipient_currency->code, ['EUR', 'GBP']))
 
-
-                                @if(!is_null($tempAccount) && !$errors->has('account'))
-                                    @if(!empty($tempAccount['account_name']))
-                                        <div class="card-alt card-body">
-                                            <div class="row">
-                                                <div class="col">
-                                                    <small class="font-10">Recipient Account</small>
-                                                    <h6 class="mt-0 mb-0">{{$tempAccount['account_name']}}</h6>
-                                                    <small class="text-muted">{{$tempAccount['account']}}</small>
-                                                </div>
-                                                <div class="col-auto float-end">
-                                                    <div class="">
-                                                        <small class="font-10">Confirm?</small>
-                                                    </div>
-                                                    <button class="btn btn-sm btn-soft-success" type="button"
-                                                            wire:click="confirmAccount(true)"><span
-                                                            class="fas fa-check"></span>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-soft-danger" type="button"
-                                                            wire:click="confirmAccount(false)"><span
-                                                            class="fas fa-times"></span>
-                                                    </button>
-                                                </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <x-utils.form.input :key="'postal_code'" :js="'lazy'"
+                                                                    :label="'Postal Code'"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <x-utils.form.input :key="'street_number'" :js="'lazy'"
+                                                                    :label="'Street Number'"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <x-utils.form.input :key="'street_name'" :js="'lazy'"
+                                                                    :label="'Street Name'"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <x-utils.form.input :key="'city'" :js="'lazy'"
+                                                                    :label="'City'"/>
                                             </div>
                                         </div>
                                     @else
-                                        <x-utils.form.input :key="'beneficiary'" :js="'lazy'"
-                                                            :label="'Recipient Name'"/>
-
-                                    @endif
-                                @endif
-
-                                @if(!is_null($selectedAccount) && !$errors->has('account'))
-                                    @if(is_null($tempAccount) )
-                                        <div class="card-alt card-body mb-2">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <small class="font-10">Recipient Account</small>
-                                                    <h6 class="mt-0 mb-0">{{$selectedAccount['account_name']}}</h6>
-                                                    <small class="text-muted">{{$selectedAccount['account']}}</small>
-                                                </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <x-utils.form.input :key="'beneficiary_address'" :js="'lazy'"
+                                                                    :label="'Recipient Address'"/>
                                             </div>
                                         </div>
                                     @endif
-                                    <hr class="hr-dashed hr-menu">
+                                    {{--                                    <hr class="hr-dashed hr-menu">--}}
                                     <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
                                             @endif wire:target="continueSendBank"
                                             wire:loading.attr="disabled"><span
                                             wire:target="continueSendBank" wire:loading class="btn-spinner"></span>
                                         Continue
                                     </button>
+                                @else
+                                    <div class="row" wire:init="retrieveBanks">
+                                        <div class="col">
+                                            <x-utils.form.select :key="'recipient_bank'" :js="''"
+                                                                 :label="'Choose Bank'"/>
+                                        </div>
+                                        <div class="col-auto" wire:target="retrieveBanks" wire:loading>
+                                    <span wire:target="retrieveBanks" wire:loading
+                                          class="btn-spinner btn-spinner-soft-danger" style="margin-top:2.2rem"></span>
+                                        </div>
+                                    </div>
+
+
+                                    @if(!is_null($tempAccount) && !$errors->has('account'))
+                                        @if(!empty($tempAccount['account_name']))
+                                            <div class="card-alt card-body">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <small class="font-10">Recipient Account</small>
+                                                        <h6 class="mt-0 mb-0">{{$tempAccount['account_name']}}</h6>
+                                                        <small class="text-muted">{{$tempAccount['account']}}</small>
+                                                    </div>
+                                                    <div class="col-auto float-end">
+                                                        <div class="">
+                                                            <small class="font-10">Confirm?</small>
+                                                        </div>
+                                                        <button class="btn btn-sm btn-soft-success" type="button"
+                                                                wire:click="confirmAccount(true)"><span
+                                                                class="fas fa-check"></span>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-soft-danger" type="button"
+                                                                wire:click="confirmAccount(false)"><span
+                                                                class="fas fa-times"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <x-utils.form.input :key="'beneficiary'" :js="'lazy'"
+                                                                :label="'Recipient Name'"/>
+                                            @if(in_array($recipient_currency->code, ['ZAR']))
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <x-utils.form.input :key="'beneficiary_address'" :js="'lazy'"
+                                                                            :label="'Recipient Address'"/>
+                                                    </div>
+                                                </div>
+                                            @endif
+
+                                        @endif
+
+                                    @endif
+
+                                    @if(!is_null($selectedAccount) && !$errors->has('account'))
+                                        @if(is_null($tempAccount) )
+                                            <div class="card-alt card-body mb-2">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <small class="font-10">Recipient Account</small>
+                                                        <h6 class="mt-0 mb-0">{{$selectedAccount['account_name']}}</h6>
+                                                        <small
+                                                            class="text-muted">{{$selectedAccount['account']}}</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        <hr class="hr-dashed hr-menu">
+                                        <button class="btn btn-success w-100" type="submit" @if($errors->any()) disabled
+                                                @endif wire:target="continueSendBank"
+                                                wire:loading.attr="disabled"><span
+                                                wire:target="continueSendBank" wire:loading class="btn-spinner"></span>
+                                            Continue
+                                        </button>
+                                    @endif
                                 @endif
                             </form>
                         @endif
@@ -164,5 +257,9 @@
         $('#recipient_bank').on('select2:select', function (event) {
         @this.call('setSelectedBank', event.target.value);
         })
+
+        $('#recipient_country').on('select2:select', function (e) {
+        @this.set('recipient_country', e.target.value);
+        });
     </script>
 @endpush

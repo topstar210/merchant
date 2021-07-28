@@ -122,12 +122,19 @@ class OrchardServices
 
     public static function nameEnquiry($account, $bank)
     {
-        $response = Http::post(config('env.orc_validate_url'), [
+        $data = [
             "customer_number" => $account,
             "bank_code" => $bank['Code'],
             "trans_type" => "AII",
             "service_id" => config('env.orc_service_id')
-        ]);
+        ];
+
+        $response = Http::withHeaders([
+            'Authorization' => self::computeAuth($data),
+            'Content-Type' => 'application/json',
+            'timeout' => 180,
+            'open_timeout' => 180
+        ])->post(config('env.orc_validate_url'), $data);
 
         Log::info('Orchard Name Enquiry for:' . $account, $response->json());
 
@@ -169,7 +176,7 @@ class OrchardServices
             'open_timeout' => 180
         ])->post(config('env.orc_payout_url'), $data);
 
-        Log::info('Orchard Payout Initial Response for:'.$reference,$response->json());
+        Log::info('Orchard Payout Initial Response for:' . $reference, $response->json());
 
         if ($response->status() != 200) {
             return [
@@ -226,7 +233,7 @@ class OrchardServices
             'open_timeout' => 180
         ])->post(config('env.orc_requery_url'), $data);
 
-        Log::info('Orchard Requery for:'.$reference,$response->json());
+        Log::info('Orchard Requery for:' . $reference, $response->json());
 
         if ($response->status() != 200) {
             return [
