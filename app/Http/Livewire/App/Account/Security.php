@@ -55,7 +55,7 @@ class Security extends Component
     {
         $this->validate();
 
-        User::query()->where('id', \user()->id)->update($this->action == 'password' ? ['password' => Hash::make($this->password)] : ['pin' => $this->pin]);
+        user()->update($this->action == 'password' ? ['password' => Hash::make($this->password)] : ['pin' => $this->pin]);
 
         Resource::logActivity("Changed $this->action");
 

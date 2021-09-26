@@ -54,10 +54,6 @@
                 </li>
             @endcan
 
-
-
-            <hr class="hr-dashed hr-menu mt-4">
-            <li class="menu-label">Wallets</li>
         </ul>
 
         <livewire:utils.wallets :wallets="user()->wallets"/>

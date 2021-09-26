@@ -33,4 +33,9 @@ class Merchant extends Model
         return $this->hasMany(MerchantPayment::class)->latest();
     }
 
+    public function lien()
+    {
+        return $this->hasOne(MerchantLien::class);
+    }
+
 }

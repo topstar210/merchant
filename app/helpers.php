@@ -35,11 +35,16 @@ function statusList()
 
 function formatDate($date)
 {
-    if (\Carbon\Carbon::now()->diffInHours(\Carbon\Carbon::parse($date)) > 12) {
+    if (\Carbon\Carbon::now()->diffInHours(\Carbon\Carbon::parse($date)) > 1) {
         return \Carbon\Carbon::parse($date)->format('d F Y h:i A');
     } else {
         return \Carbon\Carbon::parse($date)->diffForHumans();
     }
+}
+
+function formatDateOnly($date)
+{
+        return \Carbon\Carbon::parse($date)->format('d F Y');
 }
 
 function switchRouteName($route)

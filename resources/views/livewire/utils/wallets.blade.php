@@ -1,4 +1,26 @@
 <div>
+
+    @if(!is_null(user()->merchant->lien))
+        @if(user()->merchant->lien->status == 'LOCKED')
+            <div class="mx-3 pt-3 pb-4">
+                <hr class="hr-dashed hr-menu mt-2">
+                <div class="mb-2">
+
+                    <small class="text-white font-11">Lien Amount</small> <span class="float-right text-danger">{{user()->merchant->lien->currency->code}}
+                        <b class="text-danger font-16">{{number_format(user()->merchant->lien->lien_amount, 2)}}</b>
+                    </span>
+
+                </div>
+                <div><small class="float-end font-11" style="color: #919191">Lien will expire
+                        on {{formatDateOnly(user()->merchant->lien->lien_end_date)}}</small></div>
+            </div>
+        @endif
+    @endif
+
+    <div class="mx-3">
+        <hr class="hr-dashed hr-menu mt-2">
+        <h5>Wallets</h5>
+    </div>
     @forelse($wallets as $wallet)
         <div class="wallet-left-item">
             <div class="d-flex flex-row">
@@ -16,7 +38,8 @@
             </div>
             <div class="d-flex flex-row mt-1">
                 <div class="col text-end">
-                    <small class="text-muted font-10 ">Commission: {{$wallet->currency->code}} <b class="font-12 text-success">{{number_format($wallet->commission, 2)}}</b></small>
+                    <small class="text-muted font-10 ">Commission: {{$wallet->currency->code}} <b
+                            class="font-12 text-success">{{number_format($wallet->commission, 2)}}</b></small>
                 </div>
             </div>
 

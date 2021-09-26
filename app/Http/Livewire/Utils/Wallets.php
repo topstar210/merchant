@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Utils;
 
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Wallets extends Component
