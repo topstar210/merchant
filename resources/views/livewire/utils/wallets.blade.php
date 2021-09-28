@@ -1,20 +1,18 @@
 <div>
 
-    @if(!is_null(user()->merchant->lien))
-        @if(user()->merchant->lien->status == 'LOCKED')
+    @if(!is_null($lien))
             <div class="mx-3 pt-3 pb-4">
                 <hr class="hr-dashed hr-menu mt-2">
                 <div class="mb-2">
 
-                    <small class="text-white font-11">Lien Amount</small> <span class="float-right text-danger">{{user()->merchant->lien->currency->code}}
-                        <b class="text-danger font-16">{{number_format(user()->merchant->lien->lien_amount, 2)}}</b>
+                    <small class="text-white font-11">Lien Amount</small> <span class="float-right text-danger">{{$lien->currency->code}}
+                        <b class="text-danger font-16">{{number_format($lien->lien_amount, 2)}}</b>
                     </span>
 
                 </div>
                 <div><small class="float-end font-11" style="color: #919191">Lien will expire
-                        on {{formatDateOnly(user()->merchant->lien->lien_end_date)}}</small></div>
+                        on {{formatDateOnly($lien->lien_end_date)}}</small></div>
             </div>
-        @endif
     @endif
 
     <div class="mx-3">

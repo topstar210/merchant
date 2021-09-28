@@ -35,7 +35,7 @@ class Merchant extends Model
 
     public function lien()
     {
-        return $this->hasOne(MerchantLien::class);
+        return $this->hasMany(MerchantLien::class);
     }
 
 }

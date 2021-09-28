@@ -17,7 +17,7 @@ class AuthorizationService
     public static function handle() : String
     {
         $token = (string)rand(100000, 999999);
-//        Log::info($token);
+        Log::info($token);
         Mail::to(user()->email)->send(new AuthorizationMail($token));
 
         return $token;
