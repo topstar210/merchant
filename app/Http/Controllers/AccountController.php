@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MerchantLien;
+use App\Services\LienService;
 use Illuminate\Http\Request;
 
 class AccountController extends Controller
@@ -21,4 +23,10 @@ class AccountController extends Controller
 
         return redirect('app')->with(['error' => true, 'error_message' => 'Invalid action initiated']);
     }
+
+    public function releaseLienAPI(Request $request, MerchantLien $lien)
+    {
+        return LienService::releaseLien($lien);
+    }
+
 }

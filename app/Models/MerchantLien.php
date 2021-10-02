@@ -20,4 +20,9 @@ class MerchantLien extends Model
     {
         return $this->belongsTo(Currency::class, 'currency_id', 'id');
     }
+
+    public function getRouteKeyName()
+    {
+        return 'lien';
+    }
 }

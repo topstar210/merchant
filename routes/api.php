@@ -21,6 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::post('create/merchant', [\App\Http\Controllers\Auth\RegisterController::class, 'createMerchant']);
     Route::get('currency/update', [\App\Http\Controllers\ExchangeController::class, 'currencyRateUpdate']);
+    Route::get('lien/release/{lien}', [\App\Http\Controllers\AccountController::class, 'releaseLienAPI'])
+        ->missing(function (Request $request) {
+            return response()->json(['error' => true, 'error_message' => 'No Merchant Lien Found']);
+        });
+
+
     Route::prefix('webhook')->group(function () {
         Route::post('deposit/Orchard/{reference}', [\App\Http\Controllers\WebHookController::class, 'handleOrchardDeposit'])
             ->missing(function (Request $request) {
