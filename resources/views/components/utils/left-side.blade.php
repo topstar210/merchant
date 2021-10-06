@@ -56,6 +56,6 @@
 
         </ul>
 
-        <livewire:utils.wallets :wallets="user()->wallets" :lien="user()->merchant->lien->where('status', 'LOCKED')->first()"/>
+        <livewire:utils.wallets :wallets="user()->wallets"/>
     </div>
 </div>

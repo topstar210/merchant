@@ -12,10 +12,10 @@ class Wallets extends Component
 
     protected $listeners = ['refreshWallet'];
 
-    public function mount($wallets, $lien)
+    public function mount($wallets)
     {
         $this->wallets = $wallets;
-        $this->lien = $lien;
+        $this->lien = user()->merchant->lien()->where('status', 'LOCKED')->first();
     }
 
     public function refreshWallet()
