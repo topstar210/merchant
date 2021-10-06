@@ -23,6 +23,6 @@ class MerchantLien extends Model
 
     public function getRouteKeyName()
     {
-        return 'lien';
+        return 'id';
     }
 }
