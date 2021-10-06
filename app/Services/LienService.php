@@ -60,7 +60,7 @@ class LienService
                 "total" => $lien->lien_amount
             ],
             'wallet_id' => $wallet->id,
-            'payment_method_id' => null
+            'payment_method_id' => 1
         ]);
 
         $transaction = Resource::saveDepositTrans(new MerchantPayment($merchant_payment->toArray()),
